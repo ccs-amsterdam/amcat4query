@@ -10,7 +10,7 @@ npm start
 ```
 
 The components to be used in amcat4client can then be exported in src/lib/index.js, and published to NPM.
-(don't forget to increment version)
+(don't forget to increment version) 
 
 ```bash
 npm run build_npm
