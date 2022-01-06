@@ -1,48 +1,68 @@
 import React, { useState } from "react";
-import { Container, Menu, Segment } from "semantic-ui-react";
+import { Grid, Menu, Segment } from "semantic-ui-react";
 
-// Main pages. Use below in items to include in header menu
+// Left column
+import { AmcatLogin } from "amcat4auth";
+import AmcatIndexSelect from "lib/AmcatIndex/AmcatIndexSelect";
+
+// Right column
+import AmcatUpload from "lib/AmcatUpload/AmcatUpload";
 import AmcatAggregate from "lib/AmcatAggregate/AmcatAggregate";
 import AmcatArticles from "lib/AmcatArticles/AmcatArticles";
 
-const previewComponents = [
-  { name: "AmcatAggregate", component: AmcatAggregate },
-  { name: "AmcatArticles", component: AmcatArticles },
-];
+const menuItems = ["AmcatUpload", "AmcatArticles", "AmcatAggregate"];
 
-const App = () => {
-  const [component, setComponent] = useState(null);
+export default function App() {
+  const [amcat, setAmcat] = useState(null);
+  const [selected, setSelected] = useState(menuItems[0]);
+  const [index, setIndex] = useState(null);
 
-  return (
-    <Container>
-      <ComponentMenu setComponent={setComponent} />
-      <Segment attached="bottom">{component}</Segment>
-    </Container>
-  );
-};
-
-const ComponentMenu = ({ setComponent }) => {
-  const [active, setActive] = useState(null);
-
-  const onSelect = (component) => {
-    setActive(component.name);
-    setComponent(component.component);
+  const render = () => {
+    switch (selected) {
+      case "AmcatUpload":
+        return <AmcatUpload amcat={amcat} index={index} />;
+      case "AmcatArticles":
+        return <AmcatArticles amcat={amcat} />;
+      case "AmcatAggregate":
+        return <AmcatAggregate amcat={amcat} />;
+      default:
+        return null;
+    }
   };
 
   return (
+    <Grid container columns={2} style={{ marginTop: "10px" }}>
+      <Grid.Column width={4}>
+        <Grid.Row>
+          <AmcatLogin onLogin={setAmcat} />
+        </Grid.Row>
+        <br />
+        <Grid.Row>
+          <AmcatIndexSelect amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
+        </Grid.Row>
+      </Grid.Column>
+      <Grid.Column width={12}>
+        <ComponentMenu index={index} selected={selected} setSelected={setSelected} />
+        {index ? <Segment attached="bottom">{render()}</Segment> : null}
+      </Grid.Column>
+    </Grid>
+  );
+}
+
+function ComponentMenu({ index, selected, setSelected }) {
+  return (
     <Menu attached="top" tabular>
-      {previewComponents.map((component) => {
-        console.log(component);
+      {menuItems.map((name) => {
         return (
           <Menu.Item
-            name={component.name}
-            active={active === component.name}
-            onClick={() => onSelect(component)}
+            key={name}
+            name={name}
+            active={index && selected === name}
+            disabled={!index}
+            onClick={() => setSelected(name)}
           />
         );
       })}
     </Menu>
   );
-};
-
-export default App;
+}
