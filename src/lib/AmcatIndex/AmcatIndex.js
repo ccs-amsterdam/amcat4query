@@ -4,7 +4,7 @@ import { Dropdown, Button } from "semantic-ui-react";
 import AmcatIndexCreate from "./AmcatIndexCreate";
 import AmcatIndexDelete from "./AmcatIndexDelete";
 
-export default function AmcatIndexSelect({ amcat, index, setIndex, canCreate, canDelete }) {
+export default function AmcatIndex({ amcat, index, setIndex, canCreate, canDelete }) {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {

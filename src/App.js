@@ -3,7 +3,7 @@ import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
 import { AmcatLogin } from "amcat4auth";
-import AmcatIndexSelect from "lib/AmcatIndex/AmcatIndexSelect";
+import AmcatIndex from "lib/AmcatIndex/AmcatIndex";
 
 // Right column
 import AmcatUpload from "lib/AmcatUpload/AmcatUpload";
@@ -22,28 +22,32 @@ export default function App() {
       case "AmcatUpload":
         return <AmcatUpload amcat={amcat} index={index} />;
       case "AmcatArticles":
-        return <AmcatArticles amcat={amcat} />;
+        return <AmcatArticles amcat={amcat} index={index} />;
       case "AmcatAggregate":
-        return <AmcatAggregate amcat={amcat} />;
+        return <AmcatAggregate amcat={amcat} index={index} />;
       default:
         return null;
     }
   };
 
   return (
-    <Grid container columns={2} style={{ marginTop: "10px" }}>
+    <Grid columns={2} style={{ margin: "10px" }}>
       <Grid.Column width={4}>
         <Grid.Row>
           <AmcatLogin onLogin={setAmcat} />
         </Grid.Row>
         <br />
         <Grid.Row>
-          <AmcatIndexSelect amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
+          <AmcatIndex amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
         </Grid.Row>
       </Grid.Column>
       <Grid.Column width={12}>
         <ComponentMenu index={index} selected={selected} setSelected={setSelected} />
-        {index ? <Segment attached="bottom">{render()}</Segment> : null}
+        {index ? (
+          <Segment attached="bottom" style={{ width: "100%" }}>
+            {render()}
+          </Segment>
+        ) : null}
       </Grid.Column>
     </Grid>
   );
