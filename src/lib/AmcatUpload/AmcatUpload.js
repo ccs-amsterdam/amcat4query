@@ -12,6 +12,7 @@ export default function AmcatUpload({ amcat, index }) {
   const fileRef = useRef();
 
   useEffect(() => {
+    if (!data) return;
     amcat
       .getFields(index)
       .then((res) => {
@@ -21,12 +22,12 @@ export default function AmcatUpload({ amcat, index }) {
         setFields(null);
         console.log(e);
       });
-  }, [amcat, index, setFields]);
+  }, [amcat, index, data, setFields]);
 
   useEffect(() => {
     if (data.length <= 1) return;
     const columns = data[0].data.map((name) => {
-      return { name, field: name, type: fields[name] || "GUESS" };
+      return { name, field: name, type: fields[name] || "auto" };
     });
     setColumns(columns);
   }, [fields, data, setColumns, setFields]);
@@ -43,7 +44,14 @@ export default function AmcatUpload({ amcat, index }) {
       </CSVReader>
       <br />
       <ImportTable data={data} columns={columns} setColumns={setColumns} fields={fields} />
-      <SubmitButton amcat={amcat} index={index} data={data} columns={columns} fileRef={fileRef} />
+      <SubmitButton
+        amcat={amcat}
+        index={index}
+        data={data}
+        columns={columns}
+        fields={fields}
+        fileRef={fileRef}
+      />
     </Container>
   );
 }

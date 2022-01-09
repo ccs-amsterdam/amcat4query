@@ -82,7 +82,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     let options = Object.keys(ES_MAPPINGS).map((em) => {
       return { key: em, value: em, text: em.toUpperCase(), description: ES_MAPPINGS[em] };
     });
-    options = [{ key: "GUESS", value: "GUESS", text: "AUTO" }, ...options];
+    options = [{ key: "auto", value: "auto", text: "AUTO" }, ...options];
 
     const onChangeType = (i, newType) => {
       const fixedType = fields[columns[i].field]?.type;

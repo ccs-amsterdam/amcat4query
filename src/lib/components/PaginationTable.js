@@ -1,5 +1,7 @@
 import React from "react";
 import { Container, Pagination, Table, Icon } from "semantic-ui-react";
+import { removeElasticTags, highlightElasticTags } from "lib/functions/highlightElasticTags";
+import "./paginationTableStyle.css";
 
 /**
  * A nice table with pagination
@@ -55,7 +57,7 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
             textOverflow: "ellipsis",
           }}
         >
-          <span title={content}>{content}</span>
+          <span title={removeElasticTags(content)}>{highlightElasticTags(content)}</span>
         </Table.Cell>
       );
     });

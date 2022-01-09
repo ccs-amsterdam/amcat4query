@@ -1,5 +1,4 @@
 import PaginationTable from "lib/components/PaginationTable";
-import highlightElasticTags from "lib/functions/highlightElasticTags";
 import React, { useEffect, useMemo, useState } from "react";
 
 const per_page = 15;
@@ -8,8 +7,8 @@ const COLUMNS = [
   { name: "_id", hide: true },
   { name: "date", f: (row) => row.date.replace("T", " "), width: "6em" },
   { name: "publisher", width: "6em" }, // optional
-  { name: "title", f: (row) => highlightElasticTags(row.title) },
-  { name: "text", f: (row) => highlightElasticTags(row.text) },
+  { name: "title" },
+  { name: "text" },
 ];
 
 /**
@@ -70,10 +69,10 @@ const useArticles = (amcat, index, query, highlight) => {
 };
 
 const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
-  let params = { page, per_page };
+  let params = { page, per_page, highlight: true, queries: "shell" };
   if (query?.params) params = { ...query.params, ...params };
 
-  const filters = { publisher: { value: ["De Telegraaf", "Algemeen Dagblad"] } };
+  const filters = { publisher: ["Algemeen Dagblad", "De Telegraaf"] };
 
   try {
     const res = await postQuery(amcat, index, params, filters);
@@ -103,5 +102,5 @@ const fetchArticle = async (amcat, index, _id, query) => {
 
 const postQuery = (amcat, index, params = {}, filters = {}) => {
   if (filters) params["filters"] = filters;
-  return amcat.api.get(`/index/${index}/query`, { ...params });
+  return amcat.api.post(`/index/${index}/query`, { ...params });
 };

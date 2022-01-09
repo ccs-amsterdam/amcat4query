@@ -3,32 +3,39 @@ import { Container, Button, Message, Dimmer, Loader, Modal, Header } from "seman
 
 const REQUIRED_FIELDS = ["title", "date", "text"];
 
-export default function SubmitButton({ amcat, index, data, columns }) {
+export default function SubmitButton({ amcat, index, data, columns, fields, fileRef }) {
   const [loading, setLoading] = useState(false);
   const [submittedMessage, setSubmittedMessage] = useState(null);
 
   const notReady = !index || !columns || data.length <= 1 || columns.length !== data[0].data.length;
   if (notReady) return null;
 
-  let fields = new Set();
+  let newfields = new Set();
   //let hasDuplicates = false;
   for (let column of columns) {
     //if (field.has(column.field)) hasDuplicates = true
-    fields.add(column.field);
+    newfields.add(column.field);
   }
 
   const missingRequired = [];
   for (let required of REQUIRED_FIELDS) {
-    if (!fields.has(required)) missingRequired.push(required);
+    if (!newfields.has(required)) missingRequired.push(required);
   }
 
   const onSubmit = async () => {
-    const [preparedData, missing] = prepareData(data, columns);
+    const [documents, missing] = prepareData(data, columns);
 
     setLoading(true);
     try {
-      const res = await amcat.createDocuments(index, preparedData);
-      //fileRef.current.removeFile();
+      const columnMapping = columns.reduce((mapping, column) => {
+        if (column.type === "auto") return mapping;
+        if (fields[column.name]) return mapping;
+        console.log(column);
+        mapping[column.name] = column.type;
+        return mapping;
+      }, {});
+      const res = await amcat.createDocuments(index, documents, columnMapping);
+
       setLoading(false);
       setSubmittedMessage({ missing, n: res.data.length });
     } catch (e) {
@@ -59,12 +66,13 @@ export default function SubmitButton({ amcat, index, data, columns }) {
       <SubmittedMessage
         submittedMessage={submittedMessage}
         setSubmittedMessage={setSubmittedMessage}
+        fileRef={fileRef}
       />
     </Container>
   );
 }
 
-const SubmittedMessage = ({ submittedMessage, setSubmittedMessage }) => {
+const SubmittedMessage = ({ submittedMessage, setSubmittedMessage, fileRef }) => {
   if (!submittedMessage) return null;
 
   const ifMissingDate = () => {
@@ -98,7 +106,13 @@ const SubmittedMessage = ({ submittedMessage, setSubmittedMessage }) => {
   };
 
   return (
-    <Modal open onClose={() => setSubmittedMessage(null)}>
+    <Modal
+      open
+      onClose={() => {
+        fileRef.current.removeFile();
+        setSubmittedMessage(null);
+      }}
+    >
       <Modal.Header>Uploaded articles</Modal.Header>
       <Modal.Content>
         <Modal.Description>
@@ -116,7 +130,10 @@ const SubmittedMessage = ({ submittedMessage, setSubmittedMessage }) => {
           labelPosition="right"
           icon="checkmark"
           positive
-          onClick={() => setSubmittedMessage(null)}
+          onClick={() => {
+            fileRef.current.removeFile();
+            setSubmittedMessage(null);
+          }}
         />
       </Modal.Actions>
     </Modal>
