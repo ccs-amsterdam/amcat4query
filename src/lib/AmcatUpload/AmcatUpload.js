@@ -3,6 +3,7 @@ import { Container } from "semantic-ui-react";
 import { CSVReader } from "react-papaparse";
 import ImportTable from "./ImportTable";
 import SubmitButton from "./SubmitButton";
+import "./amcatUploadStyle.css";
 
 export default function AmcatUpload({ amcat, index }) {
   const [data, setData] = useState([]);

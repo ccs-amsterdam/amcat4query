@@ -12,7 +12,7 @@ const ES_MAPPINGS = {
 const REQUIRED_FIELDS = ["title", "date", "text"];
 
 export default function ImportTable({ data, columns, setColumns, fields }) {
-  const n = 5;
+  const n = 6;
 
   const headerCellStyle = {
     width: "10em",
@@ -63,7 +63,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
           <Dropdown
             fluid
             search
-            header="Select or create (type) field name"
+            header="Select field or type to create new"
             value={column.field}
             style={{ height: "2em", textAlign: "center", color: exists ? "blue" : "black" }}
             placeholder="assign field"
@@ -79,10 +79,10 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
   };
 
   const headerType = (data) => {
-    const options = Object.keys(ES_MAPPINGS).map((em) => {
+    let options = Object.keys(ES_MAPPINGS).map((em) => {
       return { key: em, value: em, text: em.toUpperCase(), description: ES_MAPPINGS[em] };
     });
-    options.push({ key: "GUESS", value: "GUESS", text: "GUESS" });
+    options = [{ key: "GUESS", value: "GUESS", text: "AUTO" }, ...options];
 
     const onChangeType = (i, newType) => {
       const fixedType = fields[columns[i].field]?.type;
@@ -103,6 +103,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
         <Table.HeaderCell style={{ ...headerCellStyle, paddingBottom: "5px" }}>
           <Dropdown
             fluid
+            search
             header="Select intended field type"
             style={{ height: "2em", textAlign: "center", color }}
             placeholder="type"
@@ -134,12 +135,12 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
 
   const createRows = (data, n) => {
     const previewdata = data.slice(0, n + 1);
-    return previewdata.slice(1).map((row) => {
-      return <Table.Row>{createRowCells(row.data)}</Table.Row>;
+    return previewdata.slice(1).map((row, i) => {
+      return <Table.Row>{createRowCells(row.data, i)}</Table.Row>;
     });
   };
 
-  const createRowCells = (row) => {
+  const createRowCells = (row, i) => {
     const rowCells = row.map((cell) => {
       return (
         <Table.Cell style={{ textAlign: "right" }}>
@@ -147,7 +148,14 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
         </Table.Cell>
       );
     });
-    return [<Table.Cell style={{ background: "grey", borderTop: "0" }} />, ...rowCells];
+    return [
+      <Table.Cell
+        style={{ background: "grey", borderTop: "0", color: "white", textAlign: "right" }}
+      >
+        <b>{i === 2 ? "CSV content" : null}</b>
+      </Table.Cell>,
+      ...rowCells,
+    ];
   };
 
   if (data.length <= 1) return null;
@@ -158,7 +166,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
       style={{
         marginTop: "3em",
         overflowX: "auto",
-        minHeight: "400px",
+        minHeight: "350px",
         width: "100%",
       }}
     >

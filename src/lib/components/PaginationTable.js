@@ -15,6 +15,8 @@ import { Container, Pagination, Table, Icon } from "semantic-ui-react";
 export default function PaginationTable({ data, columns, pages, pageChange, onClick }) {
   const createHeaderRow = (data, columns) => {
     return columns.map((col, i) => {
+      if (col.hide) return null;
+
       return (
         <Table.HeaderCell key={i} width={col.width || null}>
           <span title={col.name}>{col.name}</span>
@@ -43,13 +45,12 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
       } else {
         content = rowObj ? rowObj[column.name] : null;
       }
-      if (content instanceof Date) content = content.toISOString().slice(0, 19).replace(/T/g, " ");
       return (
         <Table.Cell
           key={i}
           style={{
-            minWidth: "50px",
-            maxWidth: "200px",
+            minWidth: column.width || "50px",
+            maxWidth: column.width || "200px",
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}

@@ -1,38 +1,107 @@
 import PaginationTable from "lib/components/PaginationTable";
-import React, { useEffect, useState } from "react";
+import highlightElasticTags from "lib/functions/highlightElasticTags";
+import React, { useEffect, useMemo, useState } from "react";
 
 const per_page = 15;
 
-export default function AmcatArticles({ amcat, index, query }) {
-  const [data, setPage] = useQuery(amcat, index, query);
+const COLUMNS = [
+  { name: "_id", hide: true },
+  { name: "date", f: (row) => row.date.replace("T", " "), width: "6em" },
+  { name: "publisher", width: "6em" }, // optional
+  { name: "title", f: (row) => highlightElasticTags(row.title) },
+  { name: "text", f: (row) => highlightElasticTags(row.text) },
+];
+
+/**
+ *
+ * @param {class}  amcat  An Amcat connection class, as obtained with amcat4auth
+ * @param {string} index The name of an index
+ * @param {object} query An object with query components (q, params, filter)
+ * @param {array}  columns an Array with objects indicating which columns to show and how. Object should have key 'name', which by default
+ *                        is both the column name in the table, and the value fetched from data. But can also have a key 'f', which is a function
+ *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. * @returns
+ * @param {bool}   allColumns If true, include all columns AFTER the columns specified in the columns argument
+ */
+export default function AmcatArticles({
+  amcat,
+  index,
+  query,
+  columns = COLUMNS,
+  allColumns = true,
+  type = "table",
+}) {
+  const [data, setPage] = useArticles(amcat, index, query, type === "list");
+
+  const columnList = useMemo(() => {
+    if (!data?.results || data.results.length === 0) return [];
+
+    const dataColumns = Object.keys(data.results[0]);
+    // first use the columns as specified in COLUMNS
+    const columnList = columns.filter((c) => dataColumns.includes(c.name));
+    // then add all other columns AFTER
+    if (allColumns) {
+      for (let name of dataColumns) {
+        if (columnList.find((c) => c.name === name)) continue;
+        columnList.push({ name });
+      }
+    }
+    return columnList;
+  }, [data, allColumns, columns]);
 
   return (
     <PaginationTable
       data={data?.results || []}
+      columns={columnList}
       pages={data?.meta?.page_count || 0}
       pageChange={setPage}
     />
   );
 }
 
-const useQuery = (amcat, index, query) => {
+const useArticles = (amcat, index, query, highlight) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    fetchArticles(amcat, index, query, page, setData);
-  }, [amcat, index, query, page, setData]);
+    fetchArticles(amcat, index, query, page, highlight, setData);
+  }, [amcat, index, query, page, highlight, setData]);
 
   return [data, setPage];
 };
 
-const fetchArticles = async (amcat, index, query, page, setData) => {
+const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
+  let params = { page, per_page };
+  if (query?.params) params = { ...query.params, ...params };
+
+  const filters = { publisher: { value: ["De Telegraaf", "Algemeen Dagblad"] } };
+
   try {
-    const res = await amcat.getQuery(index, { page, per_page });
+    const res = await postQuery(amcat, index, params, filters);
     console.log(res);
+    console.log(res.data.results[0]._id);
+    fetchArticle(amcat, index, res.data.results[0]._id, query);
     setData(res.data);
   } catch (e) {
     console.log(e);
-    console.log(e.message);
+    setData([]);
   }
+};
+
+const fetchArticle = async (amcat, index, _id, query) => {
+  try {
+    const res = await postQuery(
+      amcat,
+      index,
+      { highlight: true, queries: ["shell", "alaska"] },
+      { _id }
+    );
+    console.log(res);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const postQuery = (amcat, index, params = {}, filters = {}) => {
+  if (filters) params["filters"] = filters;
+  return amcat.api.get(`/index/${index}/query`, { ...params });
 };
