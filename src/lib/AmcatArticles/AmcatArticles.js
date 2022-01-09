@@ -75,7 +75,7 @@ const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
   const filters = { publisher: ["Algemeen Dagblad", "De Telegraaf"] };
 
   try {
-    const res = await postQuery(amcat, index, params, filters);
+    const res = await amcat.postQuery(index, params, filters);
     console.log(res);
     console.log(res.data.results[0]._id);
     fetchArticle(amcat, index, res.data.results[0]._id, query);
@@ -88,8 +88,7 @@ const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
 
 const fetchArticle = async (amcat, index, _id, query) => {
   try {
-    const res = await postQuery(
-      amcat,
+    const res = await amcat.postQuery(
       index,
       { highlight: true, queries: ["shell", "alaska"] },
       { _id }
@@ -98,9 +97,4 @@ const fetchArticle = async (amcat, index, _id, query) => {
   } catch (e) {
     console.log(e);
   }
-};
-
-const postQuery = (amcat, index, params = {}, filters = {}) => {
-  if (filters) params["filters"] = filters;
-  return amcat.api.post(`/index/${index}/query`, { ...params });
 };
