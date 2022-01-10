@@ -28,6 +28,7 @@ export default function KeywordField({ field, options, query, setQuery }) {
         selection
         search
         options={options}
+        header={`Select keywords in "${field}"" field`}
         style={{ minWidth: "300px" }}
         onChange={(e, d) => onChange(d.value)}
       />

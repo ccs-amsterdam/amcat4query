@@ -73,6 +73,7 @@ const SelectFields = ({ fields, filters, setFilters }) => {
         multiple
         selection
         search
+        header="Select fields to filter on"
         options={options}
         style={{ width: "300px" }}
         noResultsMessage=""
