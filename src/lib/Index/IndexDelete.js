@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Header, Icon, Modal, Dimmer, Loader } from "semantic-ui-react";
 
-export default function AmcatIndexDelete({ amcat, index, button, onDelete }) {
+export default function IndexDelete({ amcat, index, button, onDelete }) {
   const [status, setStatus] = useState("inactive");
 
   const onSubmit = (event) => {

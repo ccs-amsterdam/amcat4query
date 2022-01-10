@@ -3,28 +3,40 @@ import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
 import { AmcatLogin } from "amcat4auth";
-import AmcatIndex from "lib/AmcatIndex/AmcatIndex";
+import Index from "lib/Index/Index";
+import Query from "lib/Query/Query";
 
 // Right column
-import AmcatUpload from "lib/AmcatUpload/AmcatUpload";
-import AmcatAggregate from "lib/AmcatAggregate/AmcatAggregate";
-import AmcatArticles from "lib/AmcatArticles/AmcatArticles";
+import Upload from "lib/Upload/Upload";
+import Aggregate from "lib/Aggregate/Aggregate";
+import Articles from "lib/Articles/Articles";
 
-const menuItems = ["AmcatUpload", "AmcatArticles", "AmcatAggregate"];
+const menuItems = ["Upload", "Articles", "Aggregate"];
 
 export default function App() {
-  const [amcat, setAmcat] = useState(null);
   const [selected, setSelected] = useState(menuItems[0]);
+  const [amcat, setAmcat] = useState(null);
   const [index, setIndex] = useState(null);
+  const [query, setQuery] = useState({});
 
   const render = () => {
     switch (selected) {
-      case "AmcatUpload":
-        return <AmcatUpload amcat={amcat} index={index} />;
-      case "AmcatArticles":
-        return <AmcatArticles amcat={amcat} index={index} />;
-      case "AmcatAggregate":
-        return <AmcatAggregate amcat={amcat} index={index} />;
+      case "Upload":
+        return <Upload amcat={amcat} index={index} />;
+      case "Articles":
+        return (
+          <div>
+            <Query amcat={amcat} index={index} query={query} setQuery={setQuery} />
+            <Articles amcat={amcat} index={index} query={query} />
+          </div>
+        );
+      case "Aggregate":
+        return (
+          <div>
+            <Query amcat={amcat} index={index} query={query} setQuery={setQuery} />
+            <Aggregate amcat={amcat} index={index} query={query} />
+          </div>
+        );
       default:
         return null;
     }
@@ -38,8 +50,9 @@ export default function App() {
         </Grid.Row>
         <br />
         <Grid.Row>
-          <AmcatIndex amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
+          <Index amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
         </Grid.Row>
+        <br />
       </Grid.Column>
       <Grid.Column width={12}>
         <ComponentMenu index={index} selected={selected} setSelected={setSelected} />

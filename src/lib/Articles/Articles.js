@@ -21,7 +21,7 @@ const COLUMNS = [
  *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. * @returns
  * @param {bool}   allColumns If true, include all columns AFTER the columns specified in the columns argument
  */
-export default function AmcatArticles({
+export default function Articles({
   amcat,
   index,
   query,
@@ -29,7 +29,7 @@ export default function AmcatArticles({
   allColumns = true,
   type = "table",
 }) {
-  const [data, setPage] = useArticles(amcat, index, query, type === "list");
+  const [data, setPage] = useArticles(amcat, index, query);
 
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
@@ -57,28 +57,26 @@ export default function AmcatArticles({
   );
 }
 
-const useArticles = (amcat, index, query, highlight) => {
+const useArticles = (amcat, index, query) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    fetchArticles(amcat, index, query, page, highlight, setData);
-  }, [amcat, index, query, page, highlight, setData]);
+    fetchArticles(amcat, index, query, page, true, setData);
+  }, [amcat, index, query, page, setData]);
 
   return [data, setPage];
 };
 
 const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
-  let params = { page, per_page, highlight: true, queries: "shell" };
-  if (query?.params) params = { ...query.params, ...params };
+  let params = { page, per_page, highlight };
 
-  const filters = { publisher: ["Algemeen Dagblad", "De Telegraaf"] };
+  if (query.query_string) params.queries = query.query_string.split("\n");
+  if (query?.params) params = { ...query.params, ...params };
+  const filters = query.filters || {};
 
   try {
     const res = await amcat.postQuery(index, params, filters);
-    console.log(res);
-    console.log(res.data.results[0]._id);
-    fetchArticle(amcat, index, res.data.results[0]._id, query);
     setData(res.data);
   } catch (e) {
     console.log(e);
@@ -86,15 +84,15 @@ const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
   }
 };
 
-const fetchArticle = async (amcat, index, _id, query) => {
-  try {
-    const res = await amcat.postQuery(
-      index,
-      { highlight: true, queries: ["shell", "alaska"] },
-      { _id }
-    );
-    console.log(res);
-  } catch (e) {
-    console.log(e);
-  }
-};
+// const fetchArticle = async (amcat, index, _id, query) => {
+//   try {
+//     const res = await amcat.postQuery(
+//       index,
+//       { highlight: true, queries: ["shell", "alaska"] },
+//       { _id }
+//     );
+//     console.log(res);
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };

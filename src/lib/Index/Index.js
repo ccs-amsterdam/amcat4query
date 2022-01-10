@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown, Button } from "semantic-ui-react";
 
-import AmcatIndexCreate from "./AmcatIndexCreate";
-import AmcatIndexDelete from "./AmcatIndexDelete";
+import IndexCreate from "./IndexCreate";
+import IndexDelete from "./IndexDelete";
 
-export default function AmcatIndex({ amcat, index, setIndex, canCreate, canDelete }) {
+export default function Index({ amcat, index, setIndex, canCreate, canDelete }) {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
@@ -31,13 +31,13 @@ export default function AmcatIndex({ amcat, index, setIndex, canCreate, canDelet
 
       <div style={{ flex: "0 1 auto" }}>
         <Button.Group style={{ marginLeft: canDelete || canCreate ? "5px" : "0" }}>
-          <AmcatIndexCreateButton
+          <IndexCreateButton
             amcat={amcat}
             canCreate={canCreate}
             setIndex={setIndex}
             setOptions={setOptions}
           />
-          <AmcatIndexDeleteButton
+          <IndexDeleteButton
             amcat={amcat}
             index={index}
             canDelete={canDelete}
@@ -52,7 +52,7 @@ export default function AmcatIndex({ amcat, index, setIndex, canCreate, canDelet
 
 const buttonStyle = { paddingLeft: "5px", paddingRight: "5px" };
 
-const AmcatIndexCreateButton = ({ amcat, canCreate, setIndex, setOptions }) => {
+const IndexCreateButton = ({ amcat, canCreate, setIndex, setOptions }) => {
   if (!canCreate) return null;
 
   const onCreate = (name) => {
@@ -63,10 +63,10 @@ const AmcatIndexCreateButton = ({ amcat, canCreate, setIndex, setOptions }) => {
   };
 
   const CreateButton = <Button icon="plus" style={buttonStyle} />;
-  return <AmcatIndexCreate amcat={amcat} button={CreateButton} onCreate={onCreate} />;
+  return <IndexCreate amcat={amcat} button={CreateButton} onCreate={onCreate} />;
 };
 
-const AmcatIndexDeleteButton = ({ amcat, index, canDelete, setIndex, setOptions }) => {
+const IndexDeleteButton = ({ amcat, index, canDelete, setIndex, setOptions }) => {
   if (!canDelete) return null;
 
   const onDelete = (name) => {
@@ -76,7 +76,7 @@ const AmcatIndexDeleteButton = ({ amcat, index, canDelete, setIndex, setOptions 
   };
 
   const DeleteButton = <Button disabled={!index} icon="minus" style={buttonStyle} />;
-  return <AmcatIndexDelete amcat={amcat} index={index} button={DeleteButton} onDelete={onDelete} />;
+  return <IndexDelete amcat={amcat} index={index} button={DeleteButton} onDelete={onDelete} />;
 };
 
 const prepareOptions = async (amcat, setOptions) => {

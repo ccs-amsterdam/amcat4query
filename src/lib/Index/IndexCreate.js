@@ -17,7 +17,7 @@ const guestRoles = [
  * @param {function} onCreate Function called when new index is created. Argument is the name of the new index
  * @returns
  */
-export default function AmcatIndexCreate({ amcat, button, onCreate }) {
+export default function IndexCreate({ amcat, button, onCreate }) {
   const [modalStatus, setModalStatus] = useState("inactive");
   const [newIndexName, setNewIndexName] = useState("");
   const [guestRole, setGuestRole] = useState("None");
