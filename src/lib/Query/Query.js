@@ -20,7 +20,7 @@ export default function Query({ amcat, index, setQuery }) {
     <Grid style={{ marginBottom: "1em" }}>
       <Grid.Row>
         <Grid.Column floated="left" width={16}>
-          <TextField query={queryForm} setQuery={setQueryForm} />
+          <TextField query={queryForm} setQuery={setQueryForm} rows={5} />
           <Button.Group stackable style={{ width: "100%", marginBottom: "10px" }}>
             <Filters amcat={amcat} index={index} query={queryForm} setQuery={setQueryForm} />
           </Button.Group>

@@ -18,8 +18,9 @@ export default function KeywordField({ field, options, query, setQuery }) {
   const content = keywords.join(", ") || "KEYWORD FILTER";
 
   return (
-    <FilterButton field={field} content={content} icon="list">
+    <FilterButton field={field} content={content} onlyContent icon="list">
       <Dropdown
+        open
         clearable
         value={keywords}
         fluid

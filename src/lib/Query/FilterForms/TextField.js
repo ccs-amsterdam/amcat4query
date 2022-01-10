@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextArea, Form, Modal } from "semantic-ui-react";
 // Be sure to include styles at some point, probably during your bootstrapping
 
-export default function TextField({ query, setQuery }) {
+export default function TextField({ query, setQuery, rows }) {
   const queryString = query.query_string || "";
 
   const onChange = (value) => {
@@ -22,7 +22,7 @@ export default function TextField({ query, setQuery }) {
         value={queryString}
         placeholder="Query..."
         onChange={(e, d) => onChange(d.value)}
-        rows={7}
+        rows={rows || 7}
       />
       <QueryHelp />
     </Form>
@@ -38,15 +38,15 @@ const QueryHelp = () => {
       onOpen={() => setOpen(true)}
       open={open}
       trigger={
-        <span
+        <i
           style={{
             cursor: "pointer",
-            color: "blue",
+            color: "#1f61f9",
             float: "right",
           }}
         >
           Query help
-        </span>
+        </i>
       }
     >
       <Modal.Header>Query help</Modal.Header>

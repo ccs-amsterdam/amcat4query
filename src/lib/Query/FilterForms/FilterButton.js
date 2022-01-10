@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { Button, Icon, Popup } from "semantic-ui-react";
 
-export default function FilterButton({ field, content, icon, style, children }) {
+export default function FilterButton({
+  field,
+  content,
+  icon,
+  style,
+  disabled,
+  onlyContent,
+  children,
+}) {
   const [open, setOpen] = useState(false);
 
   const onClick = (e, d) => {
@@ -9,14 +17,22 @@ export default function FilterButton({ field, content, icon, style, children }) 
     setOpen(!open);
   };
 
+  const popupStyle = {};
+  if (onlyContent) {
+    popupStyle.margin = "0";
+    popupStyle.padding = "0";
+  }
+
   return (
     <Popup
       open={open}
       onClose={() => setOpen(false)}
       mouseLeaveDelay={99999}
+      style={popupStyle}
       trigger={
         <Button
           fluid
+          disabled={disabled}
           onClick={onClick}
           style={{ ...style, textAlign: "center", padding: "10px 20px" }}
         >

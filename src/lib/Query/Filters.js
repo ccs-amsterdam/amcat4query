@@ -58,8 +58,15 @@ const SelectFields = ({ fields, filters, setFilters }) => {
   const content = filters.join(", ") || "Select filters";
 
   return (
-    <FilterButton content={content} icon="filter" style={{ background: "blue", color: "white" }}>
+    <FilterButton
+      content={content}
+      icon="filter"
+      onlyContent
+      disabled={options.length === 0}
+      style={{ background: "blue", color: "white" }}
+    >
       <Dropdown
+        open
         clearable
         value={filters}
         fluid
@@ -68,6 +75,7 @@ const SelectFields = ({ fields, filters, setFilters }) => {
         search
         options={options}
         style={{ width: "300px" }}
+        noResultsMessage=""
         onChange={(e, d) => setFilters(d.value)}
       />
     </FilterButton>
