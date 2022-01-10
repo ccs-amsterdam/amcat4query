@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { Button, Form, Icon, Popup } from "semantic-ui-react";
+import { Form } from "semantic-ui-react";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
-import "react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css";
+import FilterButton from "./FilterButton";
 
 export default function DateField({ field, query, setQuery }) {
-  const [open, setOpen] = useState(false);
-  const gte = query?.[field]?.gte || "";
-  const lte = query?.[field]?.lte || "";
+  const gte = query?.filters?.[field]?.gte || "";
+  const lte = query?.filters?.[field]?.lte || "";
 
   const onChange = (value, which) => {
-    if (value === "") {
-      if (query?.filters?.[field]?.[which]) delete query?.filters[field][which];
+    if (!value) {
+      if (query?.filters?.[field]?.[which] != null) delete query?.filters[field][which];
       if (query?.filters?.[field] && Object.keys(query.filters[field]).length === 0)
         delete query.filters[field];
     } else {
@@ -26,32 +25,21 @@ export default function DateField({ field, query, setQuery }) {
     !gte && !lte ? "DATE FILTER" : `${gte || "from start"}  -  ${lte || "till end"}`;
 
   return (
-    <Popup
-      open={open}
-      hoverable
-      onClose={() => setOpen(false)}
-      position="top left"
-      mouseLeaveDelay={99999}
-      trigger={
-        <Button fluid onClick={() => setOpen(!open)}>
-          <Icon name="calendar" /> {buttontext}
-        </Button>
-      }
-    >
+    <FilterButton field={field} content={buttontext} icon="calendar alternate outline">
       <Form.Field>
         <DatePicker label={"from date"} value={gte} onChange={(value) => onChange(value, "gte")} />
       </Form.Field>
       <Form.Field>
         <DatePicker label={"to date"} value={lte} onChange={(value) => onChange(value, "lte")} />
       </Form.Field>
-    </Popup>
+    </FilterButton>
   );
 }
 
 const DatePicker = ({ label, value, onChange }) => {
   return (
     <SemanticDatepicker
-      label={label}
+      label={<b>{label}</b>}
       type="basic"
       value={value ? new Date(value) : ""}
       format="YYYY-MM-DD"

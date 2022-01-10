@@ -1,36 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
-import TextField from "./TextField";
-import DateField from "./DateField";
+import TextField from "./FilterForms/TextField";
 import Filters from "./Filters";
 
 export default function Query({ amcat, index, query, setQuery }) {
   const [queryForm, setQueryForm] = useState({});
+  const [queryChanged, setQueryChanged] = useState(false);
+
+  useEffect(() => {
+    setQueryChanged(true);
+  }, [queryForm, setQueryChanged]);
 
   const onClick = () => {
-    console.log(queryForm);
     setQuery(queryForm);
+    setQueryChanged(false);
   };
 
   return (
     <Grid style={{ marginBottom: "1em" }}>
-      <Grid.Column floated="left" width={8}>
-        <Grid.Row>
+      <Grid.Row>
+        <Grid.Column floated="left" width={16}>
           <TextField query={queryForm} setQuery={setQueryForm} />
-          <DateField field={"date"} query={queryForm} setQuery={setQueryForm} />
-          <Button.Group widths="2">
-            <Button primary type="submit" onClick={() => onClick()}>
-              <Icon name="search" />
-              Execute Query
-            </Button>
+          <Button.Group stackable style={{ width: "100%", marginBottom: "10px" }}>
+            <Filters amcat={amcat} index={index} query={queryForm} setQuery={setQueryForm} />
           </Button.Group>
-        </Grid.Row>
-      </Grid.Column>
-      <Grid.Column width={8}>
-        <Grid.Row>
-          <Filters amcat={amcat} index={index} query={queryForm} setQuery={setQueryForm} />
-        </Grid.Row>
-      </Grid.Column>
+
+          <Button disabled={!queryChanged} fluid primary type="submit" onClick={() => onClick()}>
+            <Icon name="search" />
+            Execute Query
+          </Button>
+        </Grid.Column>
+      </Grid.Row>
     </Grid>
   );
 }

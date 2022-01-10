@@ -5,7 +5,7 @@ const per_page = 15;
 
 const COLUMNS = [
   { name: "_id", hide: true },
-  { name: "date", f: (row) => row.date.replace("T", " "), width: "6em" },
+  { name: "date", f: (row) => row.date.replace("T", " "), width: "8em" },
   { name: "publisher", width: "6em" }, // optional
   { name: "title" },
   { name: "text" },
@@ -21,16 +21,8 @@ const COLUMNS = [
  *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. * @returns
  * @param {bool}   allColumns If true, include all columns AFTER the columns specified in the columns argument
  */
-export default function Articles({
-  amcat,
-  index,
-  query,
-  columns = COLUMNS,
-  allColumns = true,
-  type = "table",
-}) {
+export default function Articles({ amcat, index, query, columns = COLUMNS, allColumns = true }) {
   const [data, setPage] = useArticles(amcat, index, query);
-
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
 

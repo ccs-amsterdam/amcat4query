@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Form } from "semantic-ui-react";
+import { Button, Form } from "semantic-ui-react";
 import KeywordField from "./KeywordField";
+import DateField from "./DateField";
 
 export default function FilterForms({ amcat, index, filters, query, setQuery }) {
   const [fieldValues, setFieldValues] = useState({});
@@ -19,7 +20,7 @@ export default function FilterForms({ amcat, index, filters, query, setQuery }) 
       setForms([]);
     } else {
       const currentFieldValues = filters.reduce((cfv, f) => {
-        cfv[f] = fieldValues[f];
+        if (fieldValues[f]) cfv[f] = fieldValues[f];
         return cfv;
       }, {});
       setForms(renderForms(currentFieldValues, query, setQuery));
@@ -33,18 +34,15 @@ const renderForms = (fieldValues, query, setQuery) => {
   return Object.keys(fieldValues).map((field) => {
     const fv = fieldValues[field];
     return (
-      <Form.Group>
-        <Form.Field width={16}>
-          <label>{field}</label>
-          {renderForm(field, fv.type, fv.data, query, setQuery)}
-        </Form.Field>
-      </Form.Group>
+      <Button.Group fluid>{renderForm(field, fv.type, fv.data, query, setQuery)}</Button.Group>
     );
   });
 };
 
 const renderForm = (field, type, data, query, setQuery) => {
   switch (type) {
+    case "date":
+      return <DateField field={"date"} query={query} setQuery={setQuery} />;
     case "keyword":
       return (
         <KeywordField

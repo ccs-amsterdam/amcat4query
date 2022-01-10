@@ -24,19 +24,9 @@ export default function App() {
       case "Upload":
         return <Upload amcat={amcat} index={index} />;
       case "Articles":
-        return (
-          <div>
-            <Query amcat={amcat} index={index} query={query} setQuery={setQuery} />
-            <Articles amcat={amcat} index={index} query={query} />
-          </div>
-        );
+        return <Articles amcat={amcat} index={index} query={query} />;
       case "Aggregate":
-        return (
-          <div>
-            <Query amcat={amcat} index={index} query={query} setQuery={setQuery} />
-            <Aggregate amcat={amcat} index={index} query={query} />
-          </div>
-        );
+        return <Aggregate amcat={amcat} index={index} query={query} />;
       default:
         return null;
     }
@@ -53,6 +43,9 @@ export default function App() {
           <Index amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
         </Grid.Row>
         <br />
+        <Grid.Row>
+          <Query amcat={amcat} index={index} query={query} setQuery={setQuery} />
+        </Grid.Row>
       </Grid.Column>
       <Grid.Column width={12}>
         <ComponentMenu index={index} selected={selected} setSelected={setSelected} />
