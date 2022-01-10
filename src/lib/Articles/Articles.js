@@ -1,5 +1,6 @@
 import PaginationTable from "../components/PaginationTable";
 import React, { useEffect, useMemo, useState } from "react";
+import Article from "../Article/Article";
 
 const per_page = 15;
 
@@ -23,6 +24,7 @@ const COLUMNS = [
  */
 export default function Articles({ amcat, index, query, columns = COLUMNS, allColumns = true }) {
   const [data, setPage] = useArticles(amcat, index, query);
+  const [articleId, setArticleId] = useState(null);
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
 
@@ -39,13 +41,21 @@ export default function Articles({ amcat, index, query, columns = COLUMNS, allCo
     return columnList;
   }, [data, allColumns, columns]);
 
+  const onClick = (row) => {
+    setArticleId(row._id);
+  };
+
   return (
-    <PaginationTable
-      data={data?.results || []}
-      columns={columnList}
-      pages={data?.meta?.page_count || 0}
-      pageChange={setPage}
-    />
+    <>
+      <PaginationTable
+        data={data?.results || []}
+        columns={columnList}
+        pages={data?.meta?.page_count || 0}
+        pageChange={setPage}
+        onClick={onClick}
+      />
+      <Article amcat={amcat} index={index} id={articleId} query={query} />
+    </>
   );
 }
 
@@ -75,16 +85,3 @@ const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
     setData([]);
   }
 };
-
-// const fetchArticle = async (amcat, index, _id, query) => {
-//   try {
-//     const res = await amcat.postQuery(
-//       index,
-//       { highlight: true, queries: ["shell", "alaska"] },
-//       { _id }
-//     );
-//     console.log(res);
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };

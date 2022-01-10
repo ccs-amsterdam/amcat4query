@@ -2,25 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Button, Dropdown } from "semantic-ui-react";
 import FilterForms from "./FilterForms/FilterForms";
 import FilterButton from "./FilterForms/FilterButton";
+import useFields from "../components/useFields";
 
 export default function Filters({ amcat, index, query, setQuery }) {
-  const [fields, setFields] = useState({});
+  const fields = useFields(amcat, index);
   const [filters, setFilters] = useState([]);
 
-  useEffect(() => {
-    if (index && amcat) {
-      amcat
-        .getFields(index)
-        .then((res) => {
-          setFields(res.data);
-        })
-        .catch((e) => {
-          setFields({});
-        });
-    } else {
-      setFields({});
-    }
-  }, [amcat, index]);
 
   useEffect(() => {
     // make sure only selected filters are used in the query
