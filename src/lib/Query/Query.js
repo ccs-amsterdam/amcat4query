@@ -3,7 +3,7 @@ import { Grid, Button, Icon } from "semantic-ui-react";
 import TextField from "./FilterForms/TextField";
 import Filters from "./Filters";
 
-export default function Query({ amcat, index, query, setQuery }) {
+export default function Query({ amcat, index, setQuery }) {
   const [queryForm, setQueryForm] = useState({});
   const [queryChanged, setQueryChanged] = useState(false);
 

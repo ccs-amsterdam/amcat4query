@@ -9,6 +9,8 @@ var _react = _interopRequireDefault(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
+var _FilterButton = _interopRequireDefault(require("./FilterButton"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -41,7 +43,12 @@ function KeywordField(_ref) {
     setQuery(_objectSpread({}, query));
   };
 
-  return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Dropdown, {
+  const content = keywords.join(", ") || "KEYWORD FILTER";
+  return /*#__PURE__*/_react.default.createElement(_FilterButton.default, {
+    field: field,
+    content: content,
+    icon: "list"
+  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Dropdown, {
     clearable: true,
     value: keywords,
     fluid: true,
@@ -49,6 +56,9 @@ function KeywordField(_ref) {
     selection: true,
     search: true,
     options: options,
+    style: {
+      minWidth: "300px"
+    },
     onChange: (e, d) => _onChange(d.value)
-  });
+  }));
 }

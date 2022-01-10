@@ -11,9 +11,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _TextField = _interopRequireDefault(require("./TextField"));
-
-var _DateField = _interopRequireDefault(require("./DateField"));
+var _TextField = _interopRequireDefault(require("./FilterForms/TextField"));
 
 var _Filters = _interopRequireDefault(require("./Filters"));
 
@@ -31,40 +29,44 @@ function Query(_ref) {
     setQuery
   } = _ref;
   const [queryForm, setQueryForm] = (0, _react.useState)({});
+  const [queryChanged, setQueryChanged] = (0, _react.useState)(false);
+  (0, _react.useEffect)(() => {
+    setQueryChanged(true);
+  }, [queryForm, setQueryChanged]);
 
   const _onClick = () => {
-    console.log(queryForm);
     setQuery(queryForm);
+    setQueryChanged(false);
   };
 
   return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid, {
     style: {
       marginBottom: "1em"
     }
-  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, {
+  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, {
     floated: "left",
-    width: 8
-  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_TextField.default, {
-    query: queryForm,
-    setQuery: setQueryForm
-  }), /*#__PURE__*/_react.default.createElement(_DateField.default, {
-    field: "date",
+    width: 16
+  }, /*#__PURE__*/_react.default.createElement(_TextField.default, {
     query: queryForm,
     setQuery: setQueryForm
   }), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button.Group, {
-    widths: "2"
-  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
+    stackable: true,
+    style: {
+      width: "100%",
+      marginBottom: "10px"
+    }
+  }, /*#__PURE__*/_react.default.createElement(_Filters.default, {
+    amcat: amcat,
+    index: index,
+    query: queryForm,
+    setQuery: setQueryForm
+  })), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
+    disabled: !queryChanged,
+    fluid: true,
     primary: true,
     type: "submit",
     onClick: () => _onClick()
   }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Icon, {
     name: "search"
-  }), "Execute Query")))), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Column, {
-    width: 8
-  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Grid.Row, null, /*#__PURE__*/_react.default.createElement(_Filters.default, {
-    amcat: amcat,
-    index: index,
-    query: queryForm,
-    setQuery: setQueryForm
-  }))));
+  }), "Execute Query"))));
 }

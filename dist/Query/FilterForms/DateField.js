@@ -5,21 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = DateField;
 
-require("core-js/modules/web.dom-collections.iterator.js");
-
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
 var _reactSemanticUiDatepickers = _interopRequireDefault(require("react-semantic-ui-datepickers"));
 
-require("react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css");
+var _FilterButton = _interopRequireDefault(require("./FilterButton"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
@@ -28,28 +22,27 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function DateField(_ref) {
-  var _query$field, _query$field2;
+  var _query$filters, _query$filters$field, _query$filters2, _query$filters2$field;
 
   let {
     field,
     query,
     setQuery
   } = _ref;
-  const [open, setOpen] = (0, _react.useState)(false);
-  const gte = (query === null || query === void 0 ? void 0 : (_query$field = query[field]) === null || _query$field === void 0 ? void 0 : _query$field.gte) || "";
-  const lte = (query === null || query === void 0 ? void 0 : (_query$field2 = query[field]) === null || _query$field2 === void 0 ? void 0 : _query$field2.lte) || "";
+  const gte = (query === null || query === void 0 ? void 0 : (_query$filters = query.filters) === null || _query$filters === void 0 ? void 0 : (_query$filters$field = _query$filters[field]) === null || _query$filters$field === void 0 ? void 0 : _query$filters$field.gte) || "";
+  const lte = (query === null || query === void 0 ? void 0 : (_query$filters2 = query.filters) === null || _query$filters2 === void 0 ? void 0 : (_query$filters2$field = _query$filters2[field]) === null || _query$filters2$field === void 0 ? void 0 : _query$filters2$field.lte) || "";
 
   const _onChange = (value, which) => {
-    if (value === "") {
-      var _query$filters, _query$filters$field, _query$filters2;
+    if (!value) {
+      var _query$filters3, _query$filters3$field, _query$filters4;
 
-      if (query !== null && query !== void 0 && (_query$filters = query.filters) !== null && _query$filters !== void 0 && (_query$filters$field = _query$filters[field]) !== null && _query$filters$field !== void 0 && _query$filters$field[which]) query === null || query === void 0 ? true : delete query.filters[field][which];
-      if (query !== null && query !== void 0 && (_query$filters2 = query.filters) !== null && _query$filters2 !== void 0 && _query$filters2[field] && Object.keys(query.filters[field]).length === 0) delete query.filters[field];
+      if ((query === null || query === void 0 ? void 0 : (_query$filters3 = query.filters) === null || _query$filters3 === void 0 ? void 0 : (_query$filters3$field = _query$filters3[field]) === null || _query$filters3$field === void 0 ? void 0 : _query$filters3$field[which]) != null) query === null || query === void 0 ? true : delete query.filters[field][which];
+      if (query !== null && query !== void 0 && (_query$filters4 = query.filters) !== null && _query$filters4 !== void 0 && _query$filters4[field] && Object.keys(query.filters[field]).length === 0) delete query.filters[field];
     } else {
-      var _query$filters3;
+      var _query$filters5;
 
       if (!(query !== null && query !== void 0 && query.filters)) query.filters = {};
-      if (!((_query$filters3 = query.filters) !== null && _query$filters3 !== void 0 && _query$filters3[field])) query.filters[field] = {};
+      if (!((_query$filters5 = query.filters) !== null && _query$filters5 !== void 0 && _query$filters5[field])) query.filters[field] = {};
       query.filters[field][which] = extractDateFormat(value);
     }
 
@@ -57,18 +50,10 @@ function DateField(_ref) {
   };
 
   const buttontext = !gte && !lte ? "DATE FILTER" : "".concat(gte || "from start", "  -  ").concat(lte || "till end");
-  return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Popup, {
-    open: open,
-    hoverable: true,
-    onClose: () => setOpen(false),
-    position: "top left",
-    mouseLeaveDelay: 99999,
-    trigger: /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button, {
-      fluid: true,
-      onClick: () => setOpen(!open)
-    }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Icon, {
-      name: "calendar"
-    }), " ", buttontext)
+  return /*#__PURE__*/_react.default.createElement(_FilterButton.default, {
+    field: field,
+    content: buttontext,
+    icon: "calendar alternate outline"
   }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, null, /*#__PURE__*/_react.default.createElement(DatePicker, {
     label: "from date",
     value: gte,
@@ -87,7 +72,7 @@ const DatePicker = _ref2 => {
     onChange: _onChange2
   } = _ref2;
   return /*#__PURE__*/_react.default.createElement(_reactSemanticUiDatepickers.default, {
-    label: label,
+    label: /*#__PURE__*/_react.default.createElement("b", null, label),
     type: "basic",
     value: value ? new Date(value) : "",
     format: "YYYY-MM-DD",

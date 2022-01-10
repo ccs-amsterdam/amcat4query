@@ -55,7 +55,6 @@ function SubmitButton(_ref) {
       const columnMapping = columns.reduce((mapping, column) => {
         if (column.type === "auto") return mapping;
         if (fields[column.name]) return mapping;
-        console.log(column);
         mapping[column.name] = column.type;
         return mapping;
       }, {});

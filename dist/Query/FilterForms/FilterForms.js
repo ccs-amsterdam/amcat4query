@@ -17,6 +17,8 @@ var _semanticUiReact = require("semantic-ui-react");
 
 var _KeywordField = _interopRequireDefault(require("./KeywordField"));
 
+var _DateField = _interopRequireDefault(require("./DateField"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -52,7 +54,7 @@ function FilterForms(_ref) {
       setForms([]);
     } else {
       const currentFieldValues = filters.reduce((cfv, f) => {
-        cfv[f] = fieldValues[f];
+        if (fieldValues[f]) cfv[f] = fieldValues[f];
         return cfv;
       }, {});
       setForms(renderForms(currentFieldValues, query, setQuery));
@@ -64,14 +66,21 @@ function FilterForms(_ref) {
 const renderForms = (fieldValues, query, setQuery) => {
   return Object.keys(fieldValues).map(field => {
     const fv = fieldValues[field];
-    return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Group, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, {
-      width: 16
-    }, /*#__PURE__*/_react.default.createElement("label", null, field), renderForm(field, fv.type, fv.data, query, setQuery)));
+    return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Button.Group, {
+      fluid: true
+    }, renderForm(field, fv.type, fv.data, query, setQuery));
   });
 };
 
 const renderForm = (field, type, data, query, setQuery) => {
   switch (type) {
+    case "date":
+      return /*#__PURE__*/_react.default.createElement(_DateField.default, {
+        field: "date",
+        query: query,
+        setQuery: setQuery
+      });
+
     case "keyword":
       return /*#__PURE__*/_react.default.createElement(_KeywordField.default, {
         field: field,

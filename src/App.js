@@ -44,7 +44,7 @@ export default function App() {
         </Grid.Row>
         <br />
         <Grid.Row>
-          <Query amcat={amcat} index={index} query={query} setQuery={setQuery} />
+          <Query amcat={amcat} index={index} setQuery={setQuery} />
         </Grid.Row>
       </Grid.Column>
       <Grid.Column width={12}>

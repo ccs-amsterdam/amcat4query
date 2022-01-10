@@ -13,7 +13,9 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _semanticUiReact = require("semantic-ui-react");
 
-var _FilterForms = _interopRequireDefault(require("./FilterForms"));
+var _FilterForms = _interopRequireDefault(require("./FilterForms/FilterForms"));
+
+var _FilterButton = _interopRequireDefault(require("./FilterForms/FilterButton"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41,21 +43,22 @@ function Filters(_ref) {
       setFields({});
     }
   }, [amcat, index]);
-  return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Container, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Group, null, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, {
-    width: 4
-  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Header, null, "Filters")), /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form.Field, {
-    width: 14
+  return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Form, {
+    widths: "equal",
+    style: {
+      width: "100%"
+    }
   }, /*#__PURE__*/_react.default.createElement(SelectFields, {
     fields: fields,
     filters: filters,
     setFilters: setFilters
-  }))), /*#__PURE__*/_react.default.createElement(_FilterForms.default, {
+  }), /*#__PURE__*/_react.default.createElement(_FilterForms.default, {
     amcat: amcat,
     index: index,
     filters: filters,
     query: query,
     setQuery: setQuery
-  })));
+  }));
 }
 
 const SelectFields = _ref2 => {
@@ -66,7 +69,7 @@ const SelectFields = _ref2 => {
   } = _ref2;
   const options = Object.keys(fields).reduce((options, name) => {
     if (fields[name] === "text") return options;
-    if (name === "date" || name === "url") return options;
+    if (name === "url") return options;
     options.push({
       key: name,
       value: name,
@@ -74,7 +77,15 @@ const SelectFields = _ref2 => {
     });
     return options;
   }, []);
-  return /*#__PURE__*/_react.default.createElement(_semanticUiReact.Dropdown, {
+  const content = filters.join(", ") || "Select filters";
+  return /*#__PURE__*/_react.default.createElement(_FilterButton.default, {
+    content: content,
+    icon: "filter",
+    style: {
+      background: "blue",
+      color: "white"
+    }
+  }, /*#__PURE__*/_react.default.createElement(_semanticUiReact.Dropdown, {
     clearable: true,
     value: filters,
     fluid: true,
@@ -82,6 +93,9 @@ const SelectFields = _ref2 => {
     selection: true,
     search: true,
     options: options,
+    style: {
+      width: "300px"
+    },
     onChange: (e, d) => setFilters(d.value)
-  });
+  }));
 };

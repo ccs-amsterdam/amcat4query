@@ -22,6 +22,17 @@ export default function Filters({ amcat, index, query, setQuery }) {
     }
   }, [amcat, index]);
 
+  useEffect(() => {
+    // make sure only selected filters are used in the query
+    setQuery((query) => {
+      if (!query?.filters) return query;
+      for (let key of Object.keys(query.filters)) {
+        if (!filters.includes(key)) delete query.filters[key];
+      }
+      return { ...query };
+    });
+  }, [filters, setQuery]);
+
   return (
     <Form widths="equal" style={{ width: "100%" }}>
       <SelectFields fields={fields} filters={filters} setFilters={setFilters} />

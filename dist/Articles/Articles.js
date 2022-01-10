@@ -40,7 +40,7 @@ const COLUMNS = [{
 }, {
   name: "date",
   f: row => row.date.replace("T", " "),
-  width: "6em"
+  width: "8em"
 }, {
   name: "publisher",
   width: "6em"
@@ -69,8 +69,7 @@ function Articles(_ref) {
     index,
     query,
     columns = COLUMNS,
-    allColumns = true,
-    type = "table"
+    allColumns = true
   } = _ref;
   const [data, setPage] = useArticles(amcat, index, query);
   const columnList = (0, _react.useMemo)(() => {
