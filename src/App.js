@@ -7,10 +7,9 @@ import Query from "lib/Query/Query";
 
 // Right column
 import Upload from "amcat4upload";
-import Aggregate from "lib/Aggregate/Aggregate";
 import Articles from "lib/Articles/Articles";
 
-const menuItems = ["Upload", "Articles", "Aggregate"];
+const menuItems = ["Upload", "Articles"];
 
 export default function App() {
   const [selected, setSelected] = useState(menuItems[0]);
@@ -24,8 +23,6 @@ export default function App() {
         return <Upload amcat={amcat} index={index} />;
       case "Articles":
         return <Articles amcat={amcat} index={index} query={query} />;
-      case "Aggregate":
-        return <Aggregate amcat={amcat} index={index} query={query} />;
       default:
         return null;
     }
