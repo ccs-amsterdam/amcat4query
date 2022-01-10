@@ -15,7 +15,11 @@ export default function FilterButton({ field, content, icon, style, children }) 
       onClose={() => setOpen(false)}
       mouseLeaveDelay={99999}
       trigger={
-        <Button fluid onClick={onClick} style={{ ...style, padding: "10px 20px" }}>
+        <Button
+          fluid
+          onClick={onClick}
+          style={{ ...style, textAlign: "center", padding: "10px 20px" }}
+        >
           {field ? (
             <span
               style={{

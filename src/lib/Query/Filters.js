@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Dropdown } from "semantic-ui-react";
+import { Button, Dropdown } from "semantic-ui-react";
 import FilterForms from "./FilterForms/FilterForms";
 import FilterButton from "./FilterForms/FilterButton";
 
@@ -34,7 +34,7 @@ export default function Filters({ amcat, index, query, setQuery }) {
   }, [filters, setQuery]);
 
   return (
-    <Form widths="equal" style={{ width: "100%" }}>
+    <Button.Group vertical style={{ width: "100%" }}>
       <SelectFields fields={fields} filters={filters} setFilters={setFilters} />
       <FilterForms
         amcat={amcat}
@@ -43,7 +43,7 @@ export default function Filters({ amcat, index, query, setQuery }) {
         query={query}
         setQuery={setQuery}
       />
-    </Form>
+    </Button.Group>
   );
 }
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form } from "semantic-ui-react";
 import KeywordField from "./KeywordField";
 import DateField from "./DateField";
 
@@ -27,15 +26,13 @@ export default function FilterForms({ amcat, index, filters, query, setQuery }) 
     }
   }, [filters, fieldValues, query, setQuery]);
 
-  return <Form>{forms}</Form>;
+  return forms;
 }
 
 const renderForms = (fieldValues, query, setQuery) => {
   return Object.keys(fieldValues).map((field) => {
     const fv = fieldValues[field];
-    return (
-      <Button.Group fluid>{renderForm(field, fv.type, fv.data, query, setQuery)}</Button.Group>
-    );
+    return renderForm(field, fv.type, fv.data, query, setQuery);
   });
 };
 
