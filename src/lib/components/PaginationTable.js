@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Pagination, Table, Icon } from "semantic-ui-react";
-import { removeElasticTags, highlightElasticTags } from "lib/functions/highlightElasticTags";
+import { removeElasticTags, highlightElasticTags } from "../functions/highlightElasticTags";
 import "./paginationTableStyle.css";
 
 /**

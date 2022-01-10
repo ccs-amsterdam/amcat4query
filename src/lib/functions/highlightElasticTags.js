@@ -1,3 +1,5 @@
+import React from "react";
+
 export function highlightElasticTags(text) {
   const regex = new RegExp(/<em>(.*?)<\/em>/); // Match text inside two square brackets
   return (

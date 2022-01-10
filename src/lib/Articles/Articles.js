@@ -1,4 +1,4 @@
-import PaginationTable from "lib/components/PaginationTable";
+import PaginationTable from "../components/PaginationTable";
 import React, { useEffect, useMemo, useState } from "react";
 
 const per_page = 15;
