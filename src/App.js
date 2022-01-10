@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
-import { AmcatLogin } from "amcat4auth";
-import Index from "lib/Index/Index";
+import { Login, Index } from "amcat4api";
 import Query from "lib/Query/Query";
 
 // Right column
-import Upload from "lib/Upload/Upload";
+import Upload from "amcat4upload";
 import Aggregate from "lib/Aggregate/Aggregate";
 import Articles from "lib/Articles/Articles";
 
@@ -36,7 +35,7 @@ export default function App() {
     <Grid columns={2} style={{ margin: "10px" }}>
       <Grid.Column width={4}>
         <Grid.Row>
-          <AmcatLogin onLogin={setAmcat} />
+          <Login onLogin={setAmcat} />
         </Grid.Row>
         <br />
         <Grid.Row>
