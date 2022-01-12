@@ -46,6 +46,12 @@ export default class Amcat {
     if (filters) params["filters"] = filters;
     return this.api.post(`/index/${index}/query`, { ...params });
   }
+  postAggregate(index, params = {}, filters = {}, axes = {}) {
+    if (filters) params["filters"] = filters;
+    if (axes) params["axes"] = axes;
+    return this.api.post(`/index/${index}/aggregate`, { ...params });
+  }
+
   createIndex(name, guestRole = "NONE") {
     const body = { name: name };
     if (guestRole !== "NONE") body.guest_role = guestRole;
