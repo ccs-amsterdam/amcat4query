@@ -11,9 +11,7 @@ export default function Article({ amcat, index, id, query }) {
     fetchArticle(amcat, index, id, query, fields, setArticle);
   }, [id, fields, amcat, index, query]);
 
-  console.log(article);
   if (!article) return null;
-  console.log("what");
   return <Modal open>{article}</Modal>;
 }
 

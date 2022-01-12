@@ -1,6 +1,6 @@
-# amcat4query
+# amcat4react
 
-This repository contains components for querying AmCAT4 indices and viewing articles
+This repository contains components for the amcat4 client and dashboards.
 
 The query components can be viewed by running the App, which is nice for development
 
