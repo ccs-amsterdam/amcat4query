@@ -2,14 +2,16 @@ import React, { useState } from "react";
 import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
-import { Login, Index } from "amcat4api";
-import Query from "lib/Query/Query";
+import Login from "./lib/Login/Login";
+import Index from "./lib/Index/Index";
+import Query from "./lib/Query/Query";
 
 // Right column
-import Upload from "amcat4upload";
-import Articles from "lib/Articles/Articles";
+import Upload from "./lib/Upload/Upload";
+import Articles from "./lib/Articles/Articles";
+import Aggregate from "./lib/Aggregate/Aggregate";
 
-const menuItems = ["Upload", "Articles"];
+const menuItems = ["Upload", "Articles", "Aggregate"];
 
 export default function App() {
   const [selected, setSelected] = useState(menuItems[0]);
@@ -23,6 +25,8 @@ export default function App() {
         return <Upload amcat={amcat} index={index} />;
       case "Articles":
         return <Articles amcat={amcat} index={index} query={query} />;
+      case "Aggregate":
+        return <Aggregate amcat={amcat} index={index} query={query} />;
       default:
         return null;
     }
@@ -40,7 +44,7 @@ export default function App() {
         </Grid.Row>
         <br />
         <Grid.Row>
-          <Query amcat={amcat} index={index} setQuery={setQuery} />
+          {index ? <Query amcat={amcat} index={index} setQuery={setQuery} /> : null}
         </Grid.Row>
       </Grid.Column>
       <Grid.Column width={12}>

@@ -19,8 +19,9 @@ const COLUMNS = [
  * @param {object} query An object with query components (q, params, filter)
  * @param {array}  columns an Array with objects indicating which columns to show and how. Object should have key 'name', which by default
  *                        is both the column name in the table, and the value fetched from data. But can also have a key 'f', which is a function
- *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. * @returns
+ *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. 
  * @param {bool}   allColumns If true, include all columns AFTER the columns specified in the columns argument
+ * @returns
  */
 export default function Articles({ amcat, index, query, columns = COLUMNS, allColumns = true }) {
   const [data, setPage] = useArticles(amcat, index, query);
