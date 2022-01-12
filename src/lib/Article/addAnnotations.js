@@ -12,7 +12,6 @@ import { getColor, getColorGradient } from "./colors";
 export default function addAnnotations(article) {
   if (!article._annotations) return article;
   const mergedAnnotations = mergeAnnotations(article, article._annotations);
-  console.log(mergedAnnotations);
   for (let field of Object.keys(mergedAnnotations)) {
     if (Array.isArray(article[field])) {
       // due to rerendering, the annotations can be added twice
