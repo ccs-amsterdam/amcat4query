@@ -12,33 +12,54 @@ import { getColor, getColorGradient } from "./colors";
 export default function addAnnotations(article) {
   if (!article._annotations) return article;
   const mergedAnnotations = mergeAnnotations(article, article._annotations);
+
   for (let field of Object.keys(mergedAnnotations)) {
     if (Array.isArray(article[field])) {
       // due to rerendering, the annotations can be added twice
       // except they can't and shouldn't, so if it's an array (i.e. tokens already added) skip it
       continue;
     }
+
     const parts = [];
-    const text = article[field];
+    const text = article[field].trim();
+
     let offset = 0;
     for (let annotation of mergedAnnotations[field]) {
       // check if there was text between the start/last annotation and the new one, and add
       // this as unannotated text
       if (annotation.start > offset) {
-        parts.push(text.slice(offset, annotation.start));
+        parts.push(splitParagraphs(text.slice(offset, annotation.start)));
       }
 
       // then add the annotation span in a tags
-      parts.push(annotateText(text.slice(annotation.start, annotation.end), annotation));
+      parts.push(
+        annotateText(splitParagraphs(text.slice(annotation.start, annotation.end)), annotation)
+      );
 
       offset = annotation.end;
     }
     // add final text after the last annotation
-    parts.push(text.slice(offset));
+    parts.push(splitParagraphs(text.slice(offset)));
     article[field] = parts;
   }
   return article;
 }
+
+const splitParagraphs = (text) => {
+  const paragraphs = text.split(/\n/);
+
+  const linebreak = (i) => {
+    if (i === paragraphs.length - 1) return null;
+    return <br style={{ lineHeight: "1em" }} />;
+  };
+
+  return paragraphs.map((p, i) => (
+    <>
+      {p}
+      {linebreak(i)}
+    </>
+  ));
+};
 
 const annotateText = (text, annotation) => {
   const annlist = [];

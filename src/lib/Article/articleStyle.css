@@ -14,3 +14,13 @@
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
 }
+
+.paragraph {
+  padding-bottom: "2em";
+}
+
+.paragraph::after {
+  content: "\a";
+  white-space: pre;
+  padding-bottom: "2em";
+}
