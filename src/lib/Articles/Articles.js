@@ -19,7 +19,7 @@ const COLUMNS = [
  * @param {object} query An object with query components (q, params, filter)
  * @param {array}  columns an Array with objects indicating which columns to show and how. Object should have key 'name', which by default
  *                        is both the column name in the table, and the value fetched from data. But can also have a key 'f', which is a function
- *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. 
+ *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system.
  * @param {bool}   allColumns If true, include all columns AFTER the columns specified in the columns argument
  * @returns
  */
@@ -43,7 +43,7 @@ export default function Articles({ amcat, index, query, columns = COLUMNS, allCo
   }, [data, allColumns, columns]);
 
   const onClick = (row) => {
-    setArticleId(row._id);
+    setArticleId([row._id]);
   };
 
   return (
@@ -74,7 +74,7 @@ const useArticles = (amcat, index, query) => {
 const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
   let params = { page, per_page, highlight };
 
-  if (query.query_string) params.queries = query.query_string.split("\n");
+  if (query.query_string) params.queries = query.query_string.split("\n").filter((s) => s !== "");
   if (query?.params) params = { ...query.params, ...params };
   const filters = query.filters || {};
 
