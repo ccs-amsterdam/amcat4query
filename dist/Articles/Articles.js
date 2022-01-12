@@ -21,6 +21,8 @@ var _PaginationTable = _interopRequireDefault(require("../components/PaginationT
 
 var _react = _interopRequireWildcard(require("react"));
 
+var _Article = _interopRequireDefault(require("../Article/Article"));
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -57,8 +59,9 @@ const COLUMNS = [{
  * @param {object} query An object with query components (q, params, filter)
  * @param {array}  columns an Array with objects indicating which columns to show and how. Object should have key 'name', which by default
  *                        is both the column name in the table, and the value fetched from data. But can also have a key 'f', which is a function
- *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. * @returns
+ *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system. 
  * @param {bool}   allColumns If true, include all columns AFTER the columns specified in the columns argument
+ * @returns
  */
 
 function Articles(_ref) {
@@ -72,6 +75,7 @@ function Articles(_ref) {
     allColumns = true
   } = _ref;
   const [data, setPage] = useArticles(amcat, index, query);
+  const [articleId, setArticleId] = (0, _react.useState)(null);
   const columnList = (0, _react.useMemo)(() => {
     if (!(data !== null && data !== void 0 && data.results) || data.results.length === 0) return [];
     const dataColumns = Object.keys(data.results[0]); // first use the columns as specified in COLUMNS
@@ -89,12 +93,23 @@ function Articles(_ref) {
 
     return columnList;
   }, [data, allColumns, columns]);
-  return /*#__PURE__*/_react.default.createElement(_PaginationTable.default, {
+
+  const onClick = row => {
+    setArticleId(row._id);
+  };
+
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_PaginationTable.default, {
     data: (data === null || data === void 0 ? void 0 : data.results) || [],
     columns: columnList,
     pages: (data === null || data === void 0 ? void 0 : (_data$meta = data.meta) === null || _data$meta === void 0 ? void 0 : _data$meta.page_count) || 0,
-    pageChange: setPage
-  });
+    pageChange: setPage,
+    onClick: onClick
+  }), /*#__PURE__*/_react.default.createElement(_Article.default, {
+    amcat: amcat,
+    index: index,
+    id: articleId,
+    query: query
+  }));
 }
 
 const useArticles = (amcat, index, query) => {
@@ -123,15 +138,4 @@ const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
     console.log(e);
     setData([]);
   }
-}; // const fetchArticle = async (amcat, index, _id, query) => {
-//   try {
-//     const res = await amcat.postQuery(
-//       index,
-//       { highlight: true, queries: ["shell", "alaska"] },
-//       { _id }
-//     );
-//     console.log(res);
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
+};

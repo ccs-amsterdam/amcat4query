@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 /**
  *
  * @param {class}  amcat  An Amcat connection class, as obtained with amcat4auth

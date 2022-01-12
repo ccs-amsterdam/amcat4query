@@ -19,6 +19,8 @@ var _FilterForms = _interopRequireDefault(require("./FilterForms/FilterForms"));
 
 var _FilterButton = _interopRequireDefault(require("./FilterForms/FilterButton"));
 
+var _useFields = _interopRequireDefault(require("../components/useFields"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
@@ -38,19 +40,8 @@ function Filters(_ref) {
     query,
     setQuery
   } = _ref;
-  const [fields, setFields] = (0, _react.useState)({});
+  const fields = (0, _useFields.default)(amcat, index);
   const [filters, setFilters] = (0, _react.useState)([]);
-  (0, _react.useEffect)(() => {
-    if (index && amcat) {
-      amcat.getFields(index).then(res => {
-        setFields(res.data);
-      }).catch(e => {
-        setFields({});
-      });
-    } else {
-      setFields({});
-    }
-  }, [amcat, index]);
   (0, _react.useEffect)(() => {
     // make sure only selected filters are used in the query
     setQuery(query => {
