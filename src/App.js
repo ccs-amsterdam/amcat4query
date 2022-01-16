@@ -9,7 +9,7 @@ import Query from "./lib/Query/Query";
 // Right column
 import Upload from "./lib/Upload/Upload";
 import Articles from "./lib/Articles/Articles";
-import Aggregate from "./lib/Aggregate/Aggregate";
+import AggregatePane from "./lib/Aggregate/AggregatePane";
 
 const menuItems = ["Upload", "Articles", "Aggregate"];
 
@@ -26,7 +26,7 @@ export default function App() {
       case "Articles":
         return <Articles amcat={amcat} index={index} query={query} />;
       case "Aggregate":
-        return <Aggregate amcat={amcat} index={index} query={query} axes={{ president: null }} />;
+        return <AggregatePane amcat={amcat} index={index} query={query} />;
       default:
         return null;
     }

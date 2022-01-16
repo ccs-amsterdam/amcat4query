@@ -10,9 +10,14 @@ import { Table } from "semantic-ui-react";
 export default function Aggregate({ amcat, index, filters, axes }) {
   const [data, setData] = useState();
   useEffect(() => {
-    fetchAggregate(amcat, index, axes, setData);
+    console.log(axes);
+    if (axes === undefined || axes.length === 0) {
+      setData(null);
+    } else {
+      fetchAggregate(amcat, index, axes, setData);
+    }
   }, [amcat, index, axes, setData]);
-  if (!data) return <pre>...</pre>;
+  if (!data) return <pre>(Please select aggregate options)</pre>;
   console.log(data);
   return (
     <Table celled>
@@ -25,11 +30,11 @@ export default function Aggregate({ amcat, index, filters, axes }) {
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {data.data.map((row) => {
+        {data.data.map((row, i) => {
           return (
-            <Table.Row>
-              {data.meta.axes.map((axis, i) => (
-                <Table.Cell key={i}>{row[axis.field]}</Table.Cell>
+            <Table.Row key={i}>
+              {data.meta.axes.map((axis, j) => (
+                <Table.Cell key={j}>{row[axis.field]}</Table.Cell>
               ))}
               <Table.Cell>{row.n}</Table.Cell>
             </Table.Row>
