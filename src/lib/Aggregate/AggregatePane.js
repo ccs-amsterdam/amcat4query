@@ -7,7 +7,7 @@ export default function AggregatePane({ amcat, index, filters }) {
   return (
     <div>
       <AggregateOptions amcat={amcat} index={index} setOptions={setOptions} />
-      <Aggregate amcat={amcat} index={index} filter={filters} axes={options} />
+      <Aggregate amcat={amcat} index={index} filter={filters} options={options} />
     </div>
   );
 }

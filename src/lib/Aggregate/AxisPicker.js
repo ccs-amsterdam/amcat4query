@@ -55,6 +55,7 @@ export default function AggregateOptions({ fields, setAxis, label }) {
           fluid
           selection
           options={date_intervals}
+          label="Interval"
           value={interval}
           onChange={(_e, { value }) => setInterval(value)}
         />

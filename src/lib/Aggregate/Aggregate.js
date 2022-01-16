@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Table } from "semantic-ui-react";
+import { Message } from "semantic-ui-react";
+import AggregateTable from "./AggragateTable";
+import AggregateBarChart from "./AggregateBarChart";
 
 /**
  *
@@ -7,42 +9,24 @@ import { Table } from "semantic-ui-react";
  * @param {string} index The name of an index
  * @param {object} query An object with query components (q, params, filter)
  */
-export default function Aggregate({ amcat, index, filters, axes }) {
+export default function Aggregate({ amcat, index, filters, options }) {
   const [data, setData] = useState();
+
   useEffect(() => {
-    console.log(axes);
-    if (axes === undefined || axes.length === 0) {
+    console.log(options);
+    if (options?.axes === undefined || options?.axes.length === 0) {
       setData(null);
     } else {
-      fetchAggregate(amcat, index, axes, setData);
+      fetchAggregate(amcat, index, options.axes, setData);
     }
-  }, [amcat, index, axes, setData]);
-  if (!data) return <pre>(Please select aggregate options)</pre>;
+  }, [amcat, index, options, setData]);
+
+  if (!data) return <Message info header="Select aggregation options" />;
   console.log(data);
-  return (
-    <Table celled>
-      <Table.Header>
-        <Table.Row>
-          {data.meta.axes.map((axis, i) => (
-            <Table.HeaderCell key={i}>{axis.field}</Table.HeaderCell>
-          ))}
-          <Table.HeaderCell>N</Table.HeaderCell>
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {data.data.map((row, i) => {
-          return (
-            <Table.Row key={i}>
-              {data.meta.axes.map((axis, j) => (
-                <Table.Cell key={j}>{row[axis.field]}</Table.Cell>
-              ))}
-              <Table.Cell>{row.n}</Table.Cell>
-            </Table.Row>
-          );
-        })}
-      </Table.Body>
-    </Table>
-  );
+  if (options.display === "list") return AggregateTable(data, options);
+  if (options.display === "barchart") return AggregateBarChart(data, options);
+  console.error(options);
+  return <Message warning header="Unknown display option: {options.display}" />;
 }
 
 async function fetchAggregate(amcat, index, axes, setData) {
