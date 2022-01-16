@@ -26,7 +26,7 @@ export default function App() {
       case "Articles":
         return <Articles amcat={amcat} index={index} query={query} />;
       case "Aggregate":
-        return <Aggregate amcat={amcat} index={index} query={query} />;
+        return <Aggregate amcat={amcat} index={index} query={query} axes={{ president: null }} />;
       default:
         return null;
     }

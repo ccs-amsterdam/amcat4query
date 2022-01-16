@@ -10,24 +10,28 @@ import { Table } from "semantic-ui-react";
 export default function Aggregate({ amcat, index, filters, axes }) {
   const [data, setData] = useState();
   useEffect(() => {
-    fetchAggregate(amcat, index, setData);
-  }, [amcat, index, setData]);
+    fetchAggregate(amcat, index, axes, setData);
+  }, [amcat, index, axes, setData]);
   if (!data) return <pre>...</pre>;
   console.log(data);
   return (
     <Table celled>
       <Table.Header>
         <Table.Row>
-          <Table.HeaderCell>Party</Table.HeaderCell>
+          {data.meta.axes.map((axis, i) => (
+            <Table.HeaderCell key={i}>{axis.field}</Table.HeaderCell>
+          ))}
           <Table.HeaderCell>N</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {data.map(({ party, n }) => {
+        {data.data.map((row) => {
           return (
             <Table.Row>
-              <Table.Cell>{party}</Table.Cell>
-              <Table.Cell>{n}</Table.Cell>
+              {data.meta.axes.map((axis, i) => (
+                <Table.Cell key={i}>{row[axis.field]}</Table.Cell>
+              ))}
+              <Table.Cell>{row.n}</Table.Cell>
             </Table.Row>
           );
         })}
@@ -36,8 +40,8 @@ export default function Aggregate({ amcat, index, filters, axes }) {
   );
 }
 
-async function fetchAggregate(amcat, index, setData) {
-  const result = await amcat.postAggregate(index, {}, {}, { party: null });
+async function fetchAggregate(amcat, index, axes, setData) {
+  const result = await amcat.postAggregate(index, {}, {}, axes);
   console.log(result);
   setData(result.data);
 }
