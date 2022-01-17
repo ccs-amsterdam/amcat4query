@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Message } from "semantic-ui-react";
 import AggregateTable from "./AggragateTable";
 import AggregateBarChart from "./AggregateBarChart";
+import AggregateLineChart from "./AggregateLineChart";
 
 /**
  *
@@ -25,6 +26,8 @@ export default function Aggregate({ amcat, index, filters, options }) {
   console.log(data);
   if (options.display === "list") return AggregateTable(data, options);
   if (options.display === "barchart") return AggregateBarChart(data, options);
+  if (options.display === "linechart") return AggregateLineChart(data, options);
+
   console.error(options);
   return <Message warning header="Unknown display option: {options.display}" />;
 }

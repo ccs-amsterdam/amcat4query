@@ -16,6 +16,12 @@ const displayOptions = [
     text: "Bar Chart",
     image: { src: "https://img.icons8.com/material-outlined/24/000000/bar-chart.png" },
   },
+  {
+    key: 3,
+    value: "linechart",
+    text: "Line Chart",
+    image: { src: "https://img.icons8.com/material-outlined/24/000000/graph.png" },
+  },
 ];
 
 export default function AggregateOptions({ amcat, index, setOptions }) {
