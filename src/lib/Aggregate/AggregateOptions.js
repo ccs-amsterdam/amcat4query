@@ -32,7 +32,6 @@ export default function AggregateOptions({ amcat, index, setOptions }) {
 
   function doSetOptions() {
     const axes = [axis1, axis2].filter((axis) => axis !== null);
-    console.log({ axes, display });
     setOptions({ axes, display });
   }
 

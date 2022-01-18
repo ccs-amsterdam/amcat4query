@@ -13,27 +13,33 @@ import AggregateLineChart from "./AggregateLineChart";
 export default function Aggregate({ amcat, index, filters, options }) {
   const [data, setData] = useState();
 
+  console.log(filters);
+
   useEffect(() => {
-    console.log(options);
     if (options?.axes === undefined || options?.axes.length === 0) {
       setData(null);
     } else {
-      fetchAggregate(amcat, index, options.axes, setData);
+      fetchAggregate(amcat, index, options.axes, filters, setData);
     }
-  }, [amcat, index, options, setData]);
+  }, [amcat, index, options, filters, setData]);
+
+  const handleClick = (i, j) => {
+    console.log({ i, j });
+  };
 
   if (!data) return <Message info header="Select aggregation options" />;
-  console.log(data);
-  if (options.display === "list") return AggregateTable(data, options);
-  if (options.display === "barchart") return AggregateBarChart(data, options);
+  if (options.display === "list") return <AggregateTable data={data} options={options} />;
+  if (options.display === "barchart")
+    return <AggregateBarChart data={data} onClick={handleClick} />;
   if (options.display === "linechart") return AggregateLineChart(data, options);
 
   console.error(options);
   return <Message warning header="Unknown display option: {options.display}" />;
 }
 
-async function fetchAggregate(amcat, index, axes, setData) {
-  const result = await amcat.postAggregate(index, {}, {}, axes);
-  console.log(result);
+async function fetchAggregate(amcat, index, axes, filters, setData) {
+  if (filters.query_string)
+    filters.queries = filters.query_string.split("\n").filter((s) => s !== "");
+  const result = await amcat.postAggregate(index, {}, filters, axes);
   setData(result.data);
 }

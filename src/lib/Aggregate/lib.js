@@ -1,5 +1,9 @@
 import colorbrewer from "colorbrewer";
 
+/*
+ * Useful functions in dealing with aggregate data
+ */
+
 function longToWide(data, primary, secondary) {
   // convert results from amcat to wide format
   const d = {};
@@ -26,10 +30,8 @@ export function createChartData(data) {
 
 // Get (at least) n qualitative colors in a specific brewer palette
 // If the pallette doesn't have that many colors, add colors from other palettes
-export function qualitativeColors(n, palette) {
-  if (palette === undefined) palette = "Set1";
+export function qualitativeColors(n, palette = "Set1") {
   if (n < 3) n = 3; // (I think) all palettes start with 3 colors
-  console.log({ n, palette, cb: colorbrewer[palette], x: n in colorbrewer[palette] });
   if (n in colorbrewer[palette]) return colorbrewer[palette][n];
   // the chosen palette has insufficient colors, so let's join a couple palettes together
   // Helper function to get colors with highest N in a palette
@@ -38,7 +40,6 @@ export function qualitativeColors(n, palette) {
   const result = getpal(palette);
   for (const p of colorbrewer.schemeGroups.qualitative.filter((e) => e !== palette).reverse()) {
     result.push(...getpal(p));
-    console.log({ result, n, m: result.length, x: result.length >= n });
     if (result.length >= n) return result;
   }
   return result;
