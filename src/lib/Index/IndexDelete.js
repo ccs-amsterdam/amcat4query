@@ -51,7 +51,7 @@ export default function IndexDelete({ amcat, index, button, onDelete }) {
           </Dimmer>
         ) : (
           <>
-            <Button color="red" onClick={onSubmit}>
+            <Button color="red" onClick={() => setStatus("inactive")}>
               <Icon name="remove" /> No
             </Button>
             <Button color="green" onClick={onSubmit}>

@@ -21,7 +21,7 @@ export default function addAnnotations(article) {
     }
 
     const parts = [];
-    const text = article[field].trim();
+    const text = article[field];
 
     let offset = 0;
     for (let annotation of mergedAnnotations[field]) {
