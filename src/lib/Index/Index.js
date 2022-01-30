@@ -9,10 +9,10 @@ export default function Index({ amcat, index, setIndex, canCreate, canDelete }) 
 
   useEffect(() => {
     if (!amcat) {
-      setIndex(null);
+      //setIndex(null);
       setOptions([]);
-    } else prepareOptions(amcat, setOptions);
-  }, [amcat, setIndex]);
+    } else prepareOptions(amcat, index, setOptions);
+  }, [amcat, index, setIndex]);
 
   if (!amcat) return null;
   return (
@@ -79,12 +79,17 @@ const IndexDeleteButton = ({ amcat, index, canDelete, setIndex, setOptions }) =>
   return <IndexDelete amcat={amcat} index={index} button={DeleteButton} onDelete={onDelete} />;
 };
 
-const prepareOptions = async (amcat, setOptions) => {
+const prepareOptions = async (amcat, index, setOptions) => {
   try {
     const res = await amcat.getIndices();
-    const options = res.data.map((index) => {
-      console.log(index);
-      return { key: index.name, value: index.name, text: index.name, description: index.role };
+    const options = res.data.map((ix) => {
+      return {
+        key: ix.name,
+        value: ix.name,
+        text: ix.name,
+        description: ix.role,
+        selected: ix.name === index,
+      };
     });
     setOptions(options);
   } catch (e) {

@@ -16,8 +16,11 @@ const menuItems = ["Upload", "Articles", "Aggregate"];
 export default function App() {
   const [selected, setSelected] = useState(menuItems[0]);
   const [amcat, setAmcat] = useState(null);
-  const [index, setIndex] = useState(null);
-  const [query, setQuery] = useState({});
+  const [index, setIndex] = useState("nytimes");
+  const [query, setQuery] = useState({
+    queries: ["test"],
+    filters: { newsdesk: { values: ["Washington"] } },
+  });
 
   const render = () => {
     switch (selected) {
@@ -31,7 +34,6 @@ export default function App() {
         return null;
     }
   };
-
   return (
     <Grid columns={2} style={{ margin: "10px" }}>
       <Grid.Column width={4}>
@@ -44,7 +46,7 @@ export default function App() {
         </Grid.Row>
         <br />
         <Grid.Row>
-          {index ? <Query amcat={amcat} index={index} setQuery={setQuery} /> : null}
+          {index ? <Query amcat={amcat} index={index} value={query} onSubmit={setQuery} /> : null}
         </Grid.Row>
       </Grid.Column>
       <Grid.Column width={12}>

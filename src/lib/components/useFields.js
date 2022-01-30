@@ -18,5 +18,5 @@ export default function useFields(amcat, index) {
     }
   }, [amcat, index]);
 
-  return fields;
+  return Object.values(fields);
 }

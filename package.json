@@ -67,6 +67,7 @@
   "devDependencies": {
     "@babel/cli": "^7.16.7",
     "@babel/core": "^7.16.7",
-    "@babel/preset-env": "^7.16.7"
+    "@babel/preset-env": "^7.16.7",
+    "react-styleguidist": "^11.2.0"
   }
 }

@@ -4,33 +4,41 @@ import { Form } from "semantic-ui-react";
 import SemanticDatepicker from "react-semantic-ui-datepickers";
 import FilterButton from "./FilterButton";
 
-export default function DateField({ field, query, setQuery }) {
-  const gte = query?.filters?.[field]?.gte || "";
-  const lte = query?.filters?.[field]?.lte || "";
-
-  const onChange = (value, which) => {
-    if (!value) {
-      if (query?.filters?.[field]?.[which] != null) delete query?.filters[field][which];
-      if (query?.filters?.[field] && Object.keys(query.filters[field]).length === 0)
-        delete query.filters[field];
-    } else {
-      if (!query?.filters) query.filters = {};
-      if (!query.filters?.[field]) query.filters[field] = {};
-      query.filters[field][which] = extractDateFormat(value);
-    }
-    setQuery({ ...query });
+/**
+ * Field for creating a date filter
+ *
+ * Props:
+ * - field: the field name of the current field
+ * - value: the current value of the filter, e.g. {"gte": "2020-01-01"}
+ * - onChange: callback that will be called with a new filter value
+ */
+export default function DateField({ field, value, onChange }) {
+  const handleChange = (key, newval) => {
+    const result = { ...value };
+    if (newval) result[key] = extractDateFormat(newval);
+    else delete result[key];
+    onChange(result);
   };
 
   const buttontext =
-    !gte && !lte ? "DATE FILTER" : `${gte || "from start"}  -  ${lte || "till end"}`;
-
+    !value.gte && !value.lte
+      ? "DATE FILTER"
+      : `${value.gte || "from start"}  -  ${value.lte || "till end"}`;
   return (
     <FilterButton field={field} content={buttontext} icon="calendar alternate outline">
       <Form.Field>
-        <DatePicker label={"from date"} value={gte} onChange={(value) => onChange(value, "gte")} />
+        <DatePicker
+          label={"from date"}
+          value={value.gte}
+          onChange={(value) => handleChange("gte", value)}
+        />
       </Form.Field>
       <Form.Field>
-        <DatePicker label={"to date"} value={lte} onChange={(value) => onChange(value, "lte")} />
+        <DatePicker
+          label={"to date"}
+          value={value.lte}
+          onChange={(value) => handleChange("lte", value)}
+        />
       </Form.Field>
     </FilterButton>
   );

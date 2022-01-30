@@ -1,25 +1,19 @@
 import React, { useState } from "react";
 import { TextArea, Form, Modal } from "semantic-ui-react";
-// Be sure to include styles at some point, probably during your bootstrapping
 
-export default function TextField({ query, setQuery, rows }) {
-  const queryString = query.query_string || "";
-
-  const onChange = (value) => {
-    if (value === "") {
-      if (query.query_string) delete query.query_string;
-    } else {
-      query.query_string = value;
-    }
-    setQuery({ ...query });
-  };
-
+/**
+ * Text area to set the query string(s)
+ * props:
+ * - value: the current value as a text
+ * - onChange: will be called on every change with a new textual value
+ * - rows: the number of rows (default: 7)
+ */
+export default function QueryString({ value, onChange, rows }) {
   return (
-    <Form fluid style={{ marginBottom: "2em", width: "100%" }}>
+    <Form style={{ marginBottom: "2em", width: "100%" }}>
       <TextArea
-        fluid
+        value={value}
         width={16}
-        value={queryString}
         placeholder="Query..."
         onChange={(e, d) => onChange(d.value)}
         rows={rows || 7}
