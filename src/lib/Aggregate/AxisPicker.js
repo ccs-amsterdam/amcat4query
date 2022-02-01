@@ -36,7 +36,9 @@ export default function AxisPicker({ fields, value, onChange, label }) {
       image: { avatar: true, src: f.type === "date" ? icon_date : icon_keyword },
     }));
 
-  const setInterval = (newval) => {};
+  const setInterval = (newval) => {
+    onChange({ ...value, interval: newval });
+  };
   const setField = (newval) => {
     onChange({ ...value, field: newval });
   };

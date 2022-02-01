@@ -1,17 +1,14 @@
 import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Legend } from "recharts";
 import { createChartData, qualitativeColors } from "./lib";
 
-export default function AggregateLineChart({ data }) {
+export default function AggregateLineChart({ data, onClick }) {
   const { d, columns } = createChartData(data);
   const colors = qualitativeColors(columns.length);
-  /*const handleClick = (i, data, index) => {
-    console.log({ i, data, index });
-  };*/
+
   const handleClick = (line, point) => {
     console.log({ line, point });
   };
 
-  console.log(colors);
   return (
     <LineChart width={730} height={250} data={d}>
       <CartesianGrid strokeDasharray="3 3" />

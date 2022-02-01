@@ -17,14 +17,14 @@ const menuItems = ["Upload", "Articles", "Aggregate"];
 const testQuery = {
   // options to easily set useState(testQuery)
   queries: ["test"],
-  filters: { newsdesk: { values: ["Washington"] } },
+  filters: { page: { values: ["A1", "B1"] } },
 };
 
 export default function App() {
   const [selected, setSelected] = useState(menuItems[2]);
   const [amcat, setAmcat] = useState(null);
-  const [index, setIndex] = useState(null);
-  const [query, setQuery] = useState();
+  const [index, setIndex] = useState("nytimes");
+  const [query, setQuery] = useState(testQuery);
 
   const render = () => {
     switch (selected) {

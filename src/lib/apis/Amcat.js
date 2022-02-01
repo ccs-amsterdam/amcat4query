@@ -46,8 +46,7 @@ export default class Amcat {
     return this.api.post(`/index/${index}/query`, { ...query, ...params });
   }
   postAggregate(index, query = {}, axes = {}) {
-    const params = {};
-    if (query) params["filters"] = query;
+    const params = { ...query };
     if (axes) params["axes"] = axes;
     return this.api.post(`/index/${index}/aggregate`, { ...params });
   }
