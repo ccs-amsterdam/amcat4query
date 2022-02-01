@@ -6,7 +6,13 @@ export default function AggregateLineChart({ data, onClick }) {
   const colors = qualitativeColors(columns.length);
 
   const handleClick = (line, point) => {
-    console.log({ line, point });
+    // First value is always the payload for primary aggregation axis
+    const values = [point.payload[data.meta.axes[0].field]];
+    if (columns.length !== 1) {
+      // Second value is the name of the line clicked on
+      values.push(columns[line]);
+    }
+    onClick(values);
   };
 
   return (

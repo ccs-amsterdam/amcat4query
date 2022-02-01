@@ -37,7 +37,7 @@ export default function AggregateOptions({ amcat, index, value, onSubmit }) {
   }, [value]);
 
   function doSubmit() {
-    const axes = [axis1, axis2].filter((axis) => axis != null);
+    const axes = [axis1, axis2].filter((axis) => axis?.field);
     onSubmit({ axes, display });
   }
 

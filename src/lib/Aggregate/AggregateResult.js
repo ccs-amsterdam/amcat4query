@@ -5,6 +5,8 @@ import AggregateTable from "./AggragateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
 
+//TODO: This file is becoming too complex - move some business logic to a lib and add unit tests?
+
 /**
  * Display the results of an aggregate search
  * props:
@@ -25,6 +27,7 @@ export default function AggregateResult({ amcat, index, query, options }) {
     // TODO: don't query if index changed but options hasn't been reset (yet)
     const setResults = (data, error) => {
       if (!cancel) {
+        console.log(data);
         setError(error);
         setData(data);
       }
@@ -49,14 +52,14 @@ export default function AggregateResult({ amcat, index, query, options }) {
     if (options.axes.length !== 1) throw new Error("Not implemented, sorry");
 
     // Create a new query to filter articles based on intersection of current and new query
-    const newQuery = { ...query };
+    const newQuery = query == null ? {} : JSON.parse(JSON.stringify(query));
     if (!newQuery.filters) newQuery.filters = {};
     const axis = options.axes[0].field;
     if (newQuery.filters?.[axis]) {
       // This filter already exists, so take the intersection of current and new query
       throw new Error("Not implemented, sorry");
     } else {
-      newQuery.filters[axis] = { values };
+      newQuery.filters[axis] = { values: [values[0]] };
     }
     setZoom(newQuery);
   };
@@ -83,7 +86,7 @@ export default function AggregateResult({ amcat, index, query, options }) {
 function getArticleList(amcat, index, query, setQuery) {
   if (!query) return null;
   const header = Object.keys(query.filters || {})
-    .map((f) => `${f}=${query.filters[f].values}`)
+    .map((f) => `${f} '${query.filters[f].values}'`)
     .join(" and ");
 
   return (
