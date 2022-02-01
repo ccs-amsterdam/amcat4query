@@ -24,6 +24,12 @@ const displayOptions = [
   },
 ];
 
+const aggregation_labels = {
+  list: ["Group results by", "And then by"],
+  linechart: ["Horizontal (X) axis", "Multiple lines"],
+  barchart: ["Create bars for", "Cluster bars by"],
+};
+
 export default function AggregateOptions({ amcat, index, value, onSubmit }) {
   const fields = useFields(amcat, index);
   const [display, setDisplay] = useState();
@@ -40,6 +46,7 @@ export default function AggregateOptions({ amcat, index, value, onSubmit }) {
     const axes = [axis1, axis2].filter((axis) => axis?.field);
     onSubmit({ axes, display });
   }
+  const labels = aggregation_labels[display];
 
   return (
     <Form>
@@ -53,13 +60,8 @@ export default function AggregateOptions({ amcat, index, value, onSubmit }) {
         value={display}
         onChange={(_e, { value }) => setDisplay(value)}
       />
-      <AxisPicker
-        fields={fields}
-        value={axis1}
-        onChange={setAxis1}
-        label="Primary Aggregation Axis"
-      />
-      <AxisPicker fields={fields} onChange={setAxis2} label="Secondary Aggregation Axis" />
+      <AxisPicker fields={fields} value={axis1} onChange={setAxis1} label={labels[0]} />
+      <AxisPicker fields={fields} onChange={setAxis2} label={labels[1]} />
 
       <Button primary onClick={doSubmit}>
         Submit
