@@ -74,16 +74,25 @@ const SignIn = ({ amcat, setLogin }) => {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("admin");
-  const [invalidPassword, setInvalidPassword] = useState(false);
+  const [error, setError] = useState(null);
 
   const tryPasswordLogin = async () => {
     setPassword("");
+    let token;
     try {
-      const token = await getToken(host, email, password);
-      setLogin({ host, email, token });
+      token = await getToken(host, email, password);
     } catch (e) {
-      setInvalidPassword(true);
-      console.log(e);
+      if (e.response) {
+        if (e.response.status === 401)
+          setError({ field: "password", message: "Invalid email or password" });
+        else setError({ field: undefined, message: "Invalid reply from server" });
+      } else if (e.request) {
+        setError({ field: "host", message: "Could not find server" });
+      } else setError({ field: undefined, message: "Error on logging in" });
+    }
+    if (token !== undefined) {
+      setLogin({ host, email, token });
+      setError(null);
     }
   };
 
@@ -96,10 +105,11 @@ const SignIn = ({ amcat, setLogin }) => {
     if (amcat?.email) setEmail(amcat.email);
     if (amcat?.host) setHost(amcat.host);
   }, [amcat]);
-
+  console.log(error);
   return (
-    <Form size="large">
+    <Form size="large" error={error && error.field === undefined}>
       <Segment stacked>
+        <Message error header={error?.message} />
         <Form.Input
           fluid
           placeholder="Host"
@@ -109,6 +119,7 @@ const SignIn = ({ amcat, setLogin }) => {
           onChange={(e, d) => {
             if (d.value.length < 100) setHost(d.value);
           }}
+          error={error?.field === "host" ? error.message : false}
           icon="home"
           iconPosition="left"
           autoFocus
@@ -132,14 +143,13 @@ const SignIn = ({ amcat, setLogin }) => {
           fluid
           placeholder="password"
           name="password"
-          error={invalidPassword ? "Invalid password for this host & email" : false}
+          error={error?.field === "password" ? error.message : false}
           label="Password"
           type="password"
           icon="lock"
           iconPosition="left"
           value={password}
           onChange={(e, d) => {
-            setInvalidPassword(false);
             setPassword(d.value);
           }}
         />
