@@ -6,7 +6,7 @@ import AggregateOptions from "./AggregateOptions";
 const testOptions = { display: "barchart", axes: [{ field: "newsdesk" }] };
 
 export default function AggregatePane({ amcat, index, query }) {
-  const [options, setOptions] = useState(testOptions);
+  const [options, setOptions] = useState();
   return (
     <div>
       <AggregateOptions amcat={amcat} index={index} value={options} onSubmit={setOptions} />
