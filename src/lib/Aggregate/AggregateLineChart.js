@@ -8,7 +8,7 @@ export default function AggregateLineChart({ data, onClick }) {
   const handleClick = (line, point) => {
     // First value is always the payload for primary aggregation axis
     const values = [point.payload[data.meta.axes[0].field]];
-    if (columns.length !== 1) {
+    if (data.meta.axes.length !== 1) {
       // Second value is the name of the line clicked on
       values.push(columns[line]);
     }

@@ -6,14 +6,16 @@ export default function AggregateBarChart({ data, onClick }) {
   const colors = qualitativeColors(columns.length);
   const primary = data.meta.axes[0].field;
 
-  const handleClick = (i, j) => {
+  const handleClick = (column, j) => {
     if (onClick == null) return;
-    if (columns.length === 1) {
-      onClick([d[j][primary]]);
-    } else {
-      //TODO: Handle click for multiple axes
-      console.log(i, j);
+
+    // First value is always the value for primary axis on the clicked "row"
+    const values = [d[j][primary]];
+    if (data.meta.axes.length !== 1) {
+      // Second value is the column clicked on
+      values.push(column);
     }
+    onClick(values);
   };
   const height = Math.max(250, d.length * 30);
   const sorted = d.sort((e1, e2) => e2.n - e1.n);
@@ -29,7 +31,7 @@ export default function AggregateBarChart({ data, onClick }) {
           type="monotone"
           dataKey={column}
           fill={colors[i]}
-          onClick={(e, j) => handleClick(i, j)}
+          onClick={(e, j) => handleClick(column, j)}
         />
       ))}
     </BarChart>

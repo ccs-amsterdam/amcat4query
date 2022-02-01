@@ -48,19 +48,24 @@ export default function AggregateResult({ amcat, index, query, options }) {
   // values should be an array of the same length as the axes and identify the value for each axis
   const handleClick = (values) => {
     if (options.axes.length !== values.length)
-      throw new Error(`Axis [$(options.axes)] incompatible with values [$(values)]`);
-    if (options.axes.length !== 1) throw new Error("Not implemented, sorry");
+      throw new Error(
+        `Axis [${JSON.stringify(options.axes)}] incompatible with values [${values}]`
+      );
 
     // Create a new query to filter articles based on intersection of current and new query
     const newQuery = query == null ? {} : JSON.parse(JSON.stringify(query));
     if (!newQuery.filters) newQuery.filters = {};
+
+    options.axes.forEach((axis, i) => {
+      if (newQuery.filters?.[axis.field]) {
+        // This filter already exists, so take the intersection of current and new query
+        throw new Error("Not implemented, sorry");
+      } else {
+        newQuery.filters[axis.field] = { values: [values[i]] };
+      }
+    });
     const axis = options.axes[0].field;
-    if (newQuery.filters?.[axis]) {
-      // This filter already exists, so take the intersection of current and new query
-      throw new Error("Not implemented, sorry");
-    } else {
-      newQuery.filters[axis] = { values: [values[0]] };
-    }
+
     setZoom(newQuery);
   };
 
