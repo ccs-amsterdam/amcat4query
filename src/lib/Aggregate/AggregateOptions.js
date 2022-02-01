@@ -25,6 +25,7 @@ const displayOptions = [
 ];
 
 const aggregation_labels = {
+  default: ["Group results by", "And then by"],
   list: ["Group results by", "And then by"],
   linechart: ["Horizontal (X) axis", "Multiple lines"],
   barchart: ["Create bars for", "Cluster bars by"],
@@ -46,7 +47,7 @@ export default function AggregateOptions({ amcat, index, value, onSubmit }) {
     const axes = [axis1, axis2].filter((axis) => axis?.field);
     onSubmit({ axes, display });
   }
-  const labels = aggregation_labels[display];
+  const labels = aggregation_labels[display] || aggregation_labels["default"];
 
   return (
     <Form>
