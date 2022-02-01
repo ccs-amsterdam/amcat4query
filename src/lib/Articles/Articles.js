@@ -73,9 +73,9 @@ const useArticles = (amcat, index, query) => {
 
 const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
   let params = { page, per_page, highlight };
-  console.log(query);
   try {
     const res = await amcat.postQuery(index, query, params);
+    console.log(res.data);
     setData(res.data);
   } catch (e) {
     console.log(e);

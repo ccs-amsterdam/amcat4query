@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useFields from "../components/useFields";
-import addAnnotations from "./addAnnotations";
+import prepareArticle from "./prepareArticle";
 import { Grid, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
 
@@ -31,6 +31,7 @@ export default function Article({ amcat, index, id, query }) {
   }, [id]);
 
   if (!article || !fields) return null;
+
   return (
     <Modal open={open} onClose={() => setOpen(false)} style={{ width: "80vw", maxWidth: "1200px" }}>
       <Modal.Header></Modal.Header>
@@ -53,11 +54,11 @@ export default function Article({ amcat, index, id, query }) {
 }
 
 const fetchArticle = async (amcat, index, _id, query, setArticle) => {
-  let params = { annotations: true };
-  if (query.query_string) params.queries = query.query_string.split("\n").filter((s) => s !== "");
+  let params = { annotations: true, filters: { _id } };
+  if (query?.queries) params.queries = query.queries;
   try {
-    const res = await amcat.postQuery(index, params, { _id });
-    console.log(res.data.results[0]);
+    const res = await amcat.postQuery(index, params);
+    console.log(res);
     setArticle(res.data.results[0]);
   } catch (e) {
     console.log(e);
@@ -72,7 +73,7 @@ const Body = ({ article }) => {
     default: {},
   };
 
-  article = addAnnotations(article);
+  article = prepareArticle(article);
 
   const texts = [
     formatTextField(article, "title", fieldLayout),
@@ -125,10 +126,10 @@ const formatTextField = (article, field, layout, label) => {
 };
 
 const Meta = ({ article, fields }) => {
-  const metaFields = Object.keys(fields).reduce((mf, field) => {
-    if (field === "title" || field === "text") return mf;
-    if (!article[field]) return mf;
-    mf.push(field);
+  const metaFields = fields.reduce((mf, field) => {
+    if (field.name === "title" || field.name === "text") return mf;
+    if (!article[field.name]) return mf;
+    mf.push(field.name);
     return mf;
   }, []);
 

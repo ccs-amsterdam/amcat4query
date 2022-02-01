@@ -1,11 +1,37 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Container } from "semantic-ui-react";
-import { CSVReader } from "react-papaparse";
+import { useCSVReader } from "react-papaparse";
 import ImportTable from "./ImportTable";
 import SubmitButton from "./SubmitButton";
 import "./uploadStyle.css";
 
+const styles = {
+  csvReader: {
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  browseFile: {
+    width: "20%",
+  },
+  acceptedFile: {
+    border: "1px solid #ccc",
+    height: 45,
+    lineHeight: 2.5,
+    paddingLeft: 10,
+    width: "80%",
+  },
+  remove: {
+    borderRadius: 0,
+    padding: "0 20px",
+  },
+  progressBarBackgroundColor: {
+    backgroundColor: "red",
+  },
+};
+
 export default function Upload({ amcat, index }) {
+  const { CSVReader } = useCSVReader();
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState(null);
   const [fields, setFields] = useState(null);
@@ -27,21 +53,38 @@ export default function Upload({ amcat, index }) {
   useEffect(() => {
     if (!fields) return;
     if (data.length <= 1) return;
-    const columns = data[0].data.map((name) => {
-      return { name, field: name, type: fields?.[name] || "auto" };
+    const columns = data[0].map((name) => {
+      return { name, field: name, type: fields?.[name]?.type || "auto" };
     });
     setColumns(columns);
   }, [fields, data, setColumns, setFields]);
 
+  const reset = () => {
+    if (fileRef.current) fileRef.current.click();
+    setData([]);
+  };
+
   return (
     <Container>
       <CSVReader
-        ref={fileRef}
-        onFileLoad={(data) => setData(data)}
-        addRemoveButton
-        onRemoveFile={() => setData([])}
+        onUploadAccepted={(res) => {
+          setData(res.data);
+        }}
       >
-        <span>Click to upload</span>
+        {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }: any) => (
+          <>
+            <div style={styles.csvReader}>
+              <button type="button" {...getRootProps()} style={styles.browseFile}>
+                Browse file
+              </button>
+              <div style={styles.acceptedFile}>{acceptedFile && acceptedFile.name}</div>
+              <button ref={fileRef} {...getRemoveFileProps()} style={styles.remove}>
+                Remove
+              </button>
+            </div>
+            <ProgressBar style={styles.progressBarBackgroundColor} />
+          </>
+        )}
       </CSVReader>
       <br />
       <ImportTable data={data} columns={columns} setColumns={setColumns} fields={fields} />
@@ -51,7 +94,7 @@ export default function Upload({ amcat, index }) {
         data={data}
         columns={columns}
         fields={fields}
-        fileRef={fileRef}
+        reset={reset}
       />
     </Container>
   );

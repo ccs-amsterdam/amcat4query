@@ -17,5 +17,5 @@ export function highlightElasticTags(text) {
 }
 
 export function removeElasticTags(text) {
-  return text.replace("<em>", "").replace("</em>", "");
+  return text.replaceAll("<em>", "").replaceAll("</em>", "");
 }

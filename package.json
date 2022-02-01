@@ -20,18 +20,20 @@
   ],
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
+    "@semantic-ui-react/css-patch": "^1.0.0",
     "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.21.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.25.0",
     "colorbrewer": "^1.5.1",
+    "i": "^0.3.7",
     "randomcolor": "^0.6.2",
     "react": "^17.0.1",
     "react-cookie": "^4.1.1",
     "react-dom": "^17.0.1",
-    "react-papaparse": "^3.18.2",
-    "react-scripts": "4.0.3",
-    "react-semantic-ui-datepickers": "^2.15.0",
+    "react-papaparse": "^4.0.2",
+    "react-scripts": "5.0.0",
+    "react-semantic-ui-datepickers": "^2.16.1",
     "recharts": "^2.1.8",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.4"
@@ -41,7 +43,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files"
+    "build_npm": "rm -rf dist && NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "postinstall": "semantic-ui-css-patch"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"

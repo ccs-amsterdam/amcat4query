@@ -1,6 +1,17 @@
 import { List, Popup } from "semantic-ui-react";
 import { getColor, getColorGradient } from "./colors";
 
+export default function prepareArticle(article) {
+  if (article._annotations) article = addAnnotations(article);
+
+  // add annotations also splits paragraphs. For text fields without annotations
+  // we still need to do this. We can see if a text has been processed by addAnnotations
+  // if it's an array. But there should be a more elegant solution
+  if (!Array.isArray(article.text)) article.text = splitParagraphs(article.text);
+
+  return article;
+}
+
 /**
  * A rather complicated function, but what it does is take an array of annotations
  * (that can be in artice._annotations), and add span tags to show them.
@@ -9,8 +20,9 @@ import { getColor, getColorGradient } from "./colors";
  * @param {*} article
  * @returns
  */
-export default function addAnnotations(article) {
+const addAnnotations = (article) => {
   if (!article._annotations) return article;
+
   const mergedAnnotations = mergeAnnotations(article, article._annotations);
 
   for (let field of Object.keys(mergedAnnotations)) {
@@ -42,8 +54,9 @@ export default function addAnnotations(article) {
     parts.push(splitParagraphs(text.slice(offset)));
     article[field] = parts;
   }
+
   return article;
-}
+};
 
 const splitParagraphs = (text) => {
   const paragraphs = text.split(/\n/);
@@ -53,6 +66,8 @@ const splitParagraphs = (text) => {
     return <br style={{ lineHeight: "1em" }} />;
   };
 
+  // this looks like a bad solution, but we can't use tags to encapsulate paragraphs
+  // due to the span annotations
   return paragraphs.map((p, i) => (
     <>
       {p}
@@ -113,7 +128,6 @@ const annotateText = (text, annotation) => {
 
 const mergeAnnotations = (article, annotations) => {
   const annotationDict = {};
-  console.log(annotations);
   for (let annotation of annotations) {
     if (!article[annotation.field]) continue;
     if (!annotationDict[annotation.field]) annotationDict[annotation.field] = {};

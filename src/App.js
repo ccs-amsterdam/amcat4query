@@ -23,7 +23,7 @@ const testQuery = {
 export default function App() {
   const [selected, setSelected] = useState(menuItems[2]);
   const [amcat, setAmcat] = useState(null);
-  const [index, setIndex] = useState("nytimes");
+  const [index, setIndex] = useState(null);
   const [query, setQuery] = useState();
 
   const render = () => {

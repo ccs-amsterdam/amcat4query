@@ -3,11 +3,11 @@ import { Container, Button, Message, Dimmer, Loader, Modal, Header } from "seman
 
 const REQUIRED_FIELDS = ["title", "date", "text"];
 
-export default function SubmitButton({ amcat, index, data, columns, fields, fileRef }) {
+export default function SubmitButton({ amcat, index, data, columns, fields, reset }) {
   const [loading, setLoading] = useState(false);
   const [submittedMessage, setSubmittedMessage] = useState(null);
 
-  const notReady = !index || !columns || data.length <= 1 || columns.length !== data[0].data.length;
+  const notReady = !index || !columns || data.length <= 1 || columns.length !== data[0].length;
   if (notReady) return null;
 
   let newfields = new Set();
@@ -65,13 +65,13 @@ export default function SubmitButton({ amcat, index, data, columns, fields, file
       <SubmittedMessage
         submittedMessage={submittedMessage}
         setSubmittedMessage={setSubmittedMessage}
-        fileRef={fileRef}
+        reset={reset}
       />
     </Container>
   );
 }
 
-const SubmittedMessage = ({ submittedMessage, setSubmittedMessage, fileRef }) => {
+const SubmittedMessage = ({ submittedMessage, setSubmittedMessage, reset }) => {
   if (!submittedMessage) return null;
 
   const ifMissingDate = () => {
@@ -108,7 +108,7 @@ const SubmittedMessage = ({ submittedMessage, setSubmittedMessage, fileRef }) =>
     <Modal
       open
       onClose={() => {
-        fileRef.current.removeFile();
+        reset();
         setSubmittedMessage(null);
       }}
     >
@@ -130,7 +130,7 @@ const SubmittedMessage = ({ submittedMessage, setSubmittedMessage, fileRef }) =>
           icon="checkmark"
           positive
           onClick={() => {
-            fileRef.current.removeFile();
+            reset();
             setSubmittedMessage(null);
           }}
         />
@@ -153,7 +153,7 @@ const prepareData = (data, columns) => {
 
   const rows = data.slice(1).reduce((rows, row, i) => {
     const datarow = Object.keys(fieldIndex).reduce((obj, field) => {
-      obj[field] = row.data[fieldIndex[field]];
+      obj[field] = row[fieldIndex[field]];
       return obj;
     }, {});
 

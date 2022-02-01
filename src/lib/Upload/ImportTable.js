@@ -78,7 +78,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     });
   };
 
-  const headerType = (data) => {
+  const headerType = () => {
     let options = Object.keys(ES_MAPPINGS).map((em) => {
       return { key: em, value: em, text: em.toUpperCase(), description: ES_MAPPINGS[em] };
     });
@@ -136,7 +136,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
   const createRows = (data, n) => {
     const previewdata = data.slice(0, n + 1);
     return previewdata.slice(1).map((row, i) => {
-      return <Table.Row>{createRowCells(row.data, i)}</Table.Row>;
+      return <Table.Row>{createRowCells(row, i)}</Table.Row>;
     });
   };
 
@@ -159,7 +159,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
   };
 
   if (data.length <= 1) return null;
-  if (!columns || columns.length !== data[0].data.length) return null;
+  if (!columns || columns.length !== data[0].length) return null;
 
   return (
     <div
@@ -183,7 +183,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
           </Table.Row>
           <Table.Row>
             {headerRowLabel("field type")}
-            {headerType(data)}
+            {headerType()}
           </Table.Row>
         </Table.Header>
         <Table.Body>{createRows(data, n)}</Table.Body>

@@ -17,7 +17,7 @@ import DateField from "./FilterForms/DateField";
  */
 export default function Filters({ amcat, index, value, onChange }) {
   const fields = useFields(amcat, index);
-  if (!fields) return null;
+  if (!fields || !value) return null;
   const selectedfields = Object.keys(value);
   const fieldlist = fields.filter((f) => f.name in value);
 
