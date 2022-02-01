@@ -13,14 +13,18 @@ import AggregatePane from "./lib/Aggregate/AggregatePane";
 
 const menuItems = ["Upload", "Articles", "Aggregate"];
 
+/* eslint-disable-next-line */
+const testQuery = {
+  // options to easily set useState(testQuery)
+  queries: ["test"],
+  filters: { newsdesk: { values: ["Washington"] } },
+};
+
 export default function App() {
-  const [selected, setSelected] = useState(menuItems[0]);
+  const [selected, setSelected] = useState(menuItems[2]);
   const [amcat, setAmcat] = useState(null);
   const [index, setIndex] = useState("nytimes");
-  const [query, setQuery] = useState({
-    queries: ["test"],
-    filters: { newsdesk: { values: ["Washington"] } },
-  });
+  const [query, setQuery] = useState();
 
   const render = () => {
     switch (selected) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "semantic-ui-react";
 import useFields from "../components/useFields";
 import AxisPicker from "./AxisPicker";
@@ -24,15 +24,21 @@ const displayOptions = [
   },
 ];
 
-export default function AggregateOptions({ amcat, index, setOptions }) {
+export default function AggregateOptions({ amcat, index, value, onSubmit }) {
   const fields = useFields(amcat, index);
   const [display, setDisplay] = useState();
-  const [axis1, setAxis1] = useState(null);
-  const [axis2, setAxis2] = useState(null);
+  const [axis1, setAxis1] = useState();
+  const [axis2, setAxis2] = useState();
 
-  function doSetOptions() {
-    const axes = [axis1, axis2].filter((axis) => axis !== null);
-    setOptions({ axes, display });
+  useEffect(() => {
+    setDisplay(value?.display || "list");
+    setAxis1(value?.axes?.[0]);
+    setAxis2(value?.axes?.[1]);
+  }, [value]);
+
+  function doSubmit() {
+    const axes = [axis1, axis2].filter((axis) => axis != null);
+    onSubmit({ axes, display });
   }
 
   return (
@@ -47,10 +53,15 @@ export default function AggregateOptions({ amcat, index, setOptions }) {
         value={display}
         onChange={(_e, { value }) => setDisplay(value)}
       />
-      <AxisPicker fields={fields} setAxis={setAxis1} label="Primary Aggregation Axis" />
-      <AxisPicker fields={fields} setAxis={setAxis2} label="Secondary Aggregation Axis" />
+      <AxisPicker
+        fields={fields}
+        value={axis1}
+        onChange={setAxis1}
+        label="Primary Aggregation Axis"
+      />
+      <AxisPicker fields={fields} onChange={setAxis2} label="Secondary Aggregation Axis" />
 
-      <Button primary onClick={doSetOptions}>
+      <Button primary onClick={doSubmit}>
         Submit
       </Button>
     </Form>

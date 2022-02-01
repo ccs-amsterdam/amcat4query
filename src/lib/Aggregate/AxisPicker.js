@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Form } from "semantic-ui-react";
 
 const icon_date = "https://img.icons8.com/material-outlined/24/000000/calendar--v1.png";
@@ -12,31 +11,36 @@ const date_intervals = [
   { key: "year", text: "year", value: "year" },
 ];
 
-function getAxisSpec(field, type, interval) {
-  if (field === undefined || field === "") return null;
-  if (type === "date") return { field, interval };
-  return { field };
+function getField(fields, fieldname) {
+  const i = fields.map((f) => f.name).indexOf(fieldname);
+  if (i === -1) return undefined;
+  return fields[i];
 }
 
-export default function AggregateOptions({ fields, setAxis, label }) {
-  const [field, setField] = useState();
-  const [interval, setInterval] = useState();
+/**
+ *
+ * Dropdown to select an aggregation axis and possibly interval
+ * props:
+ * - fields: array of {name, type} objects
+ * - label: label to be displayed with the axis
+ * - value: an object with a field (name) and optional interval: { field: fieldname, interval: interval}
+ * - onChange: callback that will be called if the value is changed
+ */
+export default function AxisPicker({ fields, value, onChange, label }) {
+  const axisOptions = fields
+    .filter((f) => f.type === "keyword" || f.type === "date")
+    .map((f) => ({
+      key: f.name,
+      text: f.name,
+      value: f.name,
+      image: { avatar: true, src: f.type === "date" ? icon_date : icon_keyword },
+    }));
 
-  let axisOptions = [];
-  for (let f in fields) {
-    if (fields[f] === "keyword" || fields[f] === "date")
-      axisOptions.push({
-        key: f,
-        text: f,
-        value: f,
-        image: { avatar: true, src: fields[f] === "date" ? icon_date : icon_keyword },
-      });
-  }
-
-  useEffect(() => {
-    setAxis(getAxisSpec(field, fields[field], interval));
-  }, [interval, field, fields, setAxis]);
-
+  const setInterval = (newval) => {};
+  const setField = (newval) => {
+    onChange({ ...value, field: newval });
+  };
+  const field = getField(fields, value?.field);
   return (
     <Form.Group widths="equal">
       <Form.Dropdown
@@ -46,17 +50,17 @@ export default function AggregateOptions({ fields, setAxis, label }) {
         selection
         options={axisOptions}
         label={label ? label : "Aggregation axis"}
-        value={field}
+        value={field?.name}
         onChange={(_e, { value }) => setField(value)}
       />
-      {fields[field] === "date" ? (
+      {field?.type === "date" ? (
         <Form.Dropdown
           placeholder="Select interval for date aggregation"
           fluid
           selection
           options={date_intervals}
           label="Interval"
-          value={interval}
+          value={value?.interval}
           onChange={(_e, { value }) => setInterval(value)}
         />
       ) : null}

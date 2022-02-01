@@ -17,8 +17,8 @@ export default function Query({ amcat, index, value, onSubmit }) {
 
   // Is this the correct way to update the state if value changed?
   useEffect(() => {
-    setQueryStrings(value.queries && value.queries.join("\n"));
-    setFilters(value.filters || {});
+    setQueryStrings(value?.queries && value.queries.join("\n"));
+    setFilters(value?.filters || {});
   }, [value]);
 
   const onClick = () => {

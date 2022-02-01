@@ -1,6 +1,6 @@
 import { Table } from "semantic-ui-react";
 
-export default function AggregateTable(data) {
+export default function AggregateTable({ data }) {
   return (
     <Table celled>
       <Table.Header>
