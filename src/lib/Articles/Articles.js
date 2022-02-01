@@ -6,8 +6,8 @@ const per_page = 15;
 
 const COLUMNS = [
   { name: "_id", hide: true },
-  { name: "date", f: (row) => row.date.replace("T", " "), width: "8em" },
-  { name: "publisher", width: "6em" }, // optional
+  { name: "date", f: (row) => row.date.replace("T", " ") },
+  { name: "publisher" }, // optional
   { name: "title" },
   { name: "text" },
 ];
@@ -75,7 +75,6 @@ const fetchArticles = async (amcat, index, query, page, highlight, setData) => {
   let params = { page, per_page, highlight };
   try {
     const res = await amcat.postQuery(index, query, params);
-    console.log(res.data);
     setData(res.data);
   } catch (e) {
     console.log(e);

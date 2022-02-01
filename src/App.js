@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
@@ -25,6 +25,10 @@ export default function App() {
   const [amcat, setAmcat] = useState(null);
   const [index, setIndex] = useState(null);
   const [query, setQuery] = useState();
+
+  useEffect(() => {
+    setQuery();
+  }, [amcat, index]);
 
   const render = () => {
     switch (selected) {

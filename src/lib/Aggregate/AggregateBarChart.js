@@ -15,12 +15,13 @@ export default function AggregateBarChart({ data, onClick }) {
       console.log(i, j);
     }
   };
-
+  const height = Math.max(250, d.length * 30);
+  const sorted = d.sort((e1, e2) => e2.n - e1.n);
   return (
-    <BarChart width={730} height={250} data={d}>
+    <BarChart width={730} height={height} data={sorted} layout="vertical">
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey={primary} />
-      <YAxis />
+      <YAxis type="category" dataKey={primary} width={150} padding={{ left: 20 }} />
+      <XAxis type="number" />
       <Tooltip />
       {columns.map((column, i) => (
         <Bar

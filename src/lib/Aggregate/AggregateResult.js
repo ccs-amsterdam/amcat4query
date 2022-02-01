@@ -20,14 +20,26 @@ export default function AggregateResult({ amcat, index, query, options }) {
 
   // Fetch data and return an error message if it fails
   useEffect(() => {
+    let cancel = false;
+    // Prevent data/error being set from an earlier request
+    // TODO: don't query if index changed but options hasn't been reset (yet)
+    const setResults = (data, error) => {
+      if (!cancel) {
+        setError(error);
+        setData(data);
+      }
+    };
     if (amcat == null || index == null || !options?.axes || options.axes.length === 0) {
-      setData(null);
+      setData();
+      setError();
     } else {
-      fetchAggregate(amcat, index, options.axes, query, setData, setError);
+      fetchAggregate(amcat, index, options.axes, query, setResults);
     }
+    return () => (cancel = true);
   }, [amcat, index, options, query, setData, setError]);
   if (error) return <Message error header={error} />;
-  if (!data) return <Message info header="Select aggregation options" />;
+  if (!data || !options || !options.display)
+    return <Message info header="Select aggregation options" />;
 
   // Handle a click on the aggregate result
   // values should be an array of the same length as the axes and identify the value for each axis
@@ -38,12 +50,13 @@ export default function AggregateResult({ amcat, index, query, options }) {
 
     // Create a new query to filter articles based on intersection of current and new query
     const newQuery = { ...query };
+    if (!newQuery.filters) newQuery.filters = {};
     const axis = options.axes[0].field;
-    if (query.filters?.[axis]) {
+    if (newQuery.filters?.[axis]) {
       // This filter already exists, so take the intersection of current and new query
       throw new Error("Not implemented, sorry");
     } else {
-      newQuery.filters = { ...query.filters, [axis]: { values } };
+      newQuery.filters[axis] = { values };
     }
     setZoom(newQuery);
   };
@@ -61,27 +74,38 @@ export default function AggregateResult({ amcat, index, query, options }) {
 
   return (
     <div>
-      {zoom && (
-        <Modal open onClose={() => setZoom(undefined)}>
-          <Modal.Header>{`Articles for ${JSON.stringify(zoom)}`}</Modal.Header>
-          <Articles amcat={amcat} index={index} query={zoom} />
-        </Modal>
-      )}
+      {getArticleList(amcat, index, zoom, setZoom)}
       <Element data={data} options={options} onClick={handleClick} />
     </div>
   );
 }
 
-async function fetchAggregate(amcat, index, axes, query, setData, setError) {
+function getArticleList(amcat, index, query, setQuery) {
+  if (!query) return null;
+  const header = Object.keys(query.filters || {})
+    .map((f) => `${f}=${query.filters[f].values}`)
+    .join(" and ");
+
+  return (
+    <Modal open onClose={() => setQuery(undefined)}>
+      <Modal.Header>{`Articles for ${header}`}</Modal.Header>
+      <Articles amcat={amcat} index={index} query={query} />
+    </Modal>
+  );
+}
+
+async function fetchAggregate(amcat, index, axes, query, setResult) {
+  let error;
   try {
     const result = await amcat.postAggregate(index, query, axes);
-    setData(result.data);
+    setResult(result.data);
   } catch (e) {
     console.log({ index, query, axes });
     if (e.response) {
-      setError("Server is boos");
+      error = `HTTP error ${e.response.status}`;
     } else if (e.request) {
-      setError("No reply from server");
-    } else setError("Something went wrong trying to run the query");
+      error = "Error: No reply from server";
+    } else error = "Something went wrong trying to run the query";
   }
+  if (error) setResult(undefined, error);
 }
