@@ -28,7 +28,7 @@ function getField(fields, fieldname) {
  */
 export default function AxisPicker({ fields, value, onChange, label }) {
   const axisOptions = fields
-    .filter((f) => f.type === "keyword" || f.type === "date")
+    .filter((f) => ["keyword", "tag", "date"].includes(f.type))
     .map((f) => ({
       key: f.name,
       text: f.name,

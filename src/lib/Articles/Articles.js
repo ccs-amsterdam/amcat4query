@@ -24,6 +24,7 @@ const COLUMNS = [
  * @returns
  */
 export default function Articles({ amcat, index, query, columns = COLUMNS, allColumns = true }) {
+  //TODO: add columns to meta OR retrieve fields (prefer the former) and pass the field types on to the table
   const [data, setPage] = useArticles(amcat, index, query);
   const [articleId, setArticleId] = useState(null);
   const columnList = useMemo(() => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useFields from "../components/useFields";
 import prepareArticle from "./prepareArticle";
-import { Grid, Modal, Table } from "semantic-ui-react";
+import { Grid, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
 
 /**
@@ -66,7 +66,7 @@ const fetchArticle = async (amcat, index, _id, query, setArticle) => {
   }
 };
 
-const Body = ({ article }) => {
+const Body = ({ article, fields }) => {
   const fieldLayout = {
     title: { fontSize: "1.4em", fontWeight: "bold" },
     text: {},
@@ -75,19 +75,15 @@ const Body = ({ article }) => {
 
   article = prepareArticle(article);
 
-  const texts = [
-    formatTextField(article, "title", fieldLayout),
-    formatTextField(article, "text", fieldLayout),
-  ];
+  // Add title, all other 'text' fields, and finally text
+  const texts = [formatTextField(article, "title", fieldLayout)];
+  fields
+    .filter((f) => f.type === "text" && !["title", "text"].includes(f.name) && article[f.name])
+    .forEach((f) => {
+      texts.push(formatTextField(article, f.name, fieldLayout, true));
+    });
 
-  // Disabled for now, but we could decide to show more (text type) fields in the body
-  // for (const field of Object.keys(fields)) {
-  //   if (field === "title" || field === "text") continue;
-  //   if (fields[field] !== "text") continue;
-  //   if (!article[field]) continue;
-  //   texts.push(formatTextField(article, field, fieldLayout, true));
-  // }
-
+  texts.push(formatTextField(article, "text", fieldLayout, texts.length > 1));
   return texts;
 };
 
@@ -126,21 +122,15 @@ const formatTextField = (article, field, layout, label) => {
 };
 
 const Meta = ({ article, fields }) => {
-  const metaFields = fields.reduce((mf, field) => {
-    if (field.name === "title" || field.name === "text") return mf;
-    if (!article[field.name]) return mf;
-    mf.push(field.name);
-    return mf;
-  }, []);
-
+  const metaFields = fields.filter((f) => f.type !== "text" && !["title", "text"].includes(f.name));
   const rows = () => {
     return metaFields.map((field) => {
-      const value = formatMetaValue(article[field]);
+      const value = formatMetaValue(article, field);
 
       return (
-        <Table.Row key={field}>
+        <Table.Row key={field.name}>
           <Table.Cell width={1}>
-            <b>{field}</b>
+            <b>{field.name}</b>
           </Table.Cell>
           <Table.Cell>{value}</Table.Cell>
         </Table.Row>
@@ -166,12 +156,24 @@ const Meta = ({ article, fields }) => {
   );
 };
 
-const formatMetaValue = (value) => {
-  //   try if value is a date, if so, format accordingly
-  //   Only remove T if time for now. Complicated due to time zones.
-  const dateInt = Date.parse(value);
-  if (dateInt) {
-    return value.replace("T", " ");
+/**
+ * Format a meta field for presentation
+ * @param {*} article
+ * @param {*} field
+ * @returns
+ */
+const formatMetaValue = (article, field) => {
+  const value = article[field.name];
+  switch (field.type) {
+    case "date":
+      // Only remove 'T' for now. But not sure why that's a great idea
+      return value.replace("T", " ");
+    case "url":
+      return <a href={value}>{value}</a>;
+    case "tag":
+      if (Array.isArray(value)) return value.map((v) => <Label>{v}</Label>);
+      else return value;
+    default:
+      return value;
   }
-  return value;
 };

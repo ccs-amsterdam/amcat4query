@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Message, Modal } from "semantic-ui-react";
 import Articles from "../Articles/Articles";
-import useFields from "../components/useFields";
 import AggregateTable from "./AggragateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
@@ -65,7 +64,6 @@ export default function AggregateResult({ amcat, index, query, options }) {
         newQuery.filters[axis.field] = getZoomFilter(values[i], axis.interval);
       }
     });
-    const axis = options.axes[0].field;
     console.log(JSON.stringify(newQuery));
     setZoom(newQuery);
   };
@@ -107,8 +105,9 @@ function getEndDate(start, interval) {
       return new Date(start.setMonth(start.getMonth() + 3));
     case "year":
       return new Date(start.setYear(start.getFullYear() + 1));
+    default:
+      throw new Error(`Unknown interval: ${interval}`);
   }
-  throw new Error(`Unknown interval: ${interval}`);
 }
 
 function isodate(date) {

@@ -46,6 +46,7 @@ export default function Filters({ amcat, index, value, onChange }) {
       case "date":
         return <DateField key={field.name} field={field.name} value={val} onChange={handler} />;
       case "keyword":
+      case "tag":
         return (
           <KeywordField
             key={field.name}
@@ -78,14 +79,14 @@ export default function Filters({ amcat, index, value, onChange }) {
  * - onChange: will be called with a new array of selected field names
  */
 const FieldSelector = ({ fields, value, onChange }) => {
-  const filter_types = (field) => field.type === "keyword" || field.type === "date";
-
-  const options = fields.filter(filter_types).map((f) => ({
-    key: f.name,
-    value: f.name,
-    text: f.name,
-    icon: f.type === "date" ? "calendar alternate outline" : "list",
-  }));
+  const options = fields
+    .filter((field) => ["tag", "keyword", "date"].includes(field.type))
+    .map((f) => ({
+      key: f.name,
+      value: f.name,
+      text: f.name,
+      icon: f.type === "date" ? "calendar alternate outline" : "list",
+    }));
 
   const content = value.join(", ") || "Select filters";
 

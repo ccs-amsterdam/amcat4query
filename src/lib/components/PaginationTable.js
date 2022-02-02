@@ -40,13 +40,13 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
   const createRowCells = (rowObj, columns) => {
     return columns.map((column, i) => {
       if (column.hide) return null;
-
       let content;
       if (column.f) {
         content = column.f(rowObj);
       } else {
         content = rowObj ? rowObj[column.name] : null;
       }
+
       return (
         <Table.Cell
           key={i}
