@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Message, Modal } from "semantic-ui-react";
 import Articles from "../Articles/Articles";
+import useFields from "../components/useFields";
 import AggregateTable from "./AggragateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
@@ -61,11 +62,11 @@ export default function AggregateResult({ amcat, index, query, options }) {
         // This filter already exists, so take the intersection of current and new query
         throw new Error("Not implemented, sorry");
       } else {
-        newQuery.filters[axis.field] = { values: [values[i]] };
+        newQuery.filters[axis.field] = getZoomFilter(values[i], axis.interval);
       }
     });
     const axis = options.axes[0].field;
-
+    console.log(JSON.stringify(newQuery));
     setZoom(newQuery);
   };
 
@@ -88,10 +89,49 @@ export default function AggregateResult({ amcat, index, query, options }) {
   );
 }
 
+function getZoomFilter(value, interval) {
+  if (!interval) return { values: [value] };
+  const start = new Date(value);
+  return { gte: isodate(start), lt: isodate(getEndDate(start, interval)) };
+}
+
+function getEndDate(start, interval) {
+  switch (interval) {
+    case "day":
+      return new Date(start.setDate(start.getDate() + 1));
+    case "week":
+      return new Date(start.setDate(start.getDate() + 7));
+    case "month":
+      return new Date(start.setMonth(start.getMonth() + 1));
+    case "quarter":
+      return new Date(start.setMonth(start.getMonth() + 3));
+    case "year":
+      return new Date(start.setYear(start.getFullYear() + 1));
+  }
+  throw new Error(`Unknown interval: ${interval}`);
+}
+
+function isodate(date) {
+  return date.toISOString().split("T")[0];
+}
+
+function describe_filter(field, filter) {
+  if (filter.values) return `${field} '${filter.values}'`;
+  const descriptions = {
+    lte: "≤",
+    lt: "<",
+    gte: "≥",
+    gt: ">",
+  };
+  return Object.keys(filter)
+    .map((f) => `${field} ${descriptions[f]} ${filter[f]}`)
+    .join(" and ");
+}
+
 function getArticleList(amcat, index, query, setQuery) {
   if (!query) return null;
   const header = Object.keys(query.filters || {})
-    .map((f) => `${f} '${query.filters[f].values}'`)
+    .map((f) => describe_filter(f, query.filters[f]))
     .join(" and ");
 
   return (
