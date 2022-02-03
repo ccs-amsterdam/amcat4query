@@ -51,18 +51,15 @@ export default function AggregateResult({ amcat, index, query, options }) {
       throw new Error(
         `Axis [${JSON.stringify(options.axes)}] incompatible with values [${values}]`
       );
-
     // Create a new query to filter articles based on intersection of current and new query
     const newQuery = query == null ? {} : JSON.parse(JSON.stringify(query));
     if (!newQuery.filters) newQuery.filters = {};
-
     options.axes.forEach((axis, i) => {
-      if (newQuery.filters?.[axis.field]) {
-        // This filter already exists, so take the intersection of current and new query
-        throw new Error("Not implemented, sorry");
-      } else {
-        newQuery.filters[axis.field] = getZoomFilter(values[i], axis.interval);
-      }
+      newQuery.filters[axis.field] = getZoomFilter(
+        values[i],
+        axis.interval,
+        newQuery.filters?.[axis.field]
+      );
     });
     console.log(JSON.stringify(newQuery));
     setZoom(newQuery);
@@ -87,27 +84,60 @@ export default function AggregateResult({ amcat, index, query, options }) {
   );
 }
 
-function getZoomFilter(value, interval) {
+/**
+ * Compute the right filter for 'zooming in' to a clicked cell/bar/point.
+ * Should always yield exactly the same (number of) articles as visible in the cell.
+ *
+ * @param {*} value the clicked value, e.g. a date or keyword value
+ * @param {str} interval the selected interval, e.g. null or week/month etc
+ * @param {object} existing the existing filters for this field, e.g. null or lte and/or gte filters
+ * @returns the filter object with either a values filter or a (possibly merged) date filter
+ */
+function getZoomFilter(value, interval, existing) {
+  // For regular values, we can directly filter
+  // Existing filter can also never be stricter than the value
   if (!interval) return { values: [value] };
-  const start = new Date(value);
-  return { gte: isodate(start), lt: isodate(getEndDate(start, interval)) };
+  // For intervals/dates, we need to compute a start/end date
+  // and then combine it with possible existing filters
+  let start = new Date(value);
+  let end = getEndDate(start, interval);
+  // I tried a fancy list filter max expression but that just complicates stuff
+  // for reference: new Date(Math.max(...[start, gte, gt].filter((x) => x != null).map((x) => new Date(x))))
+  if (existing?.gte) start = new Date(Math.max(start, new Date(existing.gte)));
+  if (existing?.gt) start = new Date(Math.max(start, new Date(existing.gt)));
+  if (existing?.lt) end = new Date(Math.min(end, new Date(existing.lt)));
+  // Now it becomes interesting. We normally set end of the interval to LT
+  // However, if existing.lte "wins", we should also set our end to be LTE.
+  let end_op = "lt";
+  if (existing?.lte && new Date(existing?.lte) < end) {
+    end = new Date(existing.lte);
+    end_op = "lte";
+  }
+  return { gte: isodate(start), [end_op]: isodate(end) };
 }
 
 function getEndDate(start, interval) {
+  const result = new Date(start);
   switch (interval) {
     case "day":
-      return new Date(start.setDate(start.getDate() + 1));
+      result.setDate(result.getDate() + 1);
+      break;
     case "week":
-      return new Date(start.setDate(start.getDate() + 7));
+      result.setDate(result.getDate() + 7);
+      break;
     case "month":
-      return new Date(start.setMonth(start.getMonth() + 1));
+      result.setMonth(result.getMonth() + 1);
+      break;
     case "quarter":
-      return new Date(start.setMonth(start.getMonth() + 3));
+      result.setMonth(result.getMonth() + 3);
+      break;
     case "year":
-      return new Date(start.setYear(start.getFullYear() + 1));
+      result.setYear(result.getFullYear() + 1);
+      break;
     default:
       throw new Error(`Unknown interval: ${interval}`);
   }
+  return new Date(result);
 }
 
 function isodate(date) {
