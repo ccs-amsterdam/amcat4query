@@ -27,7 +27,6 @@ export default function AggregateResult({ amcat, index, query, options }) {
     // TODO: don't query if index changed but options hasn't been reset (yet)
     const setResults = (data, error) => {
       if (!cancel) {
-        console.log(data);
         setError(error);
         setData(data);
       }

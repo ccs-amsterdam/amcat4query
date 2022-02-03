@@ -105,7 +105,6 @@ const SignIn = ({ amcat, setLogin }) => {
     if (amcat?.email) setEmail(amcat.email);
     if (amcat?.host) setHost(amcat.host);
   }, [amcat]);
-  console.log(error);
   return (
     <Form size="large" error={error && error.field === undefined}>
       <Segment stacked>
