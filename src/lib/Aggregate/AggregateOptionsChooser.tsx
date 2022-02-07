@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Button, Form } from "semantic-ui-react";
 import useFields from "../components/useFields";
 import AxisPicker from "./AxisPicker";
-
+import Amcat from "../apis/Amcat";
+import { AggregationAxis, DisplayOption, AggregationOptions } from "../interfaces";
 const displayOptions = [
   {
     key: 1,
@@ -31,11 +32,22 @@ const aggregation_labels = {
   barchart: ["Create bars for", "Cluster bars by"],
 };
 
-export default function AggregateOptions({ amcat, index, value, onSubmit }) {
+interface AggregateOptionsChooserProps {
+  amcat: Amcat;
+  index: string;
+  value: AggregationOptions;
+  onSubmit: (value: AggregationOptions) => void;
+}
+export default function AggregateOptionsChooser({
+  amcat,
+  index,
+  value,
+  onSubmit,
+}: AggregateOptionsChooserProps) {
   const fields = useFields(amcat, index);
-  const [display, setDisplay] = useState();
-  const [axis1, setAxis1] = useState();
-  const [axis2, setAxis2] = useState();
+  const [display, setDisplay] = useState<DisplayOption>();
+  const [axis1, setAxis1] = useState<AggregationAxis>();
+  const [axis2, setAxis2] = useState<AggregationAxis>();
 
   useEffect(() => {
     setDisplay(value?.display || "list");
@@ -59,10 +71,10 @@ export default function AggregateOptions({ amcat, index, value, onSubmit }) {
         options={displayOptions}
         label="Display results as"
         value={display}
-        onChange={(_e, { value }) => setDisplay(value)}
+        onChange={(_e, { value }) => setDisplay(value as DisplayOption)}
       />
       <AxisPicker fields={fields} value={axis1} onChange={setAxis1} label={labels[0]} />
-      <AxisPicker fields={fields} onChange={setAxis2} label={labels[1]} />
+      <AxisPicker fields={fields} value={axis2} onChange={setAxis2} label={labels[1]} />
 
       <Button primary onClick={doSubmit}>
         Submit
