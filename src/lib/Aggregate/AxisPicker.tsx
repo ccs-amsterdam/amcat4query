@@ -1,4 +1,5 @@
 import { Form } from "semantic-ui-react";
+import { AggregationAxis, AggregationInterval } from "../interfaces";
 
 const icon_date = "https://img.icons8.com/material-outlined/24/000000/calendar--v1.png";
 const icon_keyword = "https://img.icons8.com/material-outlined/24/000000/activity-feed.png";
@@ -22,20 +23,17 @@ function getField(fields: Field[], fieldname: string): Field {
 }
 
 interface AxisPickerProps {
+  /** index fields to choose from */
   fields: Field[];
-  value: { field: string; interval: string };
-  onChange: (value: { field: string; interval: string }) => void;
+  /** Current axis value */
+  value: AggregationAxis;
+  /** Callback to set axis when user changes field or interval */
+  onChange: (value: AggregationAxis) => void;
   label?: string;
 }
 
 /**
- *
  * Dropdown to select an aggregation axis and possibly interval
- * props:
- * - fields: array of {name, type} objects
- * - label: label to be displayed with the axis
- * - value: an object with a field (name) and optional interval: { field: fieldname, interval: interval}
- * - onChange: callback that will be called if the value is changed
  */
 export default function AxisPicker({ fields, value, onChange, label }: AxisPickerProps) {
   const axisOptions = fields
@@ -47,7 +45,7 @@ export default function AxisPicker({ fields, value, onChange, label }: AxisPicke
       image: { avatar: true, src: f.type === "date" ? icon_date : icon_keyword },
     }));
 
-  const setInterval = (newval: string) => {
+  const setInterval = (newval: AggregationInterval) => {
     onChange({ ...value, interval: newval });
   };
   const setField = (newval: string) => {
@@ -74,7 +72,7 @@ export default function AxisPicker({ fields, value, onChange, label }: AxisPicke
           options={date_intervals}
           label="Interval"
           value={value?.interval}
-          onChange={(_e, { value }) => setInterval(value as string)}
+          onChange={(_e, { value }) => setInterval(value as AggregationInterval)}
         />
       ) : null}
     </Form.Group>
