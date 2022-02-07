@@ -1,10 +1,16 @@
-import Axios from "axios";
+import Axios, { AxiosInstance } from "axios";
+import { AggregateData, AggregationAxis, AmcatQuery } from "../interfaces";
 
 /**
  * Class for doing all stuff AmCAT
  */
 export default class Amcat {
-  constructor(host, email, token) {
+  host: string;
+  email: string;
+  token: string;
+  api: AxiosInstance;
+
+  constructor(host: string, email: string, token: string) {
     this.host = host;
     this.email = email;
     this.token = token;
@@ -17,7 +23,7 @@ export default class Amcat {
   serialize() {
     return { host: this.host, email: this.email, token: this.token };
   }
-  static deserialize(obj) {
+  static deserialize(obj: { host: string; email: string; token: string }) {
     return new Amcat(obj.host, obj.email, obj.token);
   }
 
@@ -28,41 +34,60 @@ export default class Amcat {
   getIndices() {
     return this.api.get(`/index/`);
   }
-  getIndex(index) {
+  getIndex(index: string) {
     return this.api.get(`/index/${index}`);
   }
-  getFields(index) {
+  getFields(index: string) {
     return this.api.get(`/index/${index}/fields`);
   }
-  getFieldValues(index, field) {
+  getFieldValues(index: string, field: string) {
     return this.api.get(`/index/${index}/fields/${field}/values`);
   }
-  getDocument(index, doc_id) {
+  getDocument(index: string, doc_id: string | number) {
     return this.api.get(`/index/${index}/documents/${doc_id}`);
   }
 
   // POST
-  postQuery(index, query, params = {}) {
+  postQuery(index: string, query = {}, params = {}) {
     return this.api.post(`/index/${index}/query`, { ...query, ...params });
   }
-  postAggregate(index, query = {}, axes = {}) {
-    const params = { ...query };
+
+  postAggregate(
+    index: string,
+    query: AmcatQuery,
+    axes: AggregationAxis[],
+    setData: (data: AggregateData) => void,
+    setError: (error: string) => void
+  ) {
+    const params: any = { ...query };
     if (axes) params["axes"] = axes;
-    return this.api.post(`/index/${index}/aggregate`, { ...params });
+    return this.api
+      .post(`/index/${index}/aggregate`, { ...params })
+      .then((d) => setData(d.data))
+      .catch((e) => {
+        if (e.response) setError(`HTTP error ${e.response.status}`);
+        else if (e.request) setError("No reply from server");
+        else setError("Something went wrong trying to run the query");
+      });
   }
 
-  createIndex(name, guestRole = "NONE") {
-    const body = { name: name };
+  createIndex(name: string, guestRole = "NONE") {
+    const body: any = { name: name };
     if (guestRole !== "NONE") body.guest_role = guestRole;
     return this.api.post(`/index/`, body);
   }
-  createDocuments(name, documents, columns = {}) {
+
+  createDocuments(
+    name: string,
+    documents: { title: string; date: string; text: string }[],
+    columns = {}
+  ) {
     // documentList should be an array of objects with at least the fields title, date and text
     return this.api.post(`/index/${name}/documents`, { documents, columns });
   }
 
   // DELETE
-  deleteIndex(index) {
+  deleteIndex(index: string) {
     return this.api.delete(`/index/${index}`);
   }
 }
@@ -74,7 +99,7 @@ export default class Amcat {
  * @param {*} password  User password
  * @returns
  */
-export async function getToken(host, email, password) {
+export async function getToken(host: string, email: string, password: string) {
   const response = await Axios.get(`${host}/auth/token/`, {
     auth: { username: email, password: password },
   });

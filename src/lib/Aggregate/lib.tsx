@@ -1,4 +1,4 @@
-import { AggregateData, AggregateDataPoint, AggregationAxis } from "../interfaces";
+import { AggregateData, AggregateDataPoint } from "../interfaces";
 
 /*
  * Useful functions in dealing with aggregate data

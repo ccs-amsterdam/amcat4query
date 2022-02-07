@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Message, Modal } from "semantic-ui-react";
 import Articles from "../Articles/Articles";
 import {
-  AggregationAxis,
+  AggregateData,
   AggregationInterval,
   AggregationOptions,
   AmcatFilter,
@@ -31,7 +31,7 @@ interface AggregateResultProps {
  * - options: aggregation options {display, axes}
  */
 export default function AggregateResult({ amcat, index, query, options }: AggregateResultProps) {
-  const [data, setData] = useState();
+  const [data, setData] = useState<AggregateData>();
   const [error, setError] = useState<string>();
   const [zoom, setZoom] = useState();
 
@@ -40,7 +40,7 @@ export default function AggregateResult({ amcat, index, query, options }: Aggreg
     let cancel = false;
     // Prevent data/error being set from an earlier request
     // TODO: don't query if index changed but options hasn't been reset (yet)
-    const setResults = (data: any, error: string) => {
+    const setResults = (data: AggregateData, error?: string) => {
       if (!cancel) {
         setError(error);
         setData(data);
@@ -50,7 +50,7 @@ export default function AggregateResult({ amcat, index, query, options }: Aggreg
       setData(undefined);
       setError(undefined);
     } else {
-      fetchAggregate(amcat, index, options.axes, query, setResults);
+      amcat.postAggregate(index, query, options.axes, setResults, (e) => setResults(undefined, e));
     }
     return () => {
       cancel = true;
@@ -186,26 +186,4 @@ function getArticleList(amcat: Amcat, index: string, query: AmcatQuery, onClose:
       <Articles amcat={amcat} index={index} query={query} />
     </Modal>
   );
-}
-
-async function fetchAggregate(
-  amcat: Amcat,
-  index: string,
-  axes: AggregationAxis[],
-  query: AmcatQuery,
-  setResult: (data: any, error?: string) => void
-) {
-  let error;
-  try {
-    const result = await amcat.postAggregate(index, query, axes);
-    setResult(result.data);
-  } catch (e) {
-    console.log({ index, query, axes });
-    if (e.response) {
-      error = `HTTP error ${e.response.status}`;
-    } else if (e.request) {
-      error = "Error: No reply from server";
-    } else error = "Something went wrong trying to run the query";
-  }
-  if (error) setResult(undefined, error);
 }
