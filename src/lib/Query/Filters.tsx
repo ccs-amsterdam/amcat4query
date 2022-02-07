@@ -1,27 +1,36 @@
-import React from "react";
 import { Button, Dropdown } from "semantic-ui-react";
 import useFields from "../components/useFields";
 import FilterButton from "./FilterButton";
 import KeywordField from "./KeywordField";
 import DateField from "./DateField";
+import { AmcatField, AmcatFilter, AmcatFilters } from "../interfaces";
+import Amcat from "../apis/Amcat";
+
+interface FiltersProps {
+  /** the AmCAT instance */
+  amcat: Amcat;
+  /** name of the index */
+  index: string;
+  /** the current filters, e.g. {"publisher": {"values": ["nrc"]}} */
+  value: AmcatFilters;
+  /**
+   * Callback that will be called when the filter selection changes with a new filter object
+   *   (note that the filter might be incomplete, i.e. have only a key and an empty body if the user is still selecting)
+   */
+  onChange: (value: AmcatFilters) => void;
+}
 
 /**
- *
  * Define the filters for a query
  * Props:
- * - amcat: the AmCAT instance
- * - index (str): name of the index
- * - value (dict): the current filters, e.g. {"publisher": {"values": ["nrc"]}}
- * - onChange: will be called when the filter selection changes with a new filter object
- *             (note that the filter might be incomplete, i.e. have only a key and an empty body if the user is still selecting)
  */
-export default function Filters({ amcat, index, value, onChange }) {
+export default function Filters({ amcat, index, value, onChange }: FiltersProps) {
   const fields = useFields(amcat, index);
   if (!fields || !value) return null;
   const selectedfields = Object.keys(value);
   const fieldlist = fields.filter((f) => f.name in value);
 
-  const handleSelection = (selection) => {
+  const handleSelection = (selection: string[]) => {
     const result = { ...value };
     selection.filter((f) => !(f in result)).forEach((to_add) => (result[to_add] = {}));
     Object.keys(result)
@@ -30,7 +39,7 @@ export default function Filters({ amcat, index, value, onChange }) {
     onChange(result);
   };
 
-  const handleChange = (field, newval) => {
+  const handleChange = (field: string, newval: AmcatFilter) => {
     const unchanged = JSON.stringify(newval) === JSON.stringify(value[field]);
     if (unchanged) return;
 
@@ -39,9 +48,9 @@ export default function Filters({ amcat, index, value, onChange }) {
     onChange(result);
   };
 
-  const createFilterField = (field) => {
+  const createFilterField = (field: AmcatField) => {
     const val = value[field.name];
-    const handler = (value) => handleChange(field.name, value);
+    const handler = (value: AmcatFilter) => handleChange(field.name, value);
     switch (field.type) {
       case "date":
         return <DateField key={field.name} field={field.name} value={val} onChange={handler} />;
@@ -70,15 +79,19 @@ export default function Filters({ amcat, index, value, onChange }) {
   );
 }
 
+interface FieldSelectorProps {
+  /** an array of fields [{name, type}, ...] */
+  fields: AmcatField[];
+  /** an array of selected field names */
+  value: string[];
+  /** will be called with a new array of selected field names */
+  onChange: (value: string[]) => void;
+}
+
 /**
- *
  * Select a subset of fields
- * Props:
- * - fields: an array of fields [{name, type}, ...]
- * - value: an array of selected field names
- * - onChange: will be called with a new array of selected field names
  */
-const FieldSelector = ({ fields, value, onChange }) => {
+const FieldSelector = ({ fields, value, onChange }: FieldSelectorProps) => {
   const options = fields
     .filter((field) => ["tag", "keyword", "date"].includes(field.type))
     .map((f) => ({
@@ -110,7 +123,7 @@ const FieldSelector = ({ fields, value, onChange }) => {
         value={value}
         style={{ width: "300px" }}
         noResultsMessage=""
-        onChange={(_e, d) => onChange(d.value)}
+        onChange={(_e, d) => onChange(d.value as string[])}
       />
     </FilterButton>
   );

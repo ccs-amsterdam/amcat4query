@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Amcat from "./apis/Amcat";
 
 export type DisplayOption = "list" | "linechart" | "barchart";
 export type AggregationInterval = "day" | "week" | "month" | "quarter" | "year";
@@ -23,13 +24,18 @@ export interface AmcatFilter extends DateFilter {
   values?: string[];
 }
 
+export interface AmcatField {
+  name: string;
+  type: "keyword" | "date" | "tag";
+}
+
 export interface AmcatFilters {
   [field: string]: AmcatFilter;
 }
 
 export interface AmcatQuery {
-  filters: AmcatFilters;
-  queries: [];
+  filters?: AmcatFilters;
+  queries?: string[];
 }
 
 export type AggregateDataPoint = { [key: string]: any };
@@ -50,4 +56,11 @@ export interface AggregateVisualizerProps {
    * should be an array of values of equal length to the # of axes
    * */
   onClick: (value: any[]) => void;
+}
+
+export interface IndexProps {
+  /** Amcat instance */
+  amcat: Amcat;
+  /** index name */
+  index: string;
 }

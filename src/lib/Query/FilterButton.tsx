@@ -3,10 +3,10 @@ import { Button, Icon, Popup } from "semantic-ui-react";
 import { SemanticICONS } from "semantic-ui-react/dist/commonjs/generic";
 
 interface FilterButtonProps {
-  field: string;
   content: any;
   children: any;
   icon: SemanticICONS;
+  field?: string;
   disabled?: boolean;
   onlyContent?: boolean;
   style?: CSSProperties;

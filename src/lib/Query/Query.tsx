@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
 import QueryString from "./QueryString";
 import Filters from "./Filters";
+import { AmcatFilters, AmcatQuery, IndexProps } from "../interfaces";
+
+interface QueryProps extends IndexProps {
+  /** AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}} */
+  value: AmcatQuery;
+  /** callback that will be called with a valid AmCAT query when the user clicks submit */
+  onSubmit: (value: AmcatQuery) => void;
+}
 
 /**
  * Specify a full AmCAT **query**, i.e. querystrings and filters
- * Props:
- * - amcat: Amcat instance
- * - index: index name
- * - value: AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
- * - onSubmit: callback that will be called with a valid AmCAT query when the user clicks submit
  */
-export default function Query({ amcat, index, value, onSubmit }) {
-  const [queryStrings, setQueryStrings] = useState();
-  const [filters, setFilters] = useState();
+export default function Query({ amcat, index, value, onSubmit }: QueryProps) {
+  const [queryStrings, setQueryStrings] = useState<string>();
+  const [filters, setFilters] = useState<AmcatFilters>();
 
   // Is this the correct way to update the state if value changed?
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function Query({ amcat, index, value, onSubmit }) {
   }, [value]);
 
   const onClick = () => {
-    const q = {};
+    const q: AmcatQuery = {};
     // Split query string and remove empty queries
     if (queryStrings !== undefined && queryStrings.trim() !== "") {
       q.queries = queryStrings.split("\n").filter((e) => e.trim() !== "");
