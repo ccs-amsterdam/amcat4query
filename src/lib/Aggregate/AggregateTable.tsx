@@ -1,7 +1,8 @@
 import { Table } from "semantic-ui-react";
+import { AggregateDataPoint, AggregateVisualizerProps } from "../interfaces";
 
-export default function AggregateTable({ data, onClick }) {
-  const handleClick = (row) => {
+export default function AggregateTable({ data, onClick }: AggregateVisualizerProps) {
+  const handleClick = (row: AggregateDataPoint) => {
     const values = data.meta.axes.map((axis) => row[axis.field]);
     onClick(values);
   };

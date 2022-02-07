@@ -8,7 +8,7 @@ import {
   AmcatFilter,
   AmcatQuery,
 } from "../interfaces";
-import AggregateTable from "./AggragateTable";
+import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
 import Amcat from "../apis/Amcat";

@@ -1,11 +1,13 @@
 import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Legend } from "recharts";
-import { createChartData, qualitativeColors } from "./lib";
+import { AggregateVisualizerProps } from "../interfaces";
+import { qualitativeColors } from "./colors";
+import { createChartData } from "./lib";
 
-export default function AggregateLineChart({ data, onClick }) {
+export default function AggregateLineChart({ data, onClick }: AggregateVisualizerProps) {
   const { d, columns } = createChartData(data);
   const colors = qualitativeColors(columns.length);
 
-  const handleClick = (line, point) => {
+  const handleClick = (line: number, point: any) => {
     // First value is always the payload for primary aggregation axis
     const values = [point.payload[data.meta.axes[0].field]];
     if (data.meta.axes.length !== 1) {
