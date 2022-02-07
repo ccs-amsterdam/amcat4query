@@ -1,14 +1,16 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { Form, Button, Segment, Message } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
 import Amcat, { getToken } from "../apis/Amcat";
 
+interface LoginProps {
+  onLogin: (amcat: Amcat) => void;
+}
+
 /**
  * An AmCAT login form.
- * @param {*} onLogin Returns an Amcat class instance on login, or null on logout
- * @returns
  */
-export default function Login({ onLogin }) {
+export default function Login({ onLogin }: LoginProps) {
   const [cookies, setCookies] = useCookies(["amcat"]);
   const loggedIn = useRef(false);
   const [pending, setPending] = useState(true);
@@ -62,7 +64,11 @@ export default function Login({ onLogin }) {
   return <SignIn amcat={amcat} setLogin={setLogin} />;
 }
 
-const SignOut = ({ amcat, setLogout }) => {
+interface SignOutProps {
+  amcat: Amcat;
+  setLogout: () => void;
+}
+const SignOut = ({ amcat, setLogout }: SignOutProps) => {
   return (
     <Button fluid secondary onClick={setLogout}>
       Sign out from <span style={{ color: "lightblue" }}>{amcat.email}</span>
@@ -70,7 +76,11 @@ const SignOut = ({ amcat, setLogout }) => {
   );
 };
 
-const SignIn = ({ amcat, setLogin }) => {
+interface SignInProps {
+  amcat: Amcat;
+  setLogin: (data: { host: string; email: string; token: string }) => void;
+}
+const SignIn = ({ amcat, setLogin }: SignInProps) => {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("admin");

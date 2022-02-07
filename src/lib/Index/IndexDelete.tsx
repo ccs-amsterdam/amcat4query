@@ -1,17 +1,25 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Header, Icon, Modal, Dimmer, Loader } from "semantic-ui-react";
+import Amcat from "../apis/Amcat";
 
-export default function IndexDelete({ amcat, index, button, onDelete }) {
+interface IndexDeleteProps {
+  amcat: Amcat;
+  index: string;
+  open: boolean;
+  onClose: (deleted: boolean) => void;
+}
+
+export default function IndexDelete({ amcat, index, open, onClose }: IndexDeleteProps) {
   const [status, setStatus] = useState("inactive");
 
-  const onSubmit = (event) => {
+  const onSubmit = () => {
     setStatus("pending");
     amcat
       .deleteIndex(index)
       .then((res) => {
         // maybe check for 201 before celebrating
         setStatus("inactive");
-        onDelete(index);
+        onClose(true);
       })
       .catch((e) => {
         console.log(e);
@@ -22,16 +30,9 @@ export default function IndexDelete({ amcat, index, button, onDelete }) {
   return (
     <Modal
       closeIcon
-      open={status !== "inactive"}
-      trigger={
-        button || (
-          <Button disabled={!index} name="delete index">
-            <Icon name="minus" /> Delete Index
-          </Button>
-        )
-      }
+      open={open}
       onClose={() => {
-        setStatus("inactive");
+        onClose(false);
       }}
       onOpen={() => {
         setStatus("awaiting input");
@@ -51,7 +52,7 @@ export default function IndexDelete({ amcat, index, button, onDelete }) {
           </Dimmer>
         ) : (
           <>
-            <Button color="red" onClick={() => setStatus("inactive")}>
+            <Button color="red" onClick={() => onClose(false)}>
               <Icon name="remove" /> No
             </Button>
             <Button color="green" onClick={onSubmit}>

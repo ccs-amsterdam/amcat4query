@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { Header, Button, Modal, Form, Dropdown, Loader, Dimmer, Icon } from "semantic-ui-react";
+import Amcat from "../apis/Amcat";
 
 // default roles
 const guestRoles = [
@@ -10,6 +11,12 @@ const guestRoles = [
   { key: 40, value: "ADMIN", text: "Admin" },
 ];
 
+interface IndexCreateProps {
+  amcat: Amcat;
+  open: boolean;
+  onClose: (name?: string) => void;
+}
+
 /**
  *
  * @param {*}        amcat    An Amcat connection, optained with the amcat4auth module
@@ -17,43 +24,47 @@ const guestRoles = [
  * @param {function} onCreate Function called when new index is created. Argument is the name of the new index
  * @returns
  */
-export default function IndexCreate({ amcat, button, onCreate }) {
-  const [modalStatus, setModalStatus] = useState("inactive");
+export default function IndexCreate({ open, amcat, onClose }: IndexCreateProps) {
   const [newIndexName, setNewIndexName] = useState("");
-  const [guestRole, setGuestRole] = useState("None");
+  const [guestRole, setGuestRole] = useState("NONE");
   const [nameError, setNameError] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
-
+    setBusy(true);
     try {
       await amcat.getIndex(newIndexName);
       setNameError("This index name already exists");
     } catch (e) {
-      console.log("name doensnt yet exist, which is cool");
-      console.log(e);
+      if (e.response?.status !== 404) {
+        setError(`Error checking index name: ${e}`);
+        setBusy(false);
+        return;
+      }
     }
-
-    setModalStatus("pending");
 
     amcat
       .createIndex(newIndexName, guestRole)
       .then((res) => {
         // maybe check for 201 before celebrating
-        setModalStatus("inactive");
-        onCreate(newIndexName);
+        onClose(newIndexName);
       })
       .catch((e) => {
         console.log(e.message);
         console.log(e);
-        setModalStatus("error");
+        setError("Oops! Error!");
       });
+    setBusy(false);
   };
 
-  const validateName = (name) => {
+  const validateName = (name: string) => {
     if (name.match(/[ "*|<>/?,A-Z]/)) {
       const invalid = name.match(/[ "*|<>/?]/gi);
-      let uniqueInvalid = [...new Set(invalid)].map((c) => (c === " " ? "space" : c));
+      let uniqueInvalid = Array.from(new Set(invalid).values()).map((c) =>
+        c === " " ? "space" : c
+      );
       if (name.match(/[A-Z]/)) uniqueInvalid.push("UPPERCASE");
       setNameError(`Illegal symbols: ${uniqueInvalid.join(" ")}`);
     } else {
@@ -65,21 +76,12 @@ export default function IndexCreate({ amcat, button, onCreate }) {
   return (
     <Modal
       as={Form}
-      trigger={
-        button || (
-          <Button primary>
-            <Icon name="plus" />
-            Create new index
-          </Button>
-        )
-      }
-      onSubmit={(e) => onSubmit(e)}
-      open={modalStatus !== "inactive"}
-      onClose={() => setModalStatus("inactive")}
+      onSubmit={onSubmit}
+      open={open}
+      onClose={() => onClose(undefined)}
       onOpen={() => {
         setNewIndexName("");
         setGuestRole("NONE");
-        setModalStatus("awaiting input");
       }}
       size="tiny"
     >
@@ -96,7 +98,6 @@ export default function IndexCreate({ amcat, button, onCreate }) {
             onChange={(e, d) => {
               validateName(d.value);
               setNewIndexName(d.value.trim());
-              setModalStatus("awaiting input");
             }}
             placeholder="Enter name"
           />
@@ -116,10 +117,10 @@ export default function IndexCreate({ amcat, button, onCreate }) {
         </Form.Group>
       </Modal.Content>
       <Modal.Actions>
-        {modalStatus === "error" ? (
+        {error ? (
           <div>Could not create index for a reason not yet covered in the error handling...</div>
         ) : null}
-        {modalStatus === "pending" ? (
+        {busy ? (
           <Dimmer active inverted>
             <Loader content="Creating Index" />
           </Dimmer>
