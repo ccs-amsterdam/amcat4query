@@ -1,7 +1,8 @@
 import { List, Popup } from "semantic-ui-react";
+import { AmcatDocument } from "../interfaces";
 import { getColor, getColorGradient } from "./colors";
 
-export default function prepareArticle(article) {
+export default function prepareArticle(article: AmcatDocument) {
   if (article._annotations) article = addAnnotations(article);
 
   // add annotations also splits paragraphs. For text fields without annotations
@@ -20,7 +21,7 @@ export default function prepareArticle(article) {
  * @param {*} article
  * @returns
  */
-const addAnnotations = (article) => {
+const addAnnotations = (article: AmcatDocument) => {
   if (!article._annotations) return article;
 
   const mergedAnnotations = mergeAnnotations(article, article._annotations);
@@ -58,16 +59,18 @@ const addAnnotations = (article) => {
   return article;
 };
 
-const splitParagraphs = (text) => {
+const splitParagraphs = (text: string) => {
   const paragraphs = text.split(/\n/);
 
-  const linebreak = (i) => {
+  const linebreak = (i: number) => {
     if (i === paragraphs.length - 1) return null;
     return <br style={{ lineHeight: "1em" }} />;
   };
 
   // this looks like a bad solution, but we can't use tags to encapsulate paragraphs
   // due to the span annotations
+  // [WvA] and I presume this is where the unique key warning comes from. But not 100% sure...
+  console.log(paragraphs);
   return paragraphs.map((p, i) => (
     <>
       {p}
@@ -76,7 +79,7 @@ const splitParagraphs = (text) => {
   ));
 };
 
-const annotateText = (text, annotation) => {
+const annotateText = (text: JSX.Element[], annotation: MergedAnnotation) => {
   const annlist = [];
   const colors = [];
   for (let a of annotation.annotations) {
@@ -103,6 +106,7 @@ const annotateText = (text, annotation) => {
 
   return (
     <Popup
+      key={annotation.start + "_tag"}
       basic
       hoverable={false}
       position="top left"
@@ -126,8 +130,29 @@ const annotateText = (text, annotation) => {
   );
 };
 
-const mergeAnnotations = (article, annotations) => {
-  const annotationDict = {};
+type Annotation = {
+  field?: string;
+  variable: string;
+  value: any;
+  start?: number;
+  color?: string;
+  offset?: number;
+  length?: number;
+};
+
+type MergedAnnotation = {
+  field?: string;
+  length?: number;
+  offset?: number;
+  start?: number;
+  end?: number;
+  left?: boolean;
+  right?: boolean;
+  annotations?: Annotation[];
+};
+
+const mergeAnnotations = (article: AmcatDocument, annotations: MergedAnnotation[]) => {
+  const annotationDict: any = {};
   for (let annotation of annotations) {
     if (!article[annotation.field]) continue;
     if (!annotationDict[annotation.field]) annotationDict[annotation.field] = {};
@@ -138,8 +163,8 @@ const mergeAnnotations = (article, annotations) => {
     }
   }
 
-  const mergedAnnotations = {};
-  const writeAnnotation = (annotation, field, i) => {
+  const mergedAnnotations: { [key: string]: MergedAnnotation[] } = {};
+  const writeAnnotation = (annotation: MergedAnnotation, field: string, i: number) => {
     annotation.end = i;
     annotation.annotations = annotation.annotations.map((a) => ({
       variable: a.variable,
@@ -151,7 +176,7 @@ const mergeAnnotations = (article, annotations) => {
 
   for (let field of Object.keys(annotationDict)) {
     if (!mergedAnnotations[field]) mergedAnnotations[field] = [];
-    let annotation = {};
+    let annotation: MergedAnnotation = {};
 
     for (let i = 0; i <= article[field].length; i++) {
       // (<= so that it continues to just after the last char, for annotations all to the end)
@@ -185,7 +210,7 @@ const mergeAnnotations = (article, annotations) => {
   return mergedAnnotations;
 };
 
-const annotationsAreDifferent = (prev, next) => {
+const annotationsAreDifferent = (prev: Annotation[], next: Annotation[]): boolean => {
   if (prev.length !== next.length) return true;
   for (let j = 0; j < prev.length; j++) {
     if (next[j] !== prev[j]) {

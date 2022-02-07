@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import useFields from "../components/useFields";
 import prepareArticle from "./prepareArticle";
 import { Grid, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
+import { AmcatDocument, AmcatField, AmcatQuery, IndexProps } from "../interfaces";
+import Amcat from "../apis/Amcat";
+
+interface ArticleProps extends IndexProps {
+  /** An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change */
+  id: number | [number];
+  /** A query, used for highlighting */
+  query: AmcatQuery;
+}
 
 /**
- *
- * @param {class}  amcat  An Amcat connection class, as obtained with amcat4auth
- * @param {string} index The name of an index
- * @param {array}  id     An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't chagne.
- * @param {array}  columns an Array with objects indicating which columns to show and how. Object should have key 'name', which by default
- *                        is both the column name in the table, and the value fetched from data. But can also have a key 'f', which is a function
- *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system.
- * @returns
+ * Show a single article
  */
-export default function Article({ amcat, index, id, query }) {
+export default function Article({ amcat, index, id, query }: ArticleProps) {
   const fields = useFields(amcat, index);
   const [article, setArticle] = useState(null);
   const [open, setOpen] = useState(false);
@@ -53,8 +55,14 @@ export default function Article({ amcat, index, id, query }) {
   );
 }
 
-const fetchArticle = async (amcat, index, _id, query, setArticle) => {
-  let params = { annotations: true, filters: { _id } };
+async function fetchArticle(
+  amcat: Amcat,
+  index: string,
+  _id: number,
+  query: AmcatQuery,
+  setArticle: (value: AmcatDocument) => void
+) {
+  let params: any = { annotations: true, filters: { _id } };
   if (query?.queries) params.queries = query.queries;
   try {
     const res = await amcat.postQuery(index, params);
@@ -64,9 +72,14 @@ const fetchArticle = async (amcat, index, _id, query, setArticle) => {
     console.log(e);
     setArticle(null);
   }
-};
+}
 
-const Body = ({ article, fields }) => {
+interface BodyProps {
+  article: AmcatDocument;
+  fields: AmcatField[];
+}
+
+const Body = ({ article, fields }: BodyProps) => {
   const fieldLayout = {
     title: { fontSize: "1.4em", fontWeight: "bold" },
     text: {},
@@ -76,52 +89,63 @@ const Body = ({ article, fields }) => {
   article = prepareArticle(article);
 
   // Add title, all other 'text' fields, and finally text
-  const texts = [formatTextField(article, "title", fieldLayout)];
+  const texts = [<TextField key={-1} article={article} field="title" layout={fieldLayout} />];
   fields
     .filter((f) => f.type === "text" && !["title", "text"].includes(f.name) && article[f.name])
-    .forEach((f) => {
-      texts.push(formatTextField(article, f.name, fieldLayout, true));
+    .forEach((f, i) => {
+      texts.push(
+        <TextField key={i} article={article} field={f.name} layout={fieldLayout} label={true} />
+      );
     });
 
-  texts.push(formatTextField(article, "text", fieldLayout, texts.length > 1));
-  return texts;
+  texts.push(
+    <TextField
+      key={-2}
+      article={article}
+      field="text"
+      layout={fieldLayout}
+      label={texts.length > 1}
+    />
+  );
+  return <>{texts}</>;
 };
 
-const formatTextField = (article, field, layout, label) => {
+interface TextFieldProps {
+  article: AmcatDocument;
+  field: string;
+  layout: any;
+  label?: boolean;
+}
+
+function TextField({ article, field, layout, label }: TextFieldProps) {
   //const paragraphs = article[field].split("\n");
-  const paragraphs = [article[field]];
-
-  const addLabel = () => {
-    if (!label) return null;
-    return (
-      <span
-        key={field + "_label"}
-        style={{
-          color: "grey",
-          fontWeight: "bold",
-          textAlign: "center",
-        }}
-      >
-        {field}
-      </span>
-    );
-  };
-
+  let paragraphs = [article[field]];
   const fieldLayout = layout[field] || layout.default;
-
+  console.log(paragraphs);
   return (
     <div key={field} style={{ paddingBottom: "1em" }}>
-      {addLabel()}
-      {paragraphs.map((p, i) => (
-        <p key={field + "_" + i} style={{ ...fieldLayout }}>
+      {!label ? null : (
+        <span
+          key={field + "_label"}
+          style={{
+            color: "grey",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          {field}
+        </span>
+      )}
+      {paragraphs.map((p: any, i: number) => (
+        <p key={`${field}_${i}`} style={fieldLayout}>
           {p}
         </p>
       ))}
     </div>
   );
-};
+}
 
-const Meta = ({ article, fields }) => {
+const Meta = ({ article, fields }: BodyProps) => {
   const metaFields = fields.filter((f) => f.type !== "text" && !["title", "text"].includes(f.name));
   const rows = () => {
     return metaFields.map((field) => {
@@ -151,7 +175,7 @@ const Meta = ({ article, fields }) => {
         color: "black",
       }}
     >
-      {rows()}
+      <Table.Body>{rows()}</Table.Body>
     </Table>
   );
 };
@@ -162,7 +186,7 @@ const Meta = ({ article, fields }) => {
  * @param {*} field
  * @returns
  */
-const formatMetaValue = (article, field) => {
+const formatMetaValue = (article: AmcatDocument, field: AmcatField) => {
   const value = article[field.name];
   switch (field.type) {
     case "date":

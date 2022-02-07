@@ -26,7 +26,7 @@ export interface AmcatFilter extends DateFilter {
 
 export interface AmcatField {
   name: string;
-  type: "keyword" | "date" | "tag";
+  type: "keyword" | "date" | "tag" | "text" | "url";
 }
 
 export interface AmcatFilters {
@@ -63,4 +63,12 @@ export interface IndexProps {
   amcat: Amcat;
   /** index name */
   index: string;
+}
+
+export interface AmcatDocument {
+  /** We can see if a text has been processed by addAnnotations
+      if it's an array. But there should be a more elegant solution (WvA nods) */
+  text: string | any[];
+  _annotations?: any[];
+  [key: string]: any;
 }

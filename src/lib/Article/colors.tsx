@@ -1,4 +1,4 @@
-import randomColor from "randomcolor";
+import getRandomColor from "./randomcolor";
 
 /**
  * Get the color from the codeMap for a given annotation value/code.
@@ -7,8 +7,8 @@ import randomColor from "randomcolor";
  * @param {*} color    the color. If not given, creates random color
  * @returns
  */
-export const getColor = (code, color = null) => {
-  let col = color || randomColor({ seed: code, luminosity: "light" });
+export const getColor = (code: string, color: string = null): string => {
+  let col = color || getRandomColor({ seed: code, luminosity: "light" });
   return col + "80";
 };
 
@@ -18,7 +18,7 @@ export const getColor = (code, color = null) => {
  * @param {*} colors ...you know, colors
  * @returns
  */
-export const getColorGradient = (colors) => {
+export const getColorGradient = (colors: string[]) => {
   if (colors.length === 0) return "white";
   if (colors.length === 1) return colors[0];
 
