@@ -11,10 +11,21 @@ const date_intervals = [
   { key: "year", text: "year", value: "year" },
 ];
 
-function getField(fields, fieldname) {
+interface Field {
+  name: string;
+  type: string;
+}
+function getField(fields: Field[], fieldname: string): Field {
   const i = fields.map((f) => f.name).indexOf(fieldname);
   if (i === -1) return undefined;
   return fields[i];
+}
+
+interface AxisPickerProps {
+  fields: Field[];
+  value: { field: string; interval: string };
+  onChange: (value: { field: string; interval: string }) => void;
+  label?: string;
 }
 
 /**
@@ -26,7 +37,7 @@ function getField(fields, fieldname) {
  * - value: an object with a field (name) and optional interval: { field: fieldname, interval: interval}
  * - onChange: callback that will be called if the value is changed
  */
-export default function AxisPicker({ fields, value, onChange, label }) {
+export default function AxisPicker({ fields, value, onChange, label }: AxisPickerProps) {
   const axisOptions = fields
     .filter((f) => ["keyword", "tag", "date"].includes(f.type))
     .map((f) => ({
@@ -36,10 +47,10 @@ export default function AxisPicker({ fields, value, onChange, label }) {
       image: { avatar: true, src: f.type === "date" ? icon_date : icon_keyword },
     }));
 
-  const setInterval = (newval) => {
+  const setInterval = (newval: string) => {
     onChange({ ...value, interval: newval });
   };
-  const setField = (newval) => {
+  const setField = (newval: string) => {
     onChange({ ...value, field: newval });
   };
   const field = getField(fields, value?.field);
@@ -53,7 +64,7 @@ export default function AxisPicker({ fields, value, onChange, label }) {
         options={axisOptions}
         label={label ? label : "Aggregation axis"}
         value={field?.name}
-        onChange={(_e, { value }) => setField(value)}
+        onChange={(_e, { value }) => setField(value as string)}
       />
       {field?.type === "date" ? (
         <Form.Dropdown
@@ -63,7 +74,7 @@ export default function AxisPicker({ fields, value, onChange, label }) {
           options={date_intervals}
           label="Interval"
           value={value?.interval}
-          onChange={(_e, { value }) => setInterval(value)}
+          onChange={(_e, { value }) => setInterval(value as string)}
         />
       ) : null}
     </Form.Group>
