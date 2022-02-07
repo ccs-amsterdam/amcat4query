@@ -13,16 +13,22 @@ export interface AggregationOptions {
   display: DisplayOption;
 }
 
-export interface AmcatFilter {
-  values?: string[];
+export interface DateFilter {
   lte?: string;
   gte?: string;
   lt?: string;
   gt?: string;
 }
+export interface AmcatFilter extends DateFilter {
+  values?: string[];
+}
+
+export interface AmcatFilters {
+  [field: string]: AmcatFilter;
+}
 
 export interface AmcatQuery {
-  filters: { [field: string]: AmcatFilter };
+  filters: AmcatFilters;
   queries: [];
 }
 

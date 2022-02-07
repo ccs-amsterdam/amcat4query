@@ -1,21 +1,30 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { TextArea, Form, Modal } from "semantic-ui-react";
+
+interface QueryStringProps {
+  /** the current value (query strings) as a single text */
+  value: string;
+  /** will be called on every change with a new textual value */
+  onChange: (value: string) => void;
+  /** the number of rows (default: 7) */
+  rows?: number;
+}
 
 /**
  * Text area to set the query string(s)
  * props:
- * - value: the current value as a text
- * - onChange: will be called on every change with a new textual value
+ * - value:
+ * - onChange:
  * - rows: the number of rows (default: 7)
  */
-export default function QueryString({ value, onChange, rows }) {
+export default function QueryString({ value, onChange, rows }: QueryStringProps) {
   return (
     <Form style={{ marginBottom: "2em", width: "100%" }}>
       <TextArea
         value={value}
         width={16}
         placeholder="Query..."
-        onChange={(e, d) => onChange(d.value)}
+        onChange={(e, d) => onChange(d.value as string)}
         rows={rows || 7}
       />
       <QueryHelp />

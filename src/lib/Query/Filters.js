@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Dropdown } from "semantic-ui-react";
 import useFields from "../components/useFields";
-import FilterButton from "./FilterForms/FilterButton";
-import KeywordField from "./FilterForms/KeywordField";
-import DateField from "./FilterForms/DateField";
+import FilterButton from "./FilterButton";
+import KeywordField from "./KeywordField";
+import DateField from "./DateField";
 
 /**
  *

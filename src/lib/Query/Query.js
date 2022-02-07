@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
-import QueryString from "./FilterForms/QueryString";
+import QueryString from "./QueryString";
 import Filters from "./Filters";
 
 /**

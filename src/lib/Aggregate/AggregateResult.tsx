@@ -7,6 +7,7 @@ import {
   AggregationOptions,
   AmcatFilter,
   AmcatQuery,
+  DateFilter,
 } from "../interfaces";
 import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
@@ -168,8 +169,7 @@ function describe_filter(field: string, filter: AmcatFilter) {
     gte: "≥",
     gt: ">",
   };
-  return (Object.keys(filter) as (keyof AmcatFilter)[])
-    .filter((f) => f in descriptions)
+  return (Object.keys(filter) as (keyof DateFilter)[])
     .map((f) => `${field} ${descriptions[f]} ${filter[f]}`)
     .join(" and ");
 }

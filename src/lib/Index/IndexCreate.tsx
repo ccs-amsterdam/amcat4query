@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import { Header, Button, Modal, Form, Dropdown, Loader, Dimmer, Icon } from "semantic-ui-react";
+import { Header, Button, Modal, Form, Dropdown, Loader, Dimmer } from "semantic-ui-react";
 import Amcat from "../apis/Amcat";
 
 // default roles

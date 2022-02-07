@@ -1,4 +1,4 @@
-import Axios, { AxiosInstance } from "axios";
+import Axios, { AxiosError, AxiosInstance } from "axios";
 import { AggregateData, AggregationAxis, AmcatQuery } from "../interfaces";
 
 /**
@@ -40,8 +40,23 @@ export default class Amcat {
   getFields(index: string) {
     return this.api.get(`/index/${index}/fields`);
   }
-  getFieldValues(index: string, field: string) {
-    return this.api.get(`/index/${index}/fields/${field}/values`);
+
+  /** Get the values for a field
+   * @param index Index name
+   * @param field Field name
+   * @param setData Callback function to call on success
+   * @param setError Callback function to call on failure
+   */
+  getFieldValues(
+    index: string,
+    field: string,
+    setData: (data: string[]) => void,
+    setError: (error: string) => void
+  ) {
+    return this.api
+      .get(`/index/${index}/fields/${field}/values`)
+      .then((result) => setData(result.data))
+      .catch((error) => setError(describeError(error)));
   }
   getDocument(index: string, doc_id: string | number) {
     return this.api.get(`/index/${index}/documents/${doc_id}`);
@@ -52,6 +67,13 @@ export default class Amcat {
     return this.api.post(`/index/${index}/query`, { ...query, ...params });
   }
 
+  /** POST an aggregate query to AmCAT
+   * @param index Index name
+   * @param query A Query to determine which documents will be aggregated (e.g. SQL where)
+   * @param axes The aggregation axes (e.g. SQL group by)
+   * @param setData Callback function that will be called with the data after a succesful call
+   * @param setError Callback function that will be called with an error message on failure
+   */
   postAggregate(
     index: string,
     query: AmcatQuery,
@@ -64,11 +86,7 @@ export default class Amcat {
     return this.api
       .post(`/index/${index}/aggregate`, { ...params })
       .then((d) => setData(d.data))
-      .catch((e) => {
-        if (e.response) setError(`HTTP error ${e.response.status}`);
-        else if (e.request) setError("No reply from server");
-        else setError("Something went wrong trying to run the query");
-      });
+      .catch((e) => setError(describeError(e)));
   }
 
   createIndex(name: string, guestRole = "NONE") {
@@ -104,4 +122,10 @@ export async function getToken(host: string, email: string, password: string) {
     auth: { username: email, password: password },
   });
   return response.data.token;
+}
+
+function describeError(e: AxiosError): string {
+  if (e.response) return `HTTP error ${e.response.status}`;
+  if (e.request) return "No reply from server";
+  return "Something went wrong trying to query the AmCAT backend";
 }
