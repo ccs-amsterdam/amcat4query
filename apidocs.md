@@ -1,7 +1,11 @@
-1. [Main components](#maincomponents)
+# AmCAT4 React components documentation
+
+Generated with `npx ts-node document.tsx`
+
+1. [Main components](#main-components)
 1. [Aggregation](#aggregation)
 1. [Articles](#articles)
-1. [Login & Index](#login&index)
+1. [Login & Index](#login--index)
 1. [Queries](#queries)
 
 # Main components
@@ -136,6 +140,8 @@ Name | Type | Required | Descriptipn
 `index` | string | true | index name
 
 
+---
+
 # Aggregation
 
 ## AxisPicker
@@ -227,6 +233,8 @@ The data to visualize
 should be an array of values of equal length to the # of axes
 
 
+---
+
 # Articles
 
 ## PaginationTable
@@ -247,6 +255,8 @@ Name | Type | Required | Descriptipn
 `pageChange` | (page: number) => void | true | the function to perform on pagechange. Gets pageindex as an argument, and should update data
 `onClick` | (value: any) => void | true | Function to perform when clicking on a row. Gets data row object as argument
 
+
+---
 
 # Login & Index
 
@@ -284,6 +294,8 @@ Name | Type | Required | Descriptipn
 `open` | boolean | true | 
 `onClose` | (deleted: boolean) => void | true | 
 
+
+---
 
 # Queries
 
@@ -382,3 +394,6 @@ Name | Type | Required | Descriptipn
 `value` | string | true | the current value (query strings) as a single text
 `onChange` | (value: string) => void | true | will be called on every change with a new textual value
 `rows` | number | false | the number of rows (default: 7)
+
+
+---

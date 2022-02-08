@@ -94,11 +94,13 @@ lines.forEach((line, i) => {
     if (found) interfaces[found[1]] = i+1
 })
 
-const content:string[] = [];
+const content:string[] = ["# AmCAT4 React components documentation",
+"Generated with `npx ts-node document.tsx`"];
 // TOC
-Object.keys(sections).forEach(section => {
-  content.push(`1. [${section}](${section.toLowerCase().replaceAll(" ", "")})`)
-});
+const toc = Object.keys(sections).map(section => 
+    `1. [${section}](#${section.toLowerCase().replaceAll(" ", "-").replaceAll("&", "")})`
+  ).join("\n");
+content.push(toc)
 
 // Component definitions
 Object.keys(sections).forEach(section => {
@@ -106,6 +108,7 @@ Object.keys(sections).forEach(section => {
   const x = docgen.parse(sections[section]);
   const p = x.map(component).join("\n\n")
   content.push(p)
+  content.push("---")
 })
 
 fs.writeFileSync("apidocs.md", content.join("\n\n"))
