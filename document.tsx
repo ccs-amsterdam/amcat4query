@@ -40,10 +40,13 @@ function props(props: {[key: string]: Prop}): string {
   const prefix = "Name | Type | Required | Descriptipn\n--- | --- | --- | ---"
   const rows: string[] = Object.keys(props).map((key) => {
     const p = props[key];
-    let type = p.type.name;
+    let type = p.type.name.replaceAll("|", "\\|");
+    Object.keys(interfaces).forEach(key => {
+      type = type.replaceAll(key, `[${key}](src/lib/interfaces.tsx#L${interfaces[key]})`)
+    })
     //console.log({type, x:type in interfaces})
-    if (type in interfaces) type = `[${type}](src/lib/interfaces.tsx#L${interfaces[type]})`
-    else type = `\`${type.replaceAll("|", "\\|")}\``
+    //if (type in interfaces) type = `[${type}](src/lib/interfaces.tsx#L${interfaces[type]})`
+    //else type = `\`${type.replaceAll("|", "\\|")}\``
     return `\`${p.name}\` | ${type} | ${p.required} | ${p.description}`
   })
   return `${prefix}\n${rows.join("\n")}`
