@@ -40,7 +40,9 @@ function props(props: {[key: string]: Prop}): string {
   const prefix = "Name | Type | Required | Descriptipn\n--- | --- | --- | ---"
   const rows: string[] = Object.keys(props).map((key) => {
     const p = props[key];
-    return `${p.name} | ${p.type.name} | ${p.required} | ${p.description}`
+    let type = p.type.name;
+    if (type in interfaces) type = `[${type}](src/lib/interfaces.tsx#L${interfaces[type]})`
+    return `${p.name} | ${type} | ${p.required} | ${p.description}`
   })
   return `${prefix}\n${rows.join("\n")}`
 }
@@ -69,9 +71,15 @@ const files = [
   "src/lib/Login/Login.tsx",
 ] 
 
-// Parse a file for docgen info
+
+const lines = String(fs.readFileSync("src/lib/interfaces.tsx")).split("\n")
+const interfaces: {[key: string]: number} = {}
+lines.forEach((line, i) => {
+    const found = line.match(/export interface (\w+) {/);
+    if (found) interfaces[found[1]] = i
+})
+
 const x = docgen.parse(files);
-console.log(x)
 const p = x.map(component).join("\n\n")
 fs.writeFileSync("apidocs.md", p)
 
