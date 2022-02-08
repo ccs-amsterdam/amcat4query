@@ -72,3 +72,8 @@ export interface AmcatDocument {
   _annotations?: any[];
   [key: string]: any;
 }
+
+export interface AmcatQueryResult {
+  results?: any[];
+  meta?: { page_count?: number };
+}

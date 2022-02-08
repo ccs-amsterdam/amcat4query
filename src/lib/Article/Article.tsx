@@ -66,7 +66,6 @@ async function fetchArticle(
   if (query?.queries) params.queries = query.queries;
   try {
     const res = await amcat.postQuery(index, params);
-    console.log(res);
     setArticle(res.data.results[0]);
   } catch (e) {
     console.log(e);
@@ -121,7 +120,6 @@ function TextField({ article, field, layout, label }: TextFieldProps) {
   //const paragraphs = article[field].split("\n");
   let paragraphs = [article[field]];
   const fieldLayout = layout[field] || layout.default;
-  console.log(paragraphs);
   return (
     <div key={field} style={{ paddingBottom: "1em" }}>
       {!label ? null : (

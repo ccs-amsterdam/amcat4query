@@ -70,7 +70,6 @@ const splitParagraphs = (text: string) => {
   // this looks like a bad solution, but we can't use tags to encapsulate paragraphs
   // due to the span annotations
   // [WvA] and I presume this is where the unique key warning comes from. But not 100% sure...
-  console.log(paragraphs);
   return paragraphs.map((p, i) => (
     <>
       {p}
@@ -214,7 +213,6 @@ const annotationsAreDifferent = (prev: Annotation[], next: Annotation[]): boolea
   if (prev.length !== next.length) return true;
   for (let j = 0; j < prev.length; j++) {
     if (next[j] !== prev[j]) {
-      console.log(prev[j], next[j]);
       return true;
     }
   }
