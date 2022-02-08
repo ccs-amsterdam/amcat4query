@@ -45,11 +45,33 @@ function props(props: {[key: string]: Prop}): string {
   return `${prefix}\n${rows.join("\n")}`
 }
 
-
+const files = [
+  "src/lib/Article/Article.tsx",
+  "src/lib/components/PaginationTable.tsx",
+  "src/lib/Index/IndexCreate.tsx",
+  "src/lib/Index/Index.tsx",
+  "src/lib/Index/IndexDelete.tsx",
+  "src/lib/Aggregate/AxisPicker.tsx",
+  "src/lib/Aggregate/AggregateResult.tsx",
+  "src/lib/Aggregate/AggregateTable.tsx",
+  "src/lib/Aggregate/AggregateOptionsChooser.tsx",
+  "src/lib/Aggregate/AggregateLineChart.tsx",
+  "src/lib/Aggregate/AggregatePane.tsx",
+  "src/lib/Aggregate/AggregateBarChart.tsx",
+  "src/lib/apis/Amcat.tsx",
+  "src/lib/Query/KeywordField.tsx",
+  "src/lib/Query/Query.tsx",
+  "src/lib/Query/Filters.tsx",
+  "src/lib/Query/DateField.tsx",
+  "src/lib/Query/FilterButton.tsx",
+  "src/lib/Query/QueryString.tsx",
+  "src/lib/Articles/Articles.tsx",
+  "src/lib/Login/Login.tsx",
+] 
 
 // Parse a file for docgen info
-const x = docgen.parse("./src/lib/Aggregate/AggregateResult.tsx");
+const x = docgen.parse(files);
 console.log(x)
-const p = component(x[0]);
+const p = x.map(component).join("\n\n")
 fs.writeFileSync("apidocs.md", p)
 
