@@ -15,7 +15,7 @@ props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-amcat | Amcat | true | 
-index | string | true | 
-query | AmcatQuery | true | 
-options | AggregationOptions | true | 
+query | AmcatQuery | true | The query for the results to show
+options | AggregationOptions | true | Aggregation options (display and axes information)
+amcat | Amcat | true | Amcat instance
+index | string | true | index name

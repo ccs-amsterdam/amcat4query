@@ -8,6 +8,7 @@ import {
   AmcatFilter,
   AmcatQuery,
   DateFilter,
+  IndexProps,
 } from "../interfaces";
 import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
@@ -16,10 +17,10 @@ import Amcat from "../apis/Amcat";
 
 //TODO: This file is becoming too complex - move some business logic to a lib and add unit tests?
 
-interface AggregateResultProps {
-  amcat: Amcat;
-  index: string;
+interface AggregateResultProps extends IndexProps {
+  /** The query for the results to show */
   query: AmcatQuery;
+  /** Aggregation options (display and axes information) */
   options: AggregationOptions;
 }
 
