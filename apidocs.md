@@ -11,7 +11,7 @@ Show a single article
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `id` | `number \| [number]` | true | An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | A query, used for highlighting
+`query` | `[AmcatQuery](src/lib/interfaces.tsx#L36)` | true | A query, used for highlighting
 `amcat` | `Amcat` | true | Amcat instance
 `index` | `string` | true | index name
 
@@ -102,7 +102,7 @@ Dropdown to select an aggregation axis and possibly interval
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `fields` | `Field[]` | true | index fields to choose from
-`value` | [AggregationAxis](src/lib/interfaces.tsx#L7) | true | Current axis value
+`value` | `[AggregationAxis](src/lib/interfaces.tsx#L7)` | true | Current axis value
 `onChange` | `(value: AggregationAxis) => void` | true | Callback to set axis when user changes field or interval
 `label` | `string` | false | 
 
@@ -124,8 +124,8 @@ props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | The query for the results to show
-`options` | [AggregationOptions](src/lib/interfaces.tsx#L12) | true | Aggregation options (display and axes information)
+`query` | `[AmcatQuery](src/lib/interfaces.tsx#L36)` | true | The query for the results to show
+`options` | `[AggregationOptions](src/lib/interfaces.tsx#L12)` | true | Aggregation options (display and axes information)
 `amcat` | `Amcat` | true | Amcat instance
 `index` | `string` | true | index name
 
@@ -162,7 +162,7 @@ Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `amcat` | `Amcat` | true | 
 `index` | `string` | true | 
-`value` | [AggregationOptions](src/lib/interfaces.tsx#L12) | true | 
+`value` | `[AggregationOptions](src/lib/interfaces.tsx#L12)` | true | 
 `onSubmit` | `(value: AggregationOptions) => void` | true | 
 
 
@@ -198,7 +198,7 @@ Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `amcat` | `Amcat` | true | 
 `index` | `string` | true | 
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | 
+`query` | `[AmcatQuery](src/lib/interfaces.tsx#L36)` | true | 
 
 
 # AggregateBarChart
@@ -280,7 +280,7 @@ Specify a full AmCAT **query**, i.e. querystrings and filters
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`value` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
+`value` | `[AmcatQuery](src/lib/interfaces.tsx#L36)` | true | AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
 `onSubmit` | `(value: AmcatQuery) => void` | true | callback that will be called with a valid AmCAT query when the user clicks submit
 `amcat` | `Amcat` | true | Amcat instance
 `index` | `string` | true | index name
@@ -301,7 +301,7 @@ Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `amcat` | `Amcat` | true | the AmCAT instance
 `index` | `string` | true | name of the index
-`value` | [AmcatFilters](src/lib/interfaces.tsx#L32) | true | the current filters, e.g. {"publisher": {"values": ["nrc"]}}
+`value` | `[AmcatFilters](src/lib/interfaces.tsx#L32)` | true | the current filters, e.g. {"publisher": {"values": ["nrc"]}}
 `onChange` | `(value: AmcatFilters) => void` | true | Callback that will be called when the filter selection changes with a new filter object
   (note that the filter might be incomplete, i.e. have only a key and an empty body if the user is still selecting)
 
@@ -319,7 +319,7 @@ Field for creating a date filter
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `field` | `string` | true | the field name of the current field
-`value` | [DateFilter](src/lib/interfaces.tsx#L17) | true | the current value of the filter, e.g. {"gte": "2020-01-01"}
+`value` | `[DateFilter](src/lib/interfaces.tsx#L17)` | true | the current value of the filter, e.g. {"gte": "2020-01-01"}
 `onChange` | `(value: DateFilter) => void` | true | callback that will be called with a new filter value
 
 
@@ -376,7 +376,7 @@ Table overview of a subset of articles
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | Query/filter of which documents to show
+`query` | `[AmcatQuery](src/lib/interfaces.tsx#L36)` | true | Query/filter of which documents to show
 `columns` | `PaginationTableColumn[]` | false | an Array with objects indicating which columns to show and how
 `allColumns` | `boolean` | false | if true, include all columns AFTER the columns specified in the columns argument
 `amcat` | `Amcat` | true | Amcat instance
