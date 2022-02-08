@@ -1,4 +1,4 @@
-import PaginationTable from "../components/PaginationTable";
+import PaginationTable, { PaginationTableColumn } from "../components/PaginationTable";
 import { useEffect, useMemo, useState } from "react";
 import Article from "../Article/Article";
 import { AmcatQuery, AmcatQueryResult, IndexProps } from "../interfaces";
@@ -6,18 +6,9 @@ import Amcat from "../apis/Amcat";
 
 const per_page = 15;
 
-interface ArticlesColumn {
-  /** Object should have key 'name', which by default is both the column name in the table, and the value fetched from data. */
-  name: string;
-  /** Set to true to hide this column */
-  hide?: boolean;
-  /** Optional transformation function to run over the *row*  */
-  f?: (row: any) => any;
-  /** Optional 'width' to specify width in SemanticUIs 16 parts system. */
-  width?: number;
-}
 
-const COLUMNS: ArticlesColumn[] = [
+
+const COLUMNS: PaginationTableColumn[] = [
   { name: "_id", hide: true },
   { name: "date", f: (row) => row.date.replace("T", " ") },
   { name: "publisher" }, // optional
@@ -29,7 +20,7 @@ interface ArticlesProps extends IndexProps {
   /** Query/filter of which documents to show */
   query: AmcatQuery;
   /** an Array with objects indicating which columns to show and how */
-  columns?: ArticlesColumn[];
+  columns?: PaginationTableColumn[];
   /** if true, include all columns AFTER the columns specified in the columns argument */
   allColumns?: boolean;
 }

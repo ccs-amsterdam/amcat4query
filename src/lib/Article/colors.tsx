@@ -8,7 +8,6 @@ import getRandomColor from "./randomcolor";
  * @returns
  */
 export const getColor = (code: string, color: string = null): string => {
-  console.log({ code });
   let col = color || getRandomColor(code);
   return col + "80";
 };

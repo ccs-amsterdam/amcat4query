@@ -1,33 +1,54 @@
-import React from "react";
 import { Container, Pagination, Table, Icon } from "semantic-ui-react";
+import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
 import { removeElasticTags, highlightElasticTags } from "../functions/highlightElasticTags";
+import { AmcatQueryResult } from "../interfaces";
 import "./paginationTableStyle.css";
+
+export interface PaginationTableColumn {
+  /** Object should have key 'name', which by default is both the column name in the table, and the value fetched from data. */
+  name: string;
+  /** Set to true to hide this column */
+  hide?: boolean;
+  /** Optional transformation function to run over the *row*  */
+  f?: (row: TableRow) => TableRow;
+  /** Optional 'width' to specify width in SemanticUIs 16 parts system. */
+  width?: SemanticWIDTHS;
+}
+
+interface TableRow {
+  [key: string]: any;
+}
+
+interface PaginationProps {
+  /** an Array with data for a single page */
+  data: TableRow[],
+  /** an Array with objects indicating which columns to show and how. */
+  columns: PaginationTableColumn[],
+  /** the number of pages */
+  pages: number,
+  /** the function to perform on pagechange. Gets pageindex as an argument, and should update data */
+  pageChange: (page: number) => void;
+  /** Function to perform when clicking on a row. Gets data row object as argument */
+  onClick: (value: any) => void;
+}
 
 /**
  * A nice table with pagination
- * @param {array} data an Array with data for a single page
- * @param {array} columns an Array with objects indicating which columns to show and how. Object should have key 'name', which by default
- *                        is both the column name in the table, and the value fetched from data. But can also have a key 'f', which is a function
- *                        taking a data row object as argument. Can also have key 'width' to specify width in SemanticUIs 16 parts system.
- * @param {int} pages the number of pages
- * @param {function} pageChange the function to perform on pagechange. Gets pageindex as an argument, and should update data
- * @param {function} onClick    Function to perform when clicking on a row. Gets data row object as argument
- * @returns
  */
-export default function PaginationTable({ data, columns, pages, pageChange, onClick }) {
-  const createHeaderRow = (data, columns) => {
+export default function PaginationTable({ data, columns, pages, pageChange, onClick }: PaginationProps) {
+  const createHeaderRow = (columns: PaginationTableColumn[]) => {
     return columns.map((col, i) => {
       if (col.hide) return null;
 
       return (
-        <Table.HeaderCell key={i} width={col.width || null}>
+        <Table.HeaderCell key={i} width={col.width || null }>
           <span title={col.name}>{col.name}</span>
         </Table.HeaderCell>
       );
     });
   };
 
-  const createBodyRows = (data, columns) => {
+  const createBodyRows = (data: TableRow[], columns: PaginationTableColumn[]) => {
     return data.map((rowObj, i) => {
       return (
         <Table.Row key={i} style={{ cursor: "pointer" }} onClick={() => onClick(rowObj)}>
@@ -37,7 +58,7 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
     });
   };
 
-  const createRowCells = (rowObj, columns) => {
+  const createRowCells = (rowObj: TableRow, columns: PaginationTableColumn[]) => {
     return columns.map((column, i) => {
       if (column.hide) return null;
       let content;
@@ -70,7 +91,7 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
     <Container style={{ width: "100%", overflow: "auto" }}>
       <Table unstackable selectable compact singleLine size="small" style={{ fontSize: "10px" }}>
         <Table.Header>
-          <Table.Row>{createHeaderRow(data, columnSelection)}</Table.Row>
+          <Table.Row>{createHeaderRow(columnSelection)}</Table.Row>
         </Table.Header>
         <Table.Body>{createBodyRows(data, columnSelection)}</Table.Body>
         <Table.Footer>
@@ -103,7 +124,7 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
                   secondary
                   defaultActivePage={1}
                   totalPages={pages}
-                  onPageChange={(e, d) => pageChange(d.activePage - 1)}
+                  onPageChange={(e, d) => pageChange(d.activePage as number - 1)}
                 ></Pagination>
               ) : null}
             </Table.HeaderCell>
