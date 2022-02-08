@@ -42,7 +42,7 @@ function props(props: {[key: string]: Prop}): string {
     const p = props[key];
     let type = p.type.name;
     if (type in interfaces) type = `[${type}](src/lib/interfaces.tsx#L${interfaces[type]})`
-    return `${p.name} | ${type} | ${p.required} | ${p.description}`
+    return `${p.name} | ${type.replaceAll("|", "\\|")} | ${p.required} | ${p.description}`
   })
   return `${prefix}\n${rows.join("\n")}`
 }
@@ -76,7 +76,7 @@ const lines = String(fs.readFileSync("src/lib/interfaces.tsx")).split("\n")
 const interfaces: {[key: string]: number} = {}
 lines.forEach((line, i) => {
     const found = line.match(/export interface (\w+) {/);
-    if (found) interfaces[found[1]] = i
+    if (found) interfaces[found[1]+1] = i
 })
 
 const x = docgen.parse(files);
