@@ -42,7 +42,8 @@ function props(props: {[key: string]: Prop}): string {
     const p = props[key];
     let type = p.type.name;
     if (type in interfaces) type = `[${type}](src/lib/interfaces.tsx#L${interfaces[type]})`
-    return `\`${p.name}\` | \`${type.replaceAll("|", "\\|")}\` | ${p.required} | ${p.description}`
+    else type = `\`${type.replaceAll("|", "\\|")}\``
+    return `\`${p.name}\` | ${type} | ${p.required} | ${p.description}`
   })
   return `${prefix}\n${rows.join("\n")}`
 }
