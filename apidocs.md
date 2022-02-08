@@ -1,12 +1,8 @@
-1. [Main components](maincomponents)
-
-1. [Aggregation](aggregation)
-
-1. [Articles](articles)
-
-1. [Login & Index](login&index)
-
-1. [Queries](queries)
+1. [Main components](#maincomponents)
+1. [Aggregation](#aggregation)
+1. [Articles](#articles)
+1. [Login & Index](#login&index)
+1. [Queries](#queries)
 
 # Main components
 
