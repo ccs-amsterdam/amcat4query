@@ -1,7 +1,9 @@
-import React from "react";
 import { Header, Table, Dropdown } from "semantic-ui-react";
+import { AmcatField } from "../interfaces";
 
-const ES_MAPPINGS = {
+//TODO: specify some of the any fields
+
+const ES_MAPPINGS: {[key: string]: {type: string}} = {
   int: { type: "long" },
   date: { type: "date" },
   num: { type: "double" },
@@ -11,7 +13,14 @@ const ES_MAPPINGS = {
 };
 const REQUIRED_FIELDS = ["title", "date", "text"];
 
-export default function ImportTable({ data, columns, setColumns, fields }) {
+interface ImportTableProps {
+  data: any[],
+  columns: any[],
+  setColumns: (columns: any[]) => void,
+  fields: {[key: string]: AmcatField};
+}
+
+export default function ImportTable({ data, columns, setColumns, fields }: ImportTableProps) {
   const n = 6;
 
   const headerCellStyle = {
@@ -23,7 +32,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     overflow: "visible",
   };
 
-  const headerName = (data) => {
+  const headerName = () => {
     return columns.map((column) => {
       return (
         <Table.HeaderCell style={{ ...headerCellStyle, background: "grey", color: "white" }}>
@@ -33,7 +42,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     });
   };
 
-  const headerField = (data) => {
+  const headerField = () => {
     const fieldOptions = Object.keys(fields).map((field) => {
       let description = fields[field] ? "exists" : null;
       let text = field;
@@ -44,7 +53,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
       return { key: field, value: field, text, description, color: "blue" };
     });
 
-    const onChangeField = (i, newField) => {
+    const onChangeField = (i: number, newField: string) => {
       for (let column of columns) {
         if (column.field === newField) column.field = null;
       }
@@ -54,7 +63,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     };
 
     return columns.map((column, i) => {
-      const options = [...fieldOptions];
+      const options: any[] = [...fieldOptions];
       const exists = fields[column.field];
       if (!exists) options.push({ key: column.field, value: column.field, text: column.field });
 
@@ -69,8 +78,8 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
             placeholder="assign field"
             allowAdditions
             additionLabel="New Field "
-            onAddItem={(e, d) => onChangeField(i, d.value)}
-            onChange={(e, d) => onChangeField(i, d.value)}
+            onAddItem={(e, d) => onChangeField(i, d.value as string)}
+            onChange={(e, d) => onChangeField(i, d.value as string)}
             options={options}
           />
         </Table.HeaderCell>
@@ -79,12 +88,12 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
   };
 
   const headerType = () => {
-    let options = Object.keys(ES_MAPPINGS).map((em) => {
+    let options: any[] = Object.keys(ES_MAPPINGS).map((em) => {
       return { key: em, value: em, text: em.toUpperCase(), description: ES_MAPPINGS[em] };
     });
     options = [{ key: "auto", value: "auto", text: "AUTO" }, ...options];
 
-    const onChangeType = (i, newType) => {
+    const onChangeType = (i: number, newType: string) => {
       const fixedType = fields[columns[i].field]?.type;
       if (fixedType) {
         columns[i].type = fixedType;
@@ -108,8 +117,8 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
             style={{ height: "2em", textAlign: "center", color }}
             placeholder="type"
             value={column.type}
-            disabled={exists}
-            onChange={(e, d) => onChangeType(i, d.value)}
+            disabled={exists != null}
+            onChange={(e, d) => onChangeType(i, d.value as string)}
             options={options}
           />
         </Table.HeaderCell>
@@ -117,7 +126,7 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     });
   };
 
-  const headerRowLabel = (label) => {
+  const headerRowLabel = (label: any) => {
     return (
       <Table.HeaderCell
         style={{
@@ -133,14 +142,14 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
     );
   };
 
-  const createRows = (data, n) => {
+  const createRows = (data: any[], n: number) => {
     const previewdata = data.slice(0, n + 1);
     return previewdata.slice(1).map((row, i) => {
       return <Table.Row>{createRowCells(row, i)}</Table.Row>;
     });
   };
 
-  const createRowCells = (row, i) => {
+  const createRowCells = (row: any[], i:number) => {
     const rowCells = row.map((cell) => {
       return (
         <Table.Cell style={{ textAlign: "right" }}>
@@ -174,12 +183,12 @@ export default function ImportTable({ data, columns, setColumns, fields }) {
         <Table.Header>
           <Table.Row>
             {headerRowLabel("CSV column")}
-            {headerName(data)}
+            {headerName()}
           </Table.Row>
 
           <Table.Row>
             {headerRowLabel("Index field")}
-            {headerField(data)}
+            {headerField()}
           </Table.Row>
           <Table.Row>
             {headerRowLabel("field type")}

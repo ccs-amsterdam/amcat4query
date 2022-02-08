@@ -71,7 +71,7 @@ export default function Upload({ amcat, index }) {
           setData(res.data);
         }}
       >
-        {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }: any) => (
+        {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }) => (
           <>
             <div style={styles.csvReader}>
               <button type="button" {...getRootProps()} style={styles.browseFile}>
