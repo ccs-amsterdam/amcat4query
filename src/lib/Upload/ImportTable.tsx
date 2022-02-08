@@ -1,28 +1,42 @@
 import { Header, Table, Dropdown } from "semantic-ui-react";
+import { getField } from "../apis/Amcat";
 import { AmcatField } from "../interfaces";
 
 //TODO: specify some of the any fields
 
-const ES_MAPPINGS: {[key: string]: {type: string}} = {
-  int: { type: "long" },
+const ES_MAPPINGS: { [key: string]: { type: string } } = {
+  int: { type: "int" },
   date: { type: "date" },
   num: { type: "double" },
   keyword: { type: "keyword" },
   text: { type: "text" },
   object: { type: "object" },
+  url: { type: "url" },
 };
 const REQUIRED_FIELDS = ["title", "date", "text"];
 
-interface ImportTableProps {
-  data: any[],
-  columns: any[],
-  setColumns: (columns: any[]) => void,
-  fields: {[key: string]: AmcatField};
+interface CSVField {
+  name: string;
+  field: string;
+  type: string;
 }
 
-export default function ImportTable({ data, columns, setColumns, fields }: ImportTableProps) {
-  const n = 6;
+interface ImportTableProps {
+  /** The AmCAT fields as used in the current index */
+  fields: AmcatField[];
+  /** The 'raw' csv data as uploaded */
+  data: string[][];
+  /** The current column mappings */
+  columns: CSVField[];
+  /** The callback for the final column mappings */
+  setColumns: (columns: CSVField[]) => void;
+}
 
+/**
+ * CSV Upload preview and column selection table
+ */
+export default function ImportTable({ fields, data, columns, setColumns }: ImportTableProps) {
+  const n = 6;
   const headerCellStyle = {
     width: "10em",
     paddingTop: "2px",
@@ -33,20 +47,18 @@ export default function ImportTable({ data, columns, setColumns, fields }: Impor
   };
 
   const headerName = () => {
-    return columns.map((column) => {
-      return (
-        <Table.HeaderCell style={{ ...headerCellStyle, background: "grey", color: "white" }}>
-          <span title={column.name}>{column.name}</span>
-        </Table.HeaderCell>
-      );
-    });
+    return columns.map((column, i) => (
+      <Table.HeaderCell key={i} style={{ ...headerCellStyle, background: "grey", color: "white" }}>
+        <span title={column.name}>{column.name}</span>
+      </Table.HeaderCell>
+    ));
   };
 
   const headerField = () => {
-    const fieldOptions = Object.keys(fields).map((field) => {
-      let description = fields[field] ? "exists" : null;
-      let text = field;
-      if (REQUIRED_FIELDS.includes(field)) {
+    const fieldOptions = fields.map((field) => {
+      let description = "???"; //getField(fields, field) ? "exists" : null;
+      let text = field.name;
+      if (REQUIRED_FIELDS.includes(field.name)) {
         description = "required";
         text = text + "*";
       }
@@ -58,17 +70,18 @@ export default function ImportTable({ data, columns, setColumns, fields }: Impor
         if (column.field === newField) column.field = null;
       }
       columns[i].field = newField;
-      if (fields[newField]) columns[i].type = fields[newField];
+      const field = getField(fields, newField);
+      if (field) columns[i].type = field.type;
       setColumns([...columns]);
     };
 
     return columns.map((column, i) => {
       const options: any[] = [...fieldOptions];
-      const exists = fields[column.field];
+      const exists = getField(fields, column.field) != null;
       if (!exists) options.push({ key: column.field, value: column.field, text: column.field });
-
+      console.log(options);
       return (
-        <Table.HeaderCell style={headerCellStyle}>
+        <Table.HeaderCell key={i} style={headerCellStyle}>
           <Dropdown
             fluid
             search
@@ -77,6 +90,7 @@ export default function ImportTable({ data, columns, setColumns, fields }: Impor
             style={{ height: "2em", textAlign: "center", color: exists ? "blue" : "black" }}
             placeholder="assign field"
             allowAdditions
+            selection
             additionLabel="New Field "
             onAddItem={(e, d) => onChangeField(i, d.value as string)}
             onChange={(e, d) => onChangeField(i, d.value as string)}
@@ -94,22 +108,23 @@ export default function ImportTable({ data, columns, setColumns, fields }: Impor
     options = [{ key: "auto", value: "auto", text: "AUTO" }, ...options];
 
     const onChangeType = (i: number, newType: string) => {
-      const fixedType = fields[columns[i].field]?.type;
+      const fixedType = getField(fields, columns[i].field)?.type;
       if (fixedType) {
         columns[i].type = fixedType;
       } else {
         columns[i].type = newType;
       }
+      console.log([...columns]);
       setColumns([...columns]);
     };
 
     return columns.map((column, i) => {
-      const exists = fields[column.field];
+      const exists = getField(fields, column.field) != null;
       let color = exists ? "blue" : "black";
       if (!column.field) color = "grey";
 
       return (
-        <Table.HeaderCell style={{ ...headerCellStyle, paddingBottom: "5px" }}>
+        <Table.HeaderCell key={i} style={{ ...headerCellStyle, paddingBottom: "5px" }}>
           <Dropdown
             fluid
             search
@@ -142,33 +157,31 @@ export default function ImportTable({ data, columns, setColumns, fields }: Impor
     );
   };
 
+  if (data.length <= 1) return null;
+  if (!columns || columns.length !== data[0].length) return null;
+
   const createRows = (data: any[], n: number) => {
     const previewdata = data.slice(0, n + 1);
     return previewdata.slice(1).map((row, i) => {
-      return <Table.Row>{createRowCells(row, i)}</Table.Row>;
+      return <Table.Row key={i}>{createRowCells(row, i)}</Table.Row>;
     });
   };
 
-  const createRowCells = (row: any[], i:number) => {
-    const rowCells = row.map((cell) => {
-      return (
-        <Table.Cell style={{ textAlign: "right" }}>
-          <span title={cell}>{cell}</span>
-        </Table.Cell>
-      );
-    });
-    return [
+  const createRowCells = (row: any[], i: number) => (
+    <>
       <Table.Cell
+        key="header"
         style={{ background: "grey", borderTop: "0", color: "white", textAlign: "right" }}
       >
         <b>{i === 2 ? "CSV content" : null}</b>
-      </Table.Cell>,
-      ...rowCells,
-    ];
-  };
-
-  if (data.length <= 1) return null;
-  if (!columns || columns.length !== data[0].length) return null;
+      </Table.Cell>
+      {row.map((cell, j) => (
+        <Table.Cell key={j} style={{ textAlign: "right" }}>
+          <span title={cell}>{cell}</span>
+        </Table.Cell>
+      ))}
+    </>
+  );
 
   return (
     <div
@@ -181,16 +194,16 @@ export default function ImportTable({ data, columns, setColumns, fields }: Impor
     >
       <Table celled unstackable singleLine fixed size="small" compact>
         <Table.Header>
-          <Table.Row>
+          <Table.Row key="col">
             {headerRowLabel("CSV column")}
             {headerName()}
           </Table.Row>
 
-          <Table.Row>
+          <Table.Row key="field">
             {headerRowLabel("Index field")}
             {headerField()}
           </Table.Row>
-          <Table.Row>
+          <Table.Row key="type">
             {headerRowLabel("field type")}
             {headerType()}
           </Table.Row>

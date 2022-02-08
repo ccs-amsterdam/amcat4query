@@ -1,9 +1,12 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Container } from "semantic-ui-react";
 import { useCSVReader } from "react-papaparse";
 import ImportTable from "./ImportTable";
 import SubmitButton from "./SubmitButton";
 import "./uploadStyle.css";
+import { IndexProps } from "../interfaces";
+import useFields from "../components/useFields";
+import { getField } from "../apis/Amcat";
 
 const styles = {
   csvReader: {
@@ -30,50 +33,40 @@ const styles = {
   },
 };
 
-export default function Upload({ amcat, index }) {
+export default function Upload({ amcat, index }: IndexProps) {
   const { CSVReader } = useCSVReader();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<string[][]>([]);
   const [columns, setColumns] = useState(null);
-  const [fields, setFields] = useState(null);
+  const fields = useFields(amcat, index);
   const fileRef = useRef();
 
   useEffect(() => {
-    if (!data || data.length === 0) return;
-    amcat
-      .getFields(index)
-      .then((res) => {
-        setFields(res.data);
-      })
-      .catch((e) => {
-        setFields(null);
-        console.log(e);
-      });
-  }, [amcat, index, data, setFields]);
-
-  useEffect(() => {
+    console.log({ fields, data });
     if (!fields) return;
     if (data.length <= 1) return;
-    const columns = data[0].map((name) => {
-      return { name, field: name, type: fields?.[name]?.type || "auto" };
+    const columns = data[0].map((name: string) => {
+      const field = getField(fields, name);
+      return { name, field: name, type: field?.type || "auto" };
     });
     setColumns(columns);
-  }, [fields, data, setColumns, setFields]);
+  }, [fields, data]);
 
   const reset = () => {
-    if (fileRef.current) fileRef.current.click();
+    console.log(fileRef.current);
+    if (fileRef.current) (fileRef.current as any).click();
     setData([]);
   };
 
   return (
     <Container>
       <CSVReader
-        onUploadAccepted={(res) => {
+        onUploadAccepted={(res: any) => {
           setData(res.data);
         }}
       >
-        {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }) => (
+        {({ getRootProps, acceptedFile, ProgressBar, getRemoveFileProps }: InnerProps) => (
           <>
-            <div style={styles.csvReader}>
+            <div style={styles.csvReader as React.CSSProperties}>
               <button type="button" {...getRootProps()} style={styles.browseFile}>
                 Browse file
               </button>
@@ -98,4 +91,10 @@ export default function Upload({ amcat, index }) {
       />
     </Container>
   );
+}
+interface InnerProps {
+  getRootProps: () => any;
+  acceptedFile: { name: string };
+  ProgressBar: any;
+  getRemoveFileProps: () => any;
 }

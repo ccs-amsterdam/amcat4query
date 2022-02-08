@@ -1,5 +1,5 @@
 import Axios, { AxiosError, AxiosInstance } from "axios";
-import { AggregateData, AggregationAxis, AmcatQuery } from "../interfaces";
+import { AggregateData, AggregationAxis, AmcatField, AmcatQuery } from "../interfaces";
 
 /**
  * Class for doing all stuff AmCAT
@@ -128,4 +128,16 @@ function describeError(e: AxiosError): string {
   if (e.response) return `HTTP error ${e.response.status}`;
   if (e.request) return "No reply from server";
   return "Something went wrong trying to query the AmCAT backend";
+}
+
+/**
+ * Get the AmcatField corresponding to this fieldname
+ * @param fields the fields in this index
+ * @param fieldname the name to search for
+ * @returns the field where field.name === fieldname, or undefined
+ */
+export function getField(fields: AmcatField[], fieldname: string): AmcatField {
+  const i = fields.map((f) => f.name).indexOf(fieldname);
+  if (i === -1) return undefined;
+  return fields[i];
 }

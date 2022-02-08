@@ -1,5 +1,6 @@
 import { Form } from "semantic-ui-react";
-import { AggregationAxis, AggregationInterval } from "../interfaces";
+import { getField } from "../apis/Amcat";
+import { AggregationAxis, AggregationInterval, AmcatField } from "../interfaces";
 
 const icon_date = "https://img.icons8.com/material-outlined/24/000000/calendar--v1.png";
 const icon_keyword = "https://img.icons8.com/material-outlined/24/000000/activity-feed.png";
@@ -12,19 +13,9 @@ const date_intervals = [
   { key: "year", text: "year", value: "year" },
 ];
 
-interface Field {
-  name: string;
-  type: string;
-}
-function getField(fields: Field[], fieldname: string): Field {
-  const i = fields.map((f) => f.name).indexOf(fieldname);
-  if (i === -1) return undefined;
-  return fields[i];
-}
-
 interface AxisPickerProps {
   /** index fields to choose from */
-  fields: Field[];
+  fields: AmcatField[];
   /** Current axis value */
   value: AggregationAxis;
   /** Callback to set axis when user changes field or interval */

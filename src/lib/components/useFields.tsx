@@ -20,5 +20,5 @@ export default function useFields(amcat: Amcat, index: string): AmcatField[] {
     }
   }, [amcat, index]);
 
-  return Object.values(fields);
+  return fields;
 }
