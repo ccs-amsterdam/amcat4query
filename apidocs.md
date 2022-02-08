@@ -1,4 +1,18 @@
-Name | Type | Required | Descriptoin
+#AggregateResult
+Filename:
+  
+```
+Display the results of an aggregate search
+props:
+- amcat
+- index
+- query: an AmCAT query object {query, filters}
+- options: aggregation options {display, axes}
+```
+  
+### Props:
+
+Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 amcat | Amcat | true | 
 index | string | true | 
