@@ -1,5 +1,6 @@
-#AggregateResult
-Filename:
+# AggregateResult
+
+Filename: [src/lib/Aggregate/AggregateResult.tsx](src/lib/Aggregate/AggregateResult.tsx)
   
 ```
 Display the results of an aggregate search

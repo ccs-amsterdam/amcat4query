@@ -22,8 +22,9 @@ interface Component {
 
 function component(c: Component): string {
   const block = "\`\`\`";
-  return `#${c.displayName}
-Filename:
+  return `# ${c.displayName}
+
+Filename: [${c.filePath}](${c.filePath})
   
 \`\`\`
 ${c.description}
