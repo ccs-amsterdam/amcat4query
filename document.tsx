@@ -22,7 +22,7 @@ interface Component {
 
 function component(c: Component): string {
   const block = "\`\`\`";
-  return `## ${c.displayName}
+  return `### ${c.displayName}
 
 Filename: [${c.filePath}](${c.filePath})
   
@@ -30,7 +30,7 @@ Filename: [${c.filePath}](${c.filePath})
 ${c.description}
 \`\`\`
   
-### Props:
+#### Props:
 
 ${props(c.props)}
 `;
@@ -94,7 +94,7 @@ lines.forEach((line, i) => {
     if (found) interfaces[found[1]] = i+1
 })
 
-const content:string[] = ["# AmCAT4 React components documentation",
+const content:string[] = ["## AmCAT4 React components documentation",
 "Generated with `npx ts-node document.tsx`"];
 // TOC
 const toc = Object.keys(sections).map(section => 
@@ -104,12 +104,12 @@ content.push(toc)
 
 // Component definitions
 Object.keys(sections).forEach(section => {
-  content.push(`# ${section}`)
+  content.push(`## ${section}`)
   const x = docgen.parse(sections[section]);
   const p = x.map(component).join("\n\n")
   content.push(p)
   content.push("---")
 })
 
-fs.writeFileSync("apidocs.md", content.join("\n\n"))
+fs.writeFileSync("components.md", content.join("\n\n"))
 

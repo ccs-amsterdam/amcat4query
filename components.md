@@ -1,4 +1,4 @@
-# AmCAT4 React components documentation
+## AmCAT4 React components documentation
 
 Generated with `npx ts-node document.tsx`
 
@@ -8,9 +8,9 @@ Generated with `npx ts-node document.tsx`
 1. [Login & Index](#login--index)
 1. [Queries](#queries)
 
-# Main components
+## Main components
 
-## Login
+### Login
 
 Filename: [src/lib/Login/Login.tsx](src/lib/Login/Login.tsx)
   
@@ -18,14 +18,14 @@ Filename: [src/lib/Login/Login.tsx](src/lib/Login/Login.tsx)
 An AmCAT login form.
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `onLogin` | (amcat: Amcat) => void | true | 
 
 
-## Query
+### Query
 
 Filename: [src/lib/Query/Query.tsx](src/lib/Query/Query.tsx)
   
@@ -33,7 +33,7 @@ Filename: [src/lib/Query/Query.tsx](src/lib/Query/Query.tsx)
 Specify a full AmCAT **query**, i.e. querystrings and filters
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -43,7 +43,7 @@ Name | Type | Required | Descriptipn
 `index` | string | true | index name
 
 
-## Index
+### Index
 
 Filename: [src/lib/Index/Index.tsx](src/lib/Index/Index.tsx)
   
@@ -51,7 +51,7 @@ Filename: [src/lib/Index/Index.tsx](src/lib/Index/Index.tsx)
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -62,7 +62,7 @@ Name | Type | Required | Descriptipn
 `canDelete` | boolean | true | 
 
 
-## AggregateResult
+### AggregateResult
 
 Filename: [src/lib/Aggregate/AggregateResult.tsx](src/lib/Aggregate/AggregateResult.tsx)
   
@@ -75,7 +75,7 @@ props:
 - options: aggregation options {display, axes}
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -85,7 +85,7 @@ Name | Type | Required | Descriptipn
 `index` | string | true | index name
 
 
-## AggregateOptionsChooser
+### AggregateOptionsChooser
 
 Filename: [src/lib/Aggregate/AggregateOptionsChooser.tsx](src/lib/Aggregate/AggregateOptionsChooser.tsx)
   
@@ -93,7 +93,7 @@ Filename: [src/lib/Aggregate/AggregateOptionsChooser.tsx](src/lib/Aggregate/Aggr
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -103,7 +103,7 @@ Name | Type | Required | Descriptipn
 `onSubmit` | (value: [AggregationOptions](src/lib/interfaces.tsx#L12)) => void | true | 
 
 
-## Article
+### Article
 
 Filename: [/home/wva/amcat4react/src/lib/Article/Article.tsx](/home/wva/amcat4react/src/lib/Article/Article.tsx)
   
@@ -111,7 +111,7 @@ Filename: [/home/wva/amcat4react/src/lib/Article/Article.tsx](/home/wva/amcat4re
 Show a single article
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -121,7 +121,7 @@ Name | Type | Required | Descriptipn
 `index` | string | true | index name
 
 
-## Articles
+### Articles
 
 Filename: [/home/wva/amcat4react/src/lib/Articles/Articles.tsx](/home/wva/amcat4react/src/lib/Articles/Articles.tsx)
   
@@ -129,7 +129,7 @@ Filename: [/home/wva/amcat4react/src/lib/Articles/Articles.tsx](/home/wva/amcat4
 Table overview of a subset of articles
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -142,9 +142,9 @@ Name | Type | Required | Descriptipn
 
 ---
 
-# Aggregation
+## Aggregation
 
-## AxisPicker
+### AxisPicker
 
 Filename: [src/lib/Aggregate/AxisPicker.tsx](src/lib/Aggregate/AxisPicker.tsx)
   
@@ -152,7 +152,7 @@ Filename: [src/lib/Aggregate/AxisPicker.tsx](src/lib/Aggregate/AxisPicker.tsx)
 Dropdown to select an aggregation axis and possibly interval
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -162,7 +162,7 @@ Name | Type | Required | Descriptipn
 `label` | string | false | 
 
 
-## AggregateTable
+### AggregateTable
 
 Filename: [src/lib/Aggregate/AggregateTable.tsx](src/lib/Aggregate/AggregateTable.tsx)
   
@@ -170,7 +170,7 @@ Filename: [src/lib/Aggregate/AggregateTable.tsx](src/lib/Aggregate/AggregateTabl
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -180,7 +180,7 @@ The data to visualize
 should be an array of values of equal length to the # of axes
 
 
-## AggregateLineChart
+### AggregateLineChart
 
 Filename: [src/lib/Aggregate/AggregateLineChart.tsx](src/lib/Aggregate/AggregateLineChart.tsx)
   
@@ -188,7 +188,7 @@ Filename: [src/lib/Aggregate/AggregateLineChart.tsx](src/lib/Aggregate/Aggregate
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -198,7 +198,7 @@ The data to visualize
 should be an array of values of equal length to the # of axes
 
 
-## AggregatePane
+### AggregatePane
 
 Filename: [src/lib/Aggregate/AggregatePane.tsx](src/lib/Aggregate/AggregatePane.tsx)
   
@@ -206,7 +206,7 @@ Filename: [src/lib/Aggregate/AggregatePane.tsx](src/lib/Aggregate/AggregatePane.
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -215,7 +215,7 @@ Name | Type | Required | Descriptipn
 `query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | 
 
 
-## AggregateBarChart
+### AggregateBarChart
 
 Filename: [/home/wva/amcat4react/src/lib/Aggregate/AggregateBarChart.tsx](/home/wva/amcat4react/src/lib/Aggregate/AggregateBarChart.tsx)
   
@@ -223,7 +223,7 @@ Filename: [/home/wva/amcat4react/src/lib/Aggregate/AggregateBarChart.tsx](/home/
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -235,9 +235,9 @@ should be an array of values of equal length to the # of axes
 
 ---
 
-# Articles
+## Articles
 
-## PaginationTable
+### PaginationTable
 
 Filename: [src/lib/components/PaginationTable.tsx](src/lib/components/PaginationTable.tsx)
   
@@ -245,7 +245,7 @@ Filename: [src/lib/components/PaginationTable.tsx](src/lib/components/Pagination
 A nice table with pagination
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -258,9 +258,9 @@ Name | Type | Required | Descriptipn
 
 ---
 
-# Login & Index
+## Login & Index
 
-## IndexCreate
+### IndexCreate
 
 Filename: [src/lib/Index/IndexCreate.tsx](src/lib/Index/IndexCreate.tsx)
   
@@ -268,7 +268,7 @@ Filename: [src/lib/Index/IndexCreate.tsx](src/lib/Index/IndexCreate.tsx)
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -277,7 +277,7 @@ Name | Type | Required | Descriptipn
 `onClose` | (name?: string) => void | true | 
 
 
-## IndexDelete
+### IndexDelete
 
 Filename: [src/lib/Index/IndexDelete.tsx](src/lib/Index/IndexDelete.tsx)
   
@@ -285,7 +285,7 @@ Filename: [src/lib/Index/IndexDelete.tsx](src/lib/Index/IndexDelete.tsx)
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -297,9 +297,9 @@ Name | Type | Required | Descriptipn
 
 ---
 
-# Queries
+## Queries
 
-## KeywordField
+### KeywordField
 
 Filename: [src/lib/Query/KeywordField.tsx](src/lib/Query/KeywordField.tsx)
   
@@ -307,7 +307,7 @@ Filename: [src/lib/Query/KeywordField.tsx](src/lib/Query/KeywordField.tsx)
 Field for creating a values/keyword filter
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -318,7 +318,7 @@ Name | Type | Required | Descriptipn
 `onChange` | (value: AmcatFilter) => void | true | callback that will be called with a new filter value
 
 
-## Filters
+### Filters
 
 Filename: [src/lib/Query/Filters.tsx](src/lib/Query/Filters.tsx)
   
@@ -327,7 +327,7 @@ Define the filters for a query
 Props:
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -338,7 +338,7 @@ Name | Type | Required | Descriptipn
   (note that the filter might be incomplete, i.e. have only a key and an empty body if the user is still selecting)
 
 
-## DateField
+### DateField
 
 Filename: [/home/wva/amcat4react/src/lib/Query/DateField.tsx](/home/wva/amcat4react/src/lib/Query/DateField.tsx)
   
@@ -346,7 +346,7 @@ Filename: [/home/wva/amcat4react/src/lib/Query/DateField.tsx](/home/wva/amcat4re
 Field for creating a date filter
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -355,7 +355,7 @@ Name | Type | Required | Descriptipn
 `onChange` | (value: [DateFilter](src/lib/interfaces.tsx#L17)) => void | true | callback that will be called with a new filter value
 
 
-## FilterButton
+### FilterButton
 
 Filename: [/home/wva/amcat4react/src/lib/Query/FilterButton.tsx](/home/wva/amcat4react/src/lib/Query/FilterButton.tsx)
   
@@ -363,7 +363,7 @@ Filename: [/home/wva/amcat4react/src/lib/Query/FilterButton.tsx](/home/wva/amcat
 
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
@@ -375,7 +375,7 @@ Name | Type | Required | Descriptipn
 `style` | CSSProperties | false | 
 
 
-## QueryString
+### QueryString
 
 Filename: [src/lib/Query/QueryString.tsx](src/lib/Query/QueryString.tsx)
   
@@ -387,7 +387,7 @@ props:
 - rows: the number of rows (default: 7)
 ```
   
-### Props:
+#### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
