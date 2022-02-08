@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
@@ -10,6 +10,8 @@ import Query from "./lib/Query/Query";
 import Upload from "./lib/Upload/Upload";
 import Articles from "./lib/Articles/Articles";
 import AggregatePane from "./lib/Aggregate/AggregatePane";
+import Amcat from "./lib/apis/Amcat";
+import { AmcatQuery } from "./lib/interfaces";
 
 const menuItems = ["Upload", "Articles", "Aggregate"];
 
@@ -22,12 +24,12 @@ const testQuery = {
 
 export default function App() {
   const [selected, setSelected] = useState(menuItems[2]);
-  const [amcat, setAmcat] = useState(null);
-  const [index, setIndex] = useState(null);
-  const [query, setQuery] = useState();
+  const [amcat, setAmcat] = useState<Amcat>(null);
+  const [index, setIndex] = useState<string>(null);
+  const [query, setQuery] = useState<AmcatQuery>();
 
   useEffect(() => {
-    setQuery();
+    setQuery(undefined);
   }, [amcat, index]);
 
   const render = () => {
@@ -69,7 +71,13 @@ export default function App() {
   );
 }
 
-function ComponentMenu({ index, selected, setSelected }) {
+interface ComponentMenuProps {
+  index: string,
+  selected: string,
+  setSelected: (value: string)=> void
+}
+
+function ComponentMenu({ index, selected, setSelected }: ComponentMenuProps) {
   return (
     <Menu attached="top" tabular>
       {menuItems.map((name) => {
