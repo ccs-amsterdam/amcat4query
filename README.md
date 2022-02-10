@@ -1,6 +1,6 @@
 # amcat4react
 
-This repository contains components for the amcat4 client and dashboards. For an overview of the components included, see [components.md]
+This repository contains components for the amcat4 client and dashboards. For an overview of the components included, see [components.md](components.md)
 
 The query components can also be viewed/tested by running the App, which is nice for development:
 
