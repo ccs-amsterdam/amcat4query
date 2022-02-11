@@ -13,6 +13,6 @@ The components to be used in amcat4client can then be exported in src/lib/index.
 (don't forget to increment version)
 
 ```bash
-npm run build_npm
+npm run build
 npm publish
 ```
