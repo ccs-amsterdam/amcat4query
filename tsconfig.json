@@ -1,4 +1,5 @@
 {
+  "files": ["src/lib/index.tsx"],
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
@@ -7,9 +8,8 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "moduleResolution": "node",
-    "lib": [
-      "ES2021.String",
-      "DOM"
-    ]
+    "lib": ["ES2021.String", "DOM"],
+    "declaration": true,
+    "allowSyntheticDefaultImports": true
   }
 }
