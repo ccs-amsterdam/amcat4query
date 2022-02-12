@@ -17,6 +17,8 @@ import {
   AmcatFilter,
   AmcatFilters,
   AmcatDocument,
+  AmcatUser,
+  AmcatIndex,
 } from "./interfaces";
 
 export {
@@ -36,4 +38,6 @@ export {
   AmcatFilter,
   AmcatFilters,
   AmcatDocument,
+  AmcatUser,
+  AmcatIndex,
 };
