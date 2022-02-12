@@ -22,12 +22,13 @@ An AmCAT login form.
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`onLogin` | (amcat: Amcat) => void | true | 
+`value` | [AmcatUser](src/lib/interfaces.tsx#L60) | true | Current logged in user (if any)
+`onLogin` | (amcat: [AmcatUser](src/lib/interfaces.tsx#L60)) => void | true | Callback that will be called on login (with a user)/logout (with undefined)
 
 
 ### Query
 
-Filename: [src/lib/Query/Query.tsx](src/lib/Query/Query.tsx)
+Filename: [/home/wva/amcat4react/src/lib/Query/Query.tsx](/home/wva/amcat4react/src/lib/Query/Query.tsx)
   
 ```
 Specify a full AmCAT **query**, i.e. querystrings and filters
@@ -37,34 +38,14 @@ Specify a full AmCAT **query**, i.e. querystrings and filters
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`value` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
-`onSubmit` | (value: [AmcatQuery](src/lib/interfaces.tsx#L36)) => void | true | callback that will be called with a valid AmCAT query when the user clicks submit
-`amcat` | Amcat | true | Amcat instance
-`index` | string | true | index name
-
-
-### Index
-
-Filename: [src/lib/Index/Index.tsx](src/lib/Index/Index.tsx)
-  
-```
-
-```
-  
-#### Props:
-
-Name | Type | Required | Descriptipn
---- | --- | --- | ---
-`amcat` | Amcat | true | 
-`index` | string | true | 
-`setIndex` | (index: string) => void | true | 
-`canCreate` | boolean | true | 
-`canDelete` | boolean | true | 
+`index` | AmcatIndex | true | 
+`value` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
+`onSubmit` | (value: [AmcatQuery](src/lib/interfaces.tsx#L35)) => void | true | callback that will be called with a valid AmCAT query when the user clicks submit
 
 
 ### AggregateResult
 
-Filename: [src/lib/Aggregate/AggregateResult.tsx](src/lib/Aggregate/AggregateResult.tsx)
+Filename: [/home/wva/amcat4react/src/lib/Aggregate/AggregateResult.tsx](/home/wva/amcat4react/src/lib/Aggregate/AggregateResult.tsx)
   
 ```
 Display the results of an aggregate search
@@ -79,15 +60,14 @@ props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | The query for the results to show
-`options` | [AggregationOptions](src/lib/interfaces.tsx#L12) | true | Aggregation options (display and axes information)
-`amcat` | Amcat | true | Amcat instance
-`index` | string | true | index name
+`index` | AmcatIndex | true | 
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | The query for the results to show
+`options` | [AggregationOptions](src/lib/interfaces.tsx#L11) | true | Aggregation options (display and axes information)
 
 
 ### AggregateOptionsChooser
 
-Filename: [src/lib/Aggregate/AggregateOptionsChooser.tsx](src/lib/Aggregate/AggregateOptionsChooser.tsx)
+Filename: [/home/wva/amcat4react/src/lib/Aggregate/AggregateOptionsChooser.tsx](/home/wva/amcat4react/src/lib/Aggregate/AggregateOptionsChooser.tsx)
   
 ```
 
@@ -97,10 +77,9 @@ Filename: [src/lib/Aggregate/AggregateOptionsChooser.tsx](src/lib/Aggregate/Aggr
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`amcat` | Amcat | true | 
-`index` | string | true | 
-`value` | [AggregationOptions](src/lib/interfaces.tsx#L12) | true | 
-`onSubmit` | (value: [AggregationOptions](src/lib/interfaces.tsx#L12)) => void | true | 
+`index` | AmcatIndex | true | 
+`value` | [AggregationOptions](src/lib/interfaces.tsx#L11) | true | 
+`onSubmit` | (value: [AggregationOptions](src/lib/interfaces.tsx#L11)) => void | true | 
 
 
 ### Article
@@ -115,10 +94,9 @@ Show a single article
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
+`index` | AmcatIndex | true | 
 `id` | number \| [number] | true | An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | A query, used for highlighting
-`amcat` | Amcat | true | Amcat instance
-`index` | string | true | index name
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | A query, used for highlighting
 
 
 ### Articles
@@ -133,11 +111,10 @@ Table overview of a subset of articles
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | Query/filter of which documents to show
+`index` | AmcatIndex | true | 
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | Query/filter of which documents to show
 `columns` | PaginationTableColumn[] | false | an Array with objects indicating which columns to show and how
 `allColumns` | boolean | false | if true, include all columns AFTER the columns specified in the columns argument
-`amcat` | Amcat | true | Amcat instance
-`index` | string | true | index name
 
 
 ---
@@ -157,8 +134,8 @@ Dropdown to select an aggregation axis and possibly interval
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `fields` | Field[] | true | index fields to choose from
-`value` | [AggregationAxis](src/lib/interfaces.tsx#L7) | true | Current axis value
-`onChange` | (value: [AggregationAxis](src/lib/interfaces.tsx#L7)) => void | true | Callback to set axis when user changes field or interval
+`value` | [AggregationAxis](src/lib/interfaces.tsx#L6) | true | Current axis value
+`onChange` | (value: [AggregationAxis](src/lib/interfaces.tsx#L6)) => void | true | Callback to set axis when user changes field or interval
 `label` | string | false | 
 
 
@@ -210,9 +187,8 @@ Filename: [src/lib/Aggregate/AggregatePane.tsx](src/lib/Aggregate/AggregatePane.
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`amcat` | Amcat | true | 
-`index` | string | true | 
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L36) | true | 
+`index` | AmcatIndex | true | 
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | 
 
 
 ### AggregateBarChart
@@ -272,7 +248,7 @@ Filename: [src/lib/Index/IndexCreate.tsx](src/lib/Index/IndexCreate.tsx)
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`amcat` | Amcat | true | 
+`user` | [AmcatUser](src/lib/interfaces.tsx#L60) | true | An Amcat connection/user specification (e.g. from Login)
 `open` | boolean | true | 
 `onClose` | (name?: string) => void | true | 
 
@@ -289,8 +265,7 @@ Filename: [src/lib/Index/IndexDelete.tsx](src/lib/Index/IndexDelete.tsx)
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`amcat` | Amcat | true | 
-`index` | string | true | 
+`index` | AmcatIndex | true | 
 `open` | boolean | true | 
 `onClose` | (deleted: boolean) => void | true | 
 
@@ -311,8 +286,7 @@ Field for creating a values/keyword filter
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`amcat` | Amcat | true | an AmCAT instance (to retrieve possible values)
-`index` | string | true | the name of the current index
+`index` | AmcatIndex | true | an AmCAT index (to retrieve possible values)
 `field` | string | true | the field name of the current field
 `value` | AmcatFilter | true | the current value of the filter, e.g. {"values": ["nrc"]}
 `onChange` | (value: AmcatFilter) => void | true | callback that will be called with a new filter value
@@ -320,7 +294,7 @@ Name | Type | Required | Descriptipn
 
 ### Filters
 
-Filename: [src/lib/Query/Filters.tsx](src/lib/Query/Filters.tsx)
+Filename: [/home/wva/amcat4react/src/lib/Query/Filters.tsx](/home/wva/amcat4react/src/lib/Query/Filters.tsx)
   
 ```
 Define the filters for a query
@@ -331,10 +305,9 @@ Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`amcat` | Amcat | true | the AmCAT instance
-`index` | string | true | name of the index
-`value` | [AmcatFilters](src/lib/interfaces.tsx#L32) | true | the current filters, e.g. {"publisher": {"values": ["nrc"]}}
-`onChange` | (value: [AmcatFilters](src/lib/interfaces.tsx#L32)) => void | true | Callback that will be called when the filter selection changes with a new filter object
+`index` | AmcatIndex | true | 
+`value` | [AmcatFilters](src/lib/interfaces.tsx#L31) | true | the current filters, e.g. {"publisher": {"values": ["nrc"]}}
+`onChange` | (value: [AmcatFilters](src/lib/interfaces.tsx#L31)) => void | true | Callback that will be called when the filter selection changes with a new filter object
   (note that the filter might be incomplete, i.e. have only a key and an empty body if the user is still selecting)
 
 
@@ -351,8 +324,8 @@ Field for creating a date filter
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `field` | string | true | the field name of the current field
-`value` | [DateFilter](src/lib/interfaces.tsx#L17) | true | the current value of the filter, e.g. {"gte": "2020-01-01"}
-`onChange` | (value: [DateFilter](src/lib/interfaces.tsx#L17)) => void | true | callback that will be called with a new filter value
+`value` | [DateFilter](src/lib/interfaces.tsx#L16) | true | the current value of the filter, e.g. {"gte": "2020-01-01"}
+`onChange` | (value: [DateFilter](src/lib/interfaces.tsx#L16)) => void | true | callback that will be called with a new filter value
 
 
 ### FilterButton
@@ -377,7 +350,7 @@ Name | Type | Required | Descriptipn
 
 ### QueryString
 
-Filename: [src/lib/Query/QueryString.tsx](src/lib/Query/QueryString.tsx)
+Filename: [/home/wva/amcat4react/src/lib/Query/QueryString.tsx](/home/wva/amcat4react/src/lib/Query/QueryString.tsx)
   
 ```
 Text area to set the query string(s)
