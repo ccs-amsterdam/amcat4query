@@ -1,9 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Container } from "semantic-ui-react";
 import { useCSVReader } from "react-papaparse";
 import ImportTable from "./ImportTable";
 import SubmitButton from "./SubmitButton";
 import "./uploadStyle.css";
+import { getFields } from "../apis/Amcat";
 
 const styles = {
   csvReader: {
@@ -30,7 +31,7 @@ const styles = {
   },
 };
 
-export default function Upload({ amcat, index }) {
+export default function Upload({ index }) {
   const { CSVReader } = useCSVReader();
   const [data, setData] = useState([]);
   const [columns, setColumns] = useState(null);
@@ -39,8 +40,7 @@ export default function Upload({ amcat, index }) {
 
   useEffect(() => {
     if (!data || data.length === 0) return;
-    amcat
-      .getFields(index)
+    getFields(index)
       .then((res) => {
         setFields(res.data);
       })
@@ -48,7 +48,7 @@ export default function Upload({ amcat, index }) {
         setFields(null);
         console.log(e);
       });
-  }, [amcat, index, data, setFields]);
+  }, [index, data, setFields]);
 
   useEffect(() => {
     if (!fields) return;
@@ -88,14 +88,7 @@ export default function Upload({ amcat, index }) {
       </CSVReader>
       <br />
       <ImportTable data={data} columns={columns} setColumns={setColumns} fields={fields} />
-      <SubmitButton
-        amcat={amcat}
-        index={index}
-        data={data}
-        columns={columns}
-        fields={fields}
-        reset={reset}
-      />
+      <SubmitButton index={index} data={data} columns={columns} fields={fields} reset={reset} />
     </Container>
   );
 }

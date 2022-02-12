@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import Amcat from "../apis/Amcat";
-import { AmcatField } from "../interfaces";
+import { getFields } from "../apis/Amcat";
+import { AmcatField, AmcatIndex } from "../interfaces";
 
-export default function useFields(amcat: Amcat, index: string): AmcatField[] {
+export default function useFields(index: AmcatIndex): AmcatField[] {
   const [fields, setFields] = useState<AmcatField[]>([]);
 
   useEffect(() => {
-    if (index && amcat) {
-      amcat
-        .getFields(index)
+    if (index) {
+      getFields(index)
         .then((res: any) => {
           setFields(Object.values(res.data));
         })
@@ -18,7 +17,7 @@ export default function useFields(amcat: Amcat, index: string): AmcatField[] {
     } else {
       setFields([]);
     }
-  }, [amcat, index]);
+  }, [index]);
 
   return Object.values(fields);
 }

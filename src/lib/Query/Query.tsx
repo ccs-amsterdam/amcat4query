@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
 import QueryString from "./QueryString";
 import Filters from "./Filters";
-import { AmcatFilters, AmcatQuery, IndexProps } from "../interfaces";
+import { AmcatFilters, AmcatIndex, AmcatQuery } from "../interfaces";
 
-interface QueryProps extends IndexProps {
+interface QueryProps {
+  index: AmcatIndex;
   /** AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}} */
   value: AmcatQuery;
   /** callback that will be called with a valid AmCAT query when the user clicks submit */
@@ -14,7 +15,7 @@ interface QueryProps extends IndexProps {
 /**
  * Specify a full AmCAT **query**, i.e. querystrings and filters
  */
-export default function Query({ amcat, index, value, onSubmit }: QueryProps) {
+export default function Query({ index, value, onSubmit }: QueryProps) {
   const [queryStrings, setQueryStrings] = useState<string>();
   const [filters, setFilters] = useState<AmcatFilters>();
 
@@ -40,7 +41,7 @@ export default function Query({ amcat, index, value, onSubmit }: QueryProps) {
     onSubmit(q);
   };
 
-  if (!amcat || !index) return null;
+  if (index == null) return null;
 
   return (
     <Grid style={{ marginBottom: "1em" }}>
@@ -48,7 +49,7 @@ export default function Query({ amcat, index, value, onSubmit }: QueryProps) {
         <Grid.Column floated="left" width={16}>
           <QueryString value={queryStrings} onChange={setQueryStrings} rows={5} />
           <Button.Group style={{ width: "100%", marginBottom: "10px" }}>
-            <Filters amcat={amcat} index={index} value={filters} onChange={setFilters} />
+            <Filters index={index} value={filters} onChange={setFilters} />
           </Button.Group>{" "}
           <Button fluid primary type="submit" onClick={onClick}>
             <Icon name="search" />

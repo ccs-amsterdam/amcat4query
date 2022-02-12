@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Form } from "semantic-ui-react";
 import useFields from "../components/useFields";
 import AxisPicker from "./AxisPicker";
-import Amcat from "../apis/Amcat";
-import { AggregationAxis, DisplayOption, AggregationOptions } from "../interfaces";
+import { AggregationAxis, DisplayOption, AggregationOptions, AmcatIndex } from "../interfaces";
 const displayOptions = [
   {
     key: 1,
@@ -33,18 +32,16 @@ const aggregation_labels = {
 };
 
 interface AggregateOptionsChooserProps {
-  amcat: Amcat;
-  index: string;
+  index: AmcatIndex;
   value: AggregationOptions;
   onSubmit: (value: AggregationOptions) => void;
 }
 export default function AggregateOptionsChooser({
-  amcat,
   index,
   value,
   onSubmit,
 }: AggregateOptionsChooserProps) {
-  const fields = useFields(amcat, index);
+  const fields = useFields(index);
   const [display, setDisplay] = useState<DisplayOption>();
   const [axis1, setAxis1] = useState<AggregationAxis>();
   const [axis2, setAxis2] = useState<AggregationAxis>();

@@ -1,29 +1,41 @@
 import { useState, useEffect } from "react";
 import { Dropdown, Button, DropdownItemProps } from "semantic-ui-react";
-import Amcat from "../apis/Amcat";
+import { getIndices } from "../apis/Amcat";
+import { AmcatIndex, AmcatUser } from "../interfaces";
 
 import IndexCreate from "./IndexCreate";
 import IndexDelete from "./IndexDelete";
 
-interface IndexProps {
-  amcat: Amcat;
-  index: string;
-  setIndex: (index: string) => void;
-  canCreate: boolean;
-  canDelete: boolean;
+interface IndexPickerProps {
+  user: AmcatUser;
+  value: AmcatIndex;
+  onChange: (index: AmcatIndex) => void;
 }
 
-export default function Index({ amcat, index, setIndex, canCreate, canDelete }: IndexProps) {
+export default function IndexPicker({ user, value, onChange }: IndexPickerProps) {
   const [options, setOptions] = useState<DropdownItemProps[]>([]);
+  const canCreate = true;
+  const canDelete = true;
 
   useEffect(() => {
-    if (!amcat) {
-      //setIndex(null);
-      setOptions([]);
-    } else prepareOptions(amcat, index, setOptions);
-  }, [amcat, index, setIndex]);
+    if (user != null) prepareOptions(user, value?.index, setOptions);
+    else setOptions([]);
+  }, [user, value, setOptions]);
 
-  if (!amcat) return null;
+  if (!user) return null;
+  const setIndex = (name: string) => {
+    value = { ...user, index: name };
+    onChange(value);
+  };
+
+  const handleCreate = (name: string) => {
+    prepareOptions(user, name, setOptions);
+    setIndex(name);
+  };
+  const handleDelete = () => {
+    prepareOptions(user, undefined, setOptions);
+  };
+
   return (
     <div style={{ display: "flex" }}>
       <div style={{ flex: "1 1 auto" }}>
@@ -32,7 +44,7 @@ export default function Index({ amcat, index, setIndex, canCreate, canDelete }: 
           fluid
           search
           selection
-          value={index}
+          value={value?.index}
           options={options}
           onChange={(e, d) => setIndex(d.value as string)}
         />
@@ -40,17 +52,8 @@ export default function Index({ amcat, index, setIndex, canCreate, canDelete }: 
 
       <div style={{ flex: "0 1 auto" }}>
         <Button.Group style={{ marginLeft: canDelete || canCreate ? "5px" : "0" }}>
-          {!canCreate ? null : (
-            <IndexCreateButton amcat={amcat} setIndex={setIndex} setOptions={setOptions} />
-          )}
-          {!canDelete ? null : (
-            <IndexDeleteButton
-              amcat={amcat}
-              index={index}
-              setIndex={setIndex}
-              setOptions={setOptions}
-            />
-          )}
+          {!canCreate ? null : <IndexCreateButton user={user} onCreate={handleCreate} />}
+          {!canDelete ? null : <IndexDeleteButton index={value} onDelete={handleDelete} />}
         </Button.Group>
       </div>
     </div>
@@ -60,64 +63,62 @@ export default function Index({ amcat, index, setIndex, canCreate, canDelete }: 
 const buttonStyle = { paddingLeft: "5px", paddingRight: "5px" };
 
 interface CreateButtonProps {
-  amcat: Amcat;
-  setIndex: (name: string) => void;
-  setOptions: (options: DropdownItemProps[]) => void;
+  user: AmcatUser;
+  onCreate: (name: string) => void;
 }
 
-const IndexCreateButton = ({ amcat, setIndex, setOptions }: CreateButtonProps) => {
+const IndexCreateButton = ({ user, onCreate }: CreateButtonProps) => {
   const [open, setOpen] = useState(false);
   const handleClose = (name: string) => {
     setOpen(false);
     if (name) {
-      setIndex(name);
-      prepareOptions(amcat, name, setOptions);
+      onCreate(name);
     }
   };
   return (
     <>
       <Button icon="plus" style={buttonStyle} onClick={() => setOpen(true)} />
-      <IndexCreate amcat={amcat} onClose={handleClose} open={open} />
+      <IndexCreate user={user} onClose={handleClose} open={open} />
     </>
   );
 };
 
-interface DeleteButtonProps extends CreateButtonProps {
-  index: string;
+interface DeleteButtonProps {
+  index: AmcatIndex;
+  onDelete: (index: AmcatIndex) => void;
 }
-const IndexDeleteButton = ({ amcat, index, setIndex, setOptions }: DeleteButtonProps) => {
+const IndexDeleteButton = ({ index, onDelete }: DeleteButtonProps) => {
   const [open, setOpen] = useState(false);
 
-  const onDelete = (deleted: boolean) => {
+  const handleDelete = (deleted: boolean) => {
     setOpen(false);
     // when a new index is delete, unselect it, and re-create options
     if (deleted) {
-      setIndex(null);
-      prepareOptions(amcat, undefined, setOptions);
+      onDelete(index);
     }
   };
   return (
     <>
       <Button disabled={!index} icon="minus" style={buttonStyle} onClick={() => setOpen(true)} />;
-      <IndexDelete amcat={amcat} index={index} open={open} onClose={onDelete} />;
+      <IndexDelete index={index} open={open} onClose={handleDelete} />;
     </>
   );
 };
 
 async function prepareOptions(
-  amcat: Amcat,
-  index: string,
+  user: AmcatUser,
+  selected: string,
   setOptions: (options: DropdownItemProps[]) => void
 ) {
   try {
-    const res = await amcat.getIndices();
+    const res = await getIndices(user);
     const options = res.data.map((ix: { name: string; role: string }) => {
       return {
         key: ix.name,
         value: ix.name,
         text: ix.name,
         description: ix.role,
-        selected: ix.name === index,
+        selected: ix.name === selected,
       };
     });
     setOptions(options);

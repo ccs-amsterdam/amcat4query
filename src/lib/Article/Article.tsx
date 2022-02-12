@@ -3,10 +3,11 @@ import useFields from "../components/useFields";
 import prepareArticle from "./prepareArticle";
 import { Grid, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
-import { AmcatDocument, AmcatField, AmcatQuery, IndexProps } from "../interfaces";
-import Amcat from "../apis/Amcat";
+import { AmcatDocument, AmcatField, AmcatQuery, AmcatIndex } from "../interfaces";
+import { postQuery } from "../apis/Amcat";
 
-interface ArticleProps extends IndexProps {
+interface ArticleProps {
+  index: AmcatIndex;
   /** An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change */
   id: number | [number];
   /** A query, used for highlighting */
@@ -16,8 +17,8 @@ interface ArticleProps extends IndexProps {
 /**
  * Show a single article
  */
-export default function Article({ amcat, index, id, query }: ArticleProps) {
-  const fields = useFields(amcat, index);
+export default function Article({ index, id, query }: ArticleProps) {
+  const fields = useFields(index);
   const [article, setArticle] = useState(null);
   const [open, setOpen] = useState(false);
 
@@ -25,8 +26,8 @@ export default function Article({ amcat, index, id, query }: ArticleProps) {
     if (!id) return;
     const _id = Array.isArray(id) ? id[0] : id;
     if (article && _id === article._id) return;
-    fetchArticle(amcat, index, _id, query, setArticle);
-  }, [id, article, amcat, index, query]);
+    fetchArticle(index, _id, query, setArticle);
+  }, [id, article, index, query]);
 
   useEffect(() => {
     setOpen(true);
@@ -56,16 +57,16 @@ export default function Article({ amcat, index, id, query }: ArticleProps) {
 }
 
 async function fetchArticle(
-  amcat: Amcat,
-  index: string,
+  index: AmcatIndex,
   _id: number,
   query: AmcatQuery,
   setArticle: (value: AmcatDocument) => void
 ) {
   let params: any = { annotations: true, filters: { _id } };
   if (query?.queries) params.queries = query.queries;
+  query.filters = { id: { values: [_id] } };
   try {
-    const res = await amcat.postQuery(index, params);
+    const res = await postQuery(index, query, params);
     setArticle(res.data.results[0]);
   } catch (e) {
     console.log(e);

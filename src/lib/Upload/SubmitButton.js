@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container, Button, Message, Dimmer, Loader, Modal, Header } from "semantic-ui-react";
+import { createDocuments } from "../apis/Amcat";
 
 const REQUIRED_FIELDS = ["title", "date", "text"];
 
-export default function SubmitButton({ amcat, index, data, columns, fields, reset }) {
+export default function SubmitButton({ index, data, columns, fields, reset }) {
   const [loading, setLoading] = useState(false);
   const [submittedMessage, setSubmittedMessage] = useState(null);
 
@@ -33,7 +34,7 @@ export default function SubmitButton({ amcat, index, data, columns, fields, rese
         mapping[column.name] = column.type;
         return mapping;
       }, {});
-      const res = await amcat.createDocuments(index, documents, columnMapping);
+      const res = await createDocuments(index, documents, columnMapping);
 
       setLoading(false);
       setSubmittedMessage({ missing, n: res.data.length });

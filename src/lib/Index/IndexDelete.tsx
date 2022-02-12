@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { Button, Header, Icon, Modal, Dimmer, Loader } from "semantic-ui-react";
-import Amcat from "../apis/Amcat";
+import { deleteIndex } from "../apis/Amcat";
+import { AmcatIndex } from "../interfaces";
 
 interface IndexDeleteProps {
-  amcat: Amcat;
-  index: string;
+  index: AmcatIndex;
   open: boolean;
   onClose: (deleted: boolean) => void;
 }
 
-export default function IndexDelete({ amcat, index, open, onClose }: IndexDeleteProps) {
+export default function IndexDelete({ index, open, onClose }: IndexDeleteProps) {
   const [status, setStatus] = useState("inactive");
 
   const onSubmit = () => {
     setStatus("pending");
-    amcat
-      .deleteIndex(index)
+    deleteIndex(index)
       .then((res) => {
         // maybe check for 201 before celebrating
         setStatus("inactive");

@@ -6,18 +6,19 @@ import {
   AggregationInterval,
   AggregationOptions,
   AmcatFilter,
+  AmcatIndex,
   AmcatQuery,
   DateFilter,
-  IndexProps,
 } from "../interfaces";
 import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
-import Amcat from "../apis/Amcat";
+import { postAggregate } from "../apis/Amcat";
 
 //TODO: This file is becoming too complex - move some business logic to a lib and add unit tests?
 
-interface AggregateResultProps extends IndexProps {
+interface AggregateResultProps {
+  index: AmcatIndex;
   /** The query for the results to show */
   query: AmcatQuery;
   /** Aggregation options (display and axes information) */
@@ -32,7 +33,7 @@ interface AggregateResultProps extends IndexProps {
  * - query: an AmCAT query object {query, filters}
  * - options: aggregation options {display, axes}
  */
-export default function AggregateResult({ amcat, index, query, options }: AggregateResultProps) {
+export default function AggregateResult({ index, query, options }: AggregateResultProps) {
   const [data, setData] = useState<AggregateData>();
   const [error, setError] = useState<string>();
   const [zoom, setZoom] = useState();
@@ -48,16 +49,18 @@ export default function AggregateResult({ amcat, index, query, options }: Aggreg
         setData(data);
       }
     };
-    if (amcat == null || index == null || !options?.axes || options.axes.length === 0) {
+    if (index == null || !options?.axes || options.axes.length === 0) {
       setData(undefined);
       setError(undefined);
     } else {
-      amcat.postAggregate(index, query, options.axes, setResults, (e) => setResults(undefined, e));
+      postAggregate(index, query, options.axes, setResults, (e: string) =>
+        setResults(undefined, e)
+      );
     }
     return () => {
       cancel = true;
     };
-  }, [amcat, index, options, query, setData, setError]);
+  }, [index, options, query, setData, setError]);
   if (error) return <Message error header={error} />;
   if (!data || !options || !options.display)
     return <Message info header="Select aggregation options" />;
@@ -96,7 +99,7 @@ export default function AggregateResult({ amcat, index, query, options }: Aggreg
 
   return (
     <div>
-      {getArticleList(amcat, index, zoom, () => setZoom(undefined))}
+      {getArticleList(index, zoom, () => setZoom(undefined))}
       <Element data={data} onClick={handleClick} />
     </div>
   );
@@ -175,7 +178,7 @@ function describe_filter(field: string, filter: AmcatFilter) {
     .join(" and ");
 }
 
-function getArticleList(amcat: Amcat, index: string, query: AmcatQuery, onClose: () => void) {
+function getArticleList(index: AmcatIndex, query: AmcatQuery, onClose: () => void) {
   if (!query) return null;
   const header = Object.keys(query.filters || {})
     .map((f) => describe_filter(f, query.filters[f]))
@@ -184,7 +187,7 @@ function getArticleList(amcat: Amcat, index: string, query: AmcatQuery, onClose:
   return (
     <Modal open onClose={onClose}>
       <Modal.Header>{`Articles for ${header}`}</Modal.Header>
-      <Articles amcat={amcat} index={index} query={query} />
+      <Articles index={index} query={query} />
     </Modal>
   );
 }

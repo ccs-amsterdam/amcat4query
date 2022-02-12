@@ -1,19 +1,21 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Form, Button, Segment, Message } from "semantic-ui-react";
 import { useCookies } from "react-cookie";
-import Amcat, { getToken } from "../apis/Amcat";
+import { getToken } from "../apis/Amcat";
+import { AmcatUser } from "../interfaces";
 
 interface LoginProps {
-  onLogin: (amcat: Amcat) => void;
+  /** Current logged in user (if any) */
+  value: AmcatUser;
+  /** Callback that will be called on login (with a user)/logout (with undefined) */
+  onLogin: (amcat: AmcatUser) => void;
 }
 
 /**
  * An AmCAT login form.
  */
-export default function Login({ onLogin }: LoginProps) {
+export default function Login({ value, onLogin }: LoginProps) {
   const [cookies, setCookies] = useCookies(["amcat"]);
-  const loggedIn = useRef(false);
-  const [pending, setPending] = useState(true);
 
   const amcat = useMemo(
     () =>
@@ -25,66 +27,50 @@ export default function Login({ onLogin }: LoginProps) {
     [cookies.amcat]
   );
 
-  const setLogin = useCallback(
-    (d) => {
-      loggedIn.current = true;
-      setCookies("amcat", JSON.stringify(d), { path: "/" });
-      if (onLogin) onLogin(new Amcat(d.host, d.email, d.token));
-      setPending(false);
-    },
-    [onLogin, setCookies]
-  );
+  const handleLogout = (old_value: AmcatUser) => {
+    // remove cookie for current
+    if (old_value != null)
+      setCookies("amcat", JSON.stringify({ ...old_value, token: null }), { path: "/" });
+    onLogin(undefined);
+  };
 
-  const setLogout = useCallback(() => {
-    loggedIn.current = false;
-    setCookies("amcat", JSON.stringify({ ...amcat, token: null }), { path: "/" });
-    if (onLogin) onLogin(null);
-    setPending(false);
-  }, [amcat, onLogin, setCookies]);
+  const handleLogin = (u: AmcatUser) => {
+    setCookies("amcat", JSON.stringify(u), { path: "/" });
 
-  useEffect(() => {
-    if (!loggedIn.current && amcat.host && amcat.email && amcat.token) {
-      const conn = new Amcat(amcat.host, amcat.email, amcat.token);
-      conn
-        .getToken()
-        .then((res) => {
-          setLogin({ ...amcat, token: res.data.token });
-        })
-        .catch((e) => {
-          setLogout();
-        });
-      return null;
-    }
-    setPending(false);
-  }, [amcat, setLogin, setLogout]);
+    onLogin(u);
+  };
 
   // if logged in, show log out
-  if (pending) return null;
-  if (loggedIn.current) return <SignOut amcat={amcat} setLogout={setLogout} />;
-  return <SignIn amcat={amcat} setLogin={setLogin} />;
+  if (value) return <SignOut value={value} onLogout={handleLogout} />;
+  return <SignIn value={amcat} onLogin={handleLogin} />;
 }
 
 interface SignOutProps {
-  amcat: Amcat;
-  setLogout: () => void;
+  value: AmcatUser;
+  onLogout: (user: AmcatUser) => void;
 }
-const SignOut = ({ amcat, setLogout }: SignOutProps) => {
+const SignOut = ({ value, onLogout }: SignOutProps) => {
   return (
-    <Button fluid secondary onClick={setLogout}>
-      Sign out from <span style={{ color: "lightblue" }}>{amcat.email}</span>
+    <Button fluid secondary onClick={() => onLogout(value)}>
+      Sign out from <span style={{ color: "lightblue" }}>{value.email}</span>
     </Button>
   );
 };
 
 interface SignInProps {
-  amcat: Amcat;
-  setLogin: (data: { host: string; email: string; token: string }) => void;
+  value: AmcatUser;
+  onLogin: (user: AmcatUser) => void;
 }
-const SignIn = ({ amcat, setLogin }: SignInProps) => {
+const SignIn = ({ value, onLogin }: SignInProps) => {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("admin");
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (value?.email) setEmail(value.email);
+    if (value?.host) setHost(value.host);
+  }, [value]);
 
   const tryPasswordLogin = async () => {
     setPassword("");
@@ -101,7 +87,7 @@ const SignIn = ({ amcat, setLogin }: SignInProps) => {
       } else setError({ field: undefined, message: "Error on logging in" });
     }
     if (token !== undefined) {
-      setLogin({ host, email, token });
+      onLogin({ host, email, token });
       setError(null);
     }
   };
@@ -111,10 +97,6 @@ const SignIn = ({ amcat, setLogin }: SignInProps) => {
   );
   if (email === "admin") emailError = false;
 
-  useEffect(() => {
-    if (amcat?.email) setEmail(amcat.email);
-    if (amcat?.host) setHost(amcat.host);
-  }, [amcat]);
   return (
     <Form size="large" error={error && error.field === undefined}>
       <Segment stacked>

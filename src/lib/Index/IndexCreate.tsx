@@ -1,6 +1,7 @@
 import { SyntheticEvent, useState } from "react";
 import { Header, Button, Modal, Form, Dropdown, Loader, Dimmer } from "semantic-ui-react";
-import Amcat from "../apis/Amcat";
+import { createIndex, getIndex } from "../apis/Amcat";
+import { AmcatUser } from "../interfaces";
 
 // default roles
 const guestRoles = [
@@ -12,19 +13,20 @@ const guestRoles = [
 ];
 
 interface IndexCreateProps {
-  amcat: Amcat;
+  /** An Amcat connection/user specification (e.g. from Login) */
+  user: AmcatUser;
   open: boolean;
   onClose: (name?: string) => void;
 }
 
 /**
  *
- * @param {*}        amcat    An Amcat connection, optained with the amcat4auth module
+ * @param {*}        amcat
  * @param {*}        button   Optionally, JSX for a custom button (or anything clickable) that opens the modal
  * @param {function} onCreate Function called when new index is created. Argument is the name of the new index
  * @returns
  */
-export default function IndexCreate({ open, amcat, onClose }: IndexCreateProps) {
+export default function IndexCreate({ open, user, onClose }: IndexCreateProps) {
   const [newIndexName, setNewIndexName] = useState("");
   const [guestRole, setGuestRole] = useState("NONE");
   const [nameError, setNameError] = useState("");
@@ -35,7 +37,7 @@ export default function IndexCreate({ open, amcat, onClose }: IndexCreateProps) 
     event.preventDefault();
     setBusy(true);
     try {
-      await amcat.getIndex(newIndexName);
+      await getIndex(user, newIndexName);
       setNameError("This index name already exists");
     } catch (e) {
       if (e.response?.status !== 404) {
@@ -45,8 +47,7 @@ export default function IndexCreate({ open, amcat, onClose }: IndexCreateProps) 
       }
     }
 
-    amcat
-      .createIndex(newIndexName, guestRole)
+    createIndex(user, newIndexName, guestRole)
       .then((res) => {
         // maybe check for 201 before celebrating
         onClose(newIndexName);

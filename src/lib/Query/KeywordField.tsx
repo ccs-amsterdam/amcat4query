@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { Dropdown } from "semantic-ui-react";
-import Amcat from "../apis/Amcat";
-import { AmcatFilter } from "../interfaces";
+import { getFieldValues } from "../apis/Amcat";
+import { AmcatFilter, AmcatIndex } from "../interfaces";
 import FilterButton from "./FilterButton";
 
 interface KeywordFieldProps {
-  /** an AmCAT instance (to retrieve possible values) */
-  amcat: Amcat;
-  /** the name of the current index */
-  index: string;
+  /** an AmCAT index (to retrieve possible values) */
+  index: AmcatIndex;
   /** the field name of the current field */
   field: string;
   /** the current value of the filter, e.g. {"values": ["nrc"]} */
@@ -20,11 +18,11 @@ interface KeywordFieldProps {
 /**
  * Field for creating a values/keyword filter
  */
-export default function KeywordField({ amcat, index, field, value, onChange }: KeywordFieldProps) {
+export default function KeywordField({ index, field, value, onChange }: KeywordFieldProps) {
   const [fieldValues, setFieldValues] = useState<string[]>();
   useEffect(() => {
-    amcat.getFieldValues(index, field, setFieldValues, (error) => setFieldValues(null));
-  }, [amcat, index, field, setFieldValues]);
+    getFieldValues(index, field, setFieldValues, (error) => setFieldValues(null));
+  }, [index, field, setFieldValues]);
   if (!fieldValues) return null;
 
   const handleChange = (values: string[]) => {

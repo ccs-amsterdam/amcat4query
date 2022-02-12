@@ -3,14 +3,10 @@ import useFields from "../components/useFields";
 import FilterButton from "./FilterButton";
 import KeywordField from "./KeywordField";
 import DateField from "./DateField";
-import { AmcatField, AmcatFilter, AmcatFilters } from "../interfaces";
-import Amcat from "../apis/Amcat";
+import { AmcatField, AmcatFilter, AmcatFilters, AmcatIndex } from "../interfaces";
 
 interface FiltersProps {
-  /** the AmCAT instance */
-  amcat: Amcat;
-  /** name of the index */
-  index: string;
+  index: AmcatIndex;
   /** the current filters, e.g. {"publisher": {"values": ["nrc"]}} */
   value: AmcatFilters;
   /**
@@ -24,8 +20,8 @@ interface FiltersProps {
  * Define the filters for a query
  * Props:
  */
-export default function Filters({ amcat, index, value, onChange }: FiltersProps) {
-  const fields = useFields(amcat, index);
+export default function Filters({ index, value, onChange }: FiltersProps) {
+  const fields = useFields(index);
   if (!fields || !value) return null;
   const selectedfields = Object.keys(value);
   const fieldlist = fields.filter((f) => f.name in value);
@@ -59,7 +55,6 @@ export default function Filters({ amcat, index, value, onChange }: FiltersProps)
         return (
           <KeywordField
             key={field.name}
-            amcat={amcat}
             index={index}
             field={field.name}
             value={val}

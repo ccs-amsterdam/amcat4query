@@ -1,12 +1,10 @@
 import PaginationTable, { PaginationTableColumn } from "../components/PaginationTable";
 import { useEffect, useMemo, useState } from "react";
 import Article from "../Article/Article";
-import { AmcatQuery, AmcatQueryResult, IndexProps } from "../interfaces";
-import Amcat from "../apis/Amcat";
+import { AmcatIndex, AmcatQuery, AmcatQueryResult } from "../interfaces";
+import { postQuery } from "../apis/Amcat";
 
 const per_page = 15;
-
-
 
 const COLUMNS: PaginationTableColumn[] = [
   { name: "_id", hide: true },
@@ -16,7 +14,8 @@ const COLUMNS: PaginationTableColumn[] = [
   { name: "text" },
 ];
 
-interface ArticlesProps extends IndexProps {
+interface ArticlesProps {
+  index: AmcatIndex;
   /** Query/filter of which documents to show */
   query: AmcatQuery;
   /** an Array with objects indicating which columns to show and how */
@@ -29,7 +28,6 @@ interface ArticlesProps extends IndexProps {
  * Table overview of a subset of articles
  */
 export default function Articles({
-  amcat,
   index,
   query,
   columns = COLUMNS,
@@ -41,8 +39,8 @@ export default function Articles({
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    fetchArticles(amcat, index, query, page, true, setData);
-  }, [amcat, index, query, page, setData]);
+    fetchArticles(index, query, page, true, setData);
+  }, [index, query, page, setData]);
 
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
@@ -73,14 +71,13 @@ export default function Articles({
         pageChange={setPage}
         onClick={onClick}
       />
-      <Article amcat={amcat} index={index} id={articleId} query={query} />
+      <Article index={index} id={articleId} query={query} />
     </>
   );
 }
 
 const fetchArticles = async (
-  amcat: Amcat,
-  index: string,
+  index: AmcatIndex,
   query: AmcatQuery,
   page: number,
   highlight: boolean,
@@ -88,7 +85,7 @@ const fetchArticles = async (
 ) => {
   let params = { page, per_page, highlight };
   try {
-    const res = await amcat.postQuery(index, query, params);
+    const res = await postQuery(index, query, params);
     setData(res.data);
   } catch (e) {
     console.log(e);

@@ -3,15 +3,14 @@ import { Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
 import Login from "./lib/Login/Login";
-import Index from "./lib/Index/Index";
 import Query from "./lib/Query/Query";
 
 // Right column
 import Upload from "./lib/Upload/Upload";
 import Articles from "./lib/Articles/Articles";
 import AggregatePane from "./lib/Aggregate/AggregatePane";
-import Amcat from "./lib/apis/Amcat";
-import { AmcatQuery } from "./lib/interfaces";
+import { AmcatIndex, AmcatQuery, AmcatUser } from "./lib/interfaces";
+import IndexPicker from "./lib/Index/IndexPicker";
 
 const menuItems = ["Upload", "Articles", "Aggregate"];
 
@@ -24,22 +23,26 @@ const testQuery = {
 
 export default function App() {
   const [selected, setSelected] = useState(menuItems[2]);
-  const [amcat, setAmcat] = useState<Amcat>(null);
-  const [index, setIndex] = useState<string>(null);
+  const [user, setUser] = useState<AmcatUser>();
+  const [index, setIndex] = useState<AmcatIndex>();
   const [query, setQuery] = useState<AmcatQuery>();
 
+  // Reset index and query if user or index change
+  useEffect(() => {
+    setIndex(undefined);
+  }, [user]);
   useEffect(() => {
     setQuery(undefined);
-  }, [amcat, index]);
+  }, [index]);
 
   const render = () => {
     switch (selected) {
       case "Upload":
-        return <Upload amcat={amcat} index={index} />;
+        return <Upload index={index} />;
       case "Articles":
-        return <Articles amcat={amcat} index={index} query={query} />;
+        return <Articles index={index} query={query} />;
       case "Aggregate":
-        return <AggregatePane amcat={amcat} index={index} query={query} />;
+        return <AggregatePane index={index} query={query} />;
       default:
         return null;
     }
@@ -48,15 +51,15 @@ export default function App() {
     <Grid columns={2} style={{ margin: "10px" }}>
       <Grid.Column width={4}>
         <Grid.Row>
-          <Login onLogin={setAmcat} />
+          <Login value={user} onLogin={setUser} />
         </Grid.Row>
         <br />
         <Grid.Row>
-          <Index amcat={amcat} index={index} setIndex={setIndex} canCreate canDelete />
+          <IndexPicker user={user} value={index} onChange={setIndex} />
         </Grid.Row>
         <br />
         <Grid.Row>
-          {index ? <Query amcat={amcat} index={index} value={query} onSubmit={setQuery} /> : null}
+          {index ? <Query index={index} value={query} onSubmit={setQuery} /> : null}
         </Grid.Row>
       </Grid.Column>
       <Grid.Column width={12}>
@@ -72,9 +75,9 @@ export default function App() {
 }
 
 interface ComponentMenuProps {
-  index: string,
-  selected: string,
-  setSelected: (value: string)=> void
+  index: AmcatIndex;
+  selected: string;
+  setSelected: (value: string) => void;
 }
 
 function ComponentMenu({ index, selected, setSelected }: ComponentMenuProps) {
