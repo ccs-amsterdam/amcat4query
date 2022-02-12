@@ -5,6 +5,7 @@ import Articles from "./Articles/Articles";
 import Login from "./Login/Login";
 import Query from "./Query/Query";
 import Upload from "./Upload/Upload";
+import LoginForm from "./Login/LoginForm";
 import * as Amcat from "./apis/Amcat";
 
 import {
@@ -26,6 +27,7 @@ export {
   AggregateResult,
   Articles,
   Login,
+  LoginForm,
   Query,
   Upload,
   Amcat,
