@@ -4,7 +4,7 @@ import { AmcatUser } from "../interfaces";
 import { getToken } from "../apis/Amcat";
 
 interface LoginFormProps {
-  value: AmcatUser;
+  value?: AmcatUser;
   onLogin: (user: AmcatUser) => void;
 }
 export default function LoginForm({ value, onLogin }: LoginFormProps) {

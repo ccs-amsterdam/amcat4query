@@ -23,6 +23,8 @@ interface AggregateResultProps {
   query: AmcatQuery;
   /** Aggregation options (display and axes information) */
   options: AggregationOptions;
+  width?: string | number;
+  height?: string | number;
 }
 
 /**
@@ -33,7 +35,13 @@ interface AggregateResultProps {
  * - query: an AmCAT query object {query, filters}
  * - options: aggregation options {display, axes}
  */
-export default function AggregateResult({ index, query, options }: AggregateResultProps) {
+export default function AggregateResult({
+  index,
+  query,
+  options,
+  width,
+  height,
+}: AggregateResultProps) {
   const [data, setData] = useState<AggregateData>();
   const [error, setError] = useState<string>();
   const [zoom, setZoom] = useState();
@@ -100,7 +108,7 @@ export default function AggregateResult({ index, query, options }: AggregateResu
   return (
     <div>
       {getArticleList(index, zoom, () => setZoom(undefined))}
-      <Element data={data} onClick={handleClick} />
+      <Element data={data} onClick={handleClick} width={width} height={height} />
     </div>
   );
 }

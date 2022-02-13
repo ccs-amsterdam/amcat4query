@@ -1,9 +1,23 @@
-import { LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line, Legend } from "recharts";
+import {
+  LineChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Line,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import { AggregateVisualizerProps } from "../interfaces";
 import { qualitativeColors } from "./colors";
 import { createChartData } from "./lib";
 
-export default function AggregateLineChart({ data, onClick }: AggregateVisualizerProps) {
+export default function AggregateLineChart({
+  data,
+  onClick,
+  width,
+  height,
+}: AggregateVisualizerProps) {
   const { d, columns } = createChartData(data);
   const colors = qualitativeColors(columns.length);
 
@@ -16,23 +30,25 @@ export default function AggregateLineChart({ data, onClick }: AggregateVisualize
     }
     onClick(values);
   };
-
+  if (height == null) height = "300px";
   return (
-    <LineChart width={730} height={250} data={d}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey={data.meta.axes[0].field} />
-      <YAxis />
-      <Tooltip />
-      {columns.length > 1 ? <Legend /> : null}
-      {columns.map((column, i) => (
-        <Line
-          key={i}
-          type="monotone"
-          dataKey={column}
-          stroke={colors[i]}
-          activeDot={{ onClick: (e, j) => handleClick(i, j) }}
-        />
-      ))}
-    </LineChart>
+    <ResponsiveContainer height={height} width={width}>
+      <LineChart data={d}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey={data.meta.axes[0].field} />
+        <YAxis />
+        <Tooltip />
+        {columns.length > 1 ? <Legend /> : null}
+        {columns.map((column, i) => (
+          <Line
+            key={i}
+            type="monotone"
+            dataKey={column}
+            stroke={colors[i]}
+            activeDot={{ onClick: (e, j) => handleClick(i, j) }}
+          />
+        ))}
+      </LineChart>
+    </ResponsiveContainer>
   );
 }

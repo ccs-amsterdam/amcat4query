@@ -5,7 +5,7 @@ export type AggregationInterval = "day" | "week" | "month" | "quarter" | "year";
 
 export interface AggregationAxis {
   field: string;
-  interval: AggregationInterval;
+  interval?: AggregationInterval;
 }
 
 export interface AggregationOptions {
@@ -55,6 +55,8 @@ export interface AggregateVisualizerProps {
    * should be an array of values of equal length to the # of axes
    * */
   onClick: (value: any[]) => void;
+  width?: string | number;
+  height?: string | number;
 }
 
 export interface AmcatUser {
