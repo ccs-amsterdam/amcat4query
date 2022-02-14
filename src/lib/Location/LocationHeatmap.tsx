@@ -19,7 +19,7 @@ interface LocationResultsProps {
   options: LocationOptions;
 }
 
-/* Heat map of documents displayed on a map */
+/** Heat map of documents displayed on a map */
 export default function LocationHeatmap({ index, query, options }: LocationResultsProps) {
   const [data, setData] = useState<any[]>();
   const [articleId, setArticleId] = useState<[number]>();

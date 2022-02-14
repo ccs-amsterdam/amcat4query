@@ -9,6 +9,7 @@ interface LocationOptionChooserProps {
   onChange: (value: LocationOptions) => void;
 }
 
+/** Form to select location options */
 export default function LocationOptionChooser({
   index,
   value,

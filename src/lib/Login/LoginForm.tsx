@@ -4,10 +4,14 @@ import { AmcatUser } from "../interfaces";
 import { getToken } from "../apis/Amcat";
 
 interface LoginFormProps {
+  /** Current logged in user (if any) */
   value?: AmcatUser;
+  /** If given, don't display the host field, but instead fix the host field to this value */
   fix_host?: string;
+  /** Callback that will be called on succesful login  */
   onLogin: (user: AmcatUser) => void;
 }
+/** Form with login options that handles obtaining a token from an AmCAT backend */
 export default function LoginForm({ value, onLogin, fix_host }: LoginFormProps) {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");

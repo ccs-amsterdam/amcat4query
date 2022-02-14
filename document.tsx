@@ -55,6 +55,8 @@ function props(props: { [key: string]: Prop }): string {
 const sections: { [key: string]: string[] } = {
   "Main components": [
     "src/lib/Login/Login.tsx",
+    "src/lib/Login/LoginForm.tsx",
+    "src/lib/Login/IndexLogin.tsx",
     "src/lib/Query/Query.tsx",
     "src/lib/Index/Index.tsx",
     "src/lib/Aggregate/AggregateResult.tsx",

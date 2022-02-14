@@ -9,6 +9,7 @@ interface LocationPaneProps {
   query: AmcatQuery;
 }
 
+/** Pane that shows a linked LocationOptionChooser and LocationHeatMap */
 export default function LocationPane({ index, query }: LocationPaneProps) {
   const [options, setOptions] = useState<LocationOptions>();
   if (index == null) return null;

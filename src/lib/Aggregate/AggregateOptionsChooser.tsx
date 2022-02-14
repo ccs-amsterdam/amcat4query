@@ -32,10 +32,15 @@ const aggregation_labels = {
 };
 
 interface AggregateOptionsChooserProps {
+  /** AmCAT index to work on */
   index: AmcatIndex;
+  /** Current aggregation options value, i.e. {display: "barchart", axes: [{field: "publisher"}]} */
   value: AggregationOptions;
+  /** Callback that will be called if aggregation options are set */
   onSubmit: (value: AggregationOptions) => void;
 }
+
+/** Form to select aggregation options (display, axes) */
 export default function AggregateOptionsChooser({
   index,
   value,

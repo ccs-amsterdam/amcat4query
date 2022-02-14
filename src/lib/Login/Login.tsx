@@ -9,6 +9,7 @@ interface LoginProps {
   value: AmcatUser;
   /** Callback that will be called on login (with a user)/logout (with undefined) */
   onLogin: (amcat: AmcatUser) => void;
+  /** If given, don't display the host field, but instead fix the host field to this value */
   fix_host?: string;
 }
 

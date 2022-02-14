@@ -24,7 +24,41 @@ Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `value` | [AmcatUser](src/lib/interfaces.tsx#L68) | true | Current logged in user (if any)
 `onLogin` | (amcat: [AmcatUser](src/lib/interfaces.tsx#L68)) => void | true | Callback that will be called on login (with a user)/logout (with undefined)
-`fix_host` | string | false | 
+`fix_host` | string | false | If given, don't display the host field, but instead fix the host field to this value
+
+
+### LoginForm
+
+Filename: [/home/wva/amcat4react/src/lib/Login/LoginForm.tsx](/home/wva/amcat4react/src/lib/Login/LoginForm.tsx)
+  
+```
+Form with login options that handles obtaining a token from an AmCAT backend
+```
+  
+#### Props:
+
+Name | Type | Required | Descriptipn
+--- | --- | --- | ---
+`value` | [AmcatUser](src/lib/interfaces.tsx#L68) | false | Current logged in user (if any)
+`fix_host` | string | false | If given, don't display the host field, but instead fix the host field to this value
+`onLogin` | (user: [AmcatUser](src/lib/interfaces.tsx#L68)) => void | true | Callback that will be called on succesful login
+
+
+### IndexLogin
+
+Filename: [/home/wva/amcat4react/src/lib/Login/IndexLogin.tsx](/home/wva/amcat4react/src/lib/Login/IndexLogin.tsx)
+  
+```
+Show form to log in to a specific index on a specific host
+```
+  
+#### Props:
+
+Name | Type | Required | Descriptipn
+--- | --- | --- | ---
+`host` | string | true | Which host to log on to
+`index` | string | true | Which index to use
+`onLogin` | (index: AmcatIndex) => void | true | Callback after succesful login
 
 
 ### Query
@@ -68,16 +102,16 @@ Name | Type | Required | Descriptipn
 Filename: [/home/wva/amcat4react/src/lib/Aggregate/AggregateOptionsChooser.tsx](/home/wva/amcat4react/src/lib/Aggregate/AggregateOptionsChooser.tsx)
   
 ```
-
+Form to select aggregation options (display, axes)
 ```
   
 #### Props:
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`index` | AmcatIndex | true | 
-`value` | [AggregationOptions](src/lib/interfaces.tsx#L11) | true | 
-`onSubmit` | (value: [AggregationOptions](src/lib/interfaces.tsx#L11)) => void | true | 
+`index` | AmcatIndex | true | AmCAT index to work on
+`value` | [AggregationOptions](src/lib/interfaces.tsx#L11) | true | Current aggregation options value, i.e. {display: "barchart", axes: [{field: "publisher"}]}
+`onSubmit` | (value: [AggregationOptions](src/lib/interfaces.tsx#L11)) => void | true | Callback that will be called if aggregation options are set
 
 
 ### Article
@@ -120,7 +154,7 @@ Name | Type | Required | Descriptipn
 Filename: [/home/wva/amcat4react/src/lib/Location/LocationHeatmap.tsx](/home/wva/amcat4react/src/lib/Location/LocationHeatmap.tsx)
   
 ```
-
+Heat map of documents displayed on a map
 ```
   
 #### Props:
@@ -137,7 +171,7 @@ Name | Type | Required | Descriptipn
 Filename: [/home/wva/amcat4react/src/lib/Location/LocationPane.tsx](/home/wva/amcat4react/src/lib/Location/LocationPane.tsx)
   
 ```
-
+Pane that shows a linked LocationOptionChooser and LocationHeatMap
 ```
   
 #### Props:
@@ -153,7 +187,7 @@ Name | Type | Required | Descriptipn
 Filename: [/home/wva/amcat4react/src/lib/Location/LocationOptionChooser.tsx](/home/wva/amcat4react/src/lib/Location/LocationOptionChooser.tsx)
   
 ```
-
+Form to select location options
 ```
   
 #### Props:
