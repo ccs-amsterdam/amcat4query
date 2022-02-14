@@ -11,8 +11,9 @@ import Articles from "./lib/Articles/Articles";
 import AggregatePane from "./lib/Aggregate/AggregatePane";
 import { AmcatIndex, AmcatQuery, AmcatUser } from "./lib/interfaces";
 import IndexPicker from "./lib/Index/IndexPicker";
+import LocationPane from "./lib/Location/LocationPane";
 
-const menuItems = ["Upload", "Articles", "Aggregate"];
+const menuItems = ["Upload", "Articles", "Aggregate", "Location"];
 
 /* eslint-disable-next-line */
 const testQuery = {
@@ -43,6 +44,8 @@ export default function App() {
         return <Articles index={index} query={query} />;
       case "Aggregate":
         return <AggregatePane index={index} query={query} />;
+      case "Location":
+        return <LocationPane index={index} query={query} />;
       default:
         return null;
     }

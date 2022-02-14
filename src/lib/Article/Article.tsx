@@ -4,7 +4,7 @@ import prepareArticle from "./prepareArticle";
 import { Grid, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
 import { AmcatDocument, AmcatField, AmcatQuery, AmcatIndex } from "../interfaces";
-import { postQuery } from "../apis/Amcat";
+import { addFilter, postQuery } from "../apis/Amcat";
 
 interface ArticleProps {
   index: AmcatIndex;
@@ -21,7 +21,6 @@ export default function Article({ index, id, query }: ArticleProps) {
   const fields = useFields(index);
   const [article, setArticle] = useState(null);
   const [open, setOpen] = useState(false);
-
   useEffect(() => {
     if (!id) return;
     const _id = Array.isArray(id) ? id[0] : id;
@@ -56,22 +55,22 @@ export default function Article({ index, id, query }: ArticleProps) {
   );
 }
 
-async function fetchArticle(
+function fetchArticle(
   index: AmcatIndex,
   _id: number,
   query: AmcatQuery,
   setArticle: (value: AmcatDocument) => void
 ) {
-  let params: any = { annotations: true, filters: { _id } };
-  if (query?.queries) params.queries = query.queries;
-  query.filters = { id: { values: [_id] } };
-  try {
-    const res = await postQuery(index, query, params);
-    setArticle(res.data.results[0]);
-  } catch (e) {
-    console.log(e);
-    setArticle(null);
-  }
+  let params: any = { annotations: true };
+  query = addFilter(query, { _id: { values: [_id] } });
+  postQuery(index, query, params)
+    .then((data) => {
+      setArticle(data.data.results[0]);
+    })
+    .catch((error) => {
+      console.log(error);
+      setArticle(null);
+    });
 }
 
 interface BodyProps {
@@ -195,8 +194,8 @@ const formatMetaValue = (article: AmcatDocument, field: AmcatField) => {
       return <a href={value}>{value}</a>;
     case "tag":
       if (Array.isArray(value)) return value.map((v) => <Label>{v}</Label>);
-      else return value;
+      else return value ? <Label>{value}</Label> : null;
     default:
-      return value;
+      return JSON.stringify(value);
   }
 };

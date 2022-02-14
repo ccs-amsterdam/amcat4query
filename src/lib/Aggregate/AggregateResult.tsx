@@ -186,7 +186,7 @@ function describe_filter(field: string, filter: AmcatFilter) {
     .join(" and ");
 }
 
-function getArticleList(index: AmcatIndex, query: AmcatQuery, onClose: () => void) {
+export function getArticleList(index: AmcatIndex, query: AmcatQuery, onClose: () => void) {
   if (!query) return null;
   const header = Object.keys(query.filters || {})
     .map((f) => describe_filter(f, query.filters[f]))

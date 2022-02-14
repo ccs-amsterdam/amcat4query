@@ -21,11 +21,12 @@ export interface DateFilter {
 }
 export interface AmcatFilter extends DateFilter {
   values?: (string | number)[];
+  exists?: boolean;
 }
 
 export interface AmcatField {
   name: string;
-  type: "keyword" | "date" | "tag" | "text" | "url";
+  type: "keyword" | "date" | "tag" | "text" | "url" | "geo_point";
 }
 
 export interface AmcatFilters {
@@ -85,4 +86,15 @@ export interface AmcatDocument {
 export interface AmcatQueryResult {
   results?: AmcatDocument[];
   meta?: { page_count?: number };
+}
+
+export interface LocationOptions {
+  /** Field name refering to a geo_point field in this index */
+  field: string;
+  /** Maximum number of documents to use (default: 100)*/
+  numdocs?: number;
+  /** Width of the map (default: '100%') */
+  width?: number | string;
+  /** Height of the map (default: 600) */
+  height?: number | string;
 }

@@ -8,6 +8,10 @@ import Query from "./Query/Query";
 import Upload from "./Upload/Upload";
 import LoginForm from "./Login/LoginForm";
 import AggregatePane from "./Aggregate/AggregatePane";
+import LocationHeatmap from "./Location/LocationHeatmap";
+import LocationPane from "./Location/LocationPane";
+import LocationOptionChooser from "./Location/LocationOptionChooser";
+
 import * as Amcat from "./apis/Amcat";
 
 import {
@@ -22,6 +26,7 @@ import {
   AmcatDocument,
   AmcatUser,
   AmcatIndex,
+  LocationOptions,
 } from "./interfaces";
 
 export {
@@ -34,6 +39,9 @@ export {
   IndexPicker,
   Query,
   Upload,
+  LocationPane,
+  LocationHeatmap,
+  LocationOptionChooser,
   Amcat,
   AmcatQuery,
   AmcatQueryResult,
@@ -46,4 +54,5 @@ export {
   AmcatDocument,
   AmcatUser,
   AmcatIndex,
+  LocationOptions,
 };

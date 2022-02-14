@@ -1,7 +1,6 @@
 import { Container, Pagination, Table, Icon } from "semantic-ui-react";
 import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
 import { removeElasticTags, highlightElasticTags } from "../functions/highlightElasticTags";
-import { AmcatQueryResult } from "../interfaces";
 import "./paginationTableStyle.css";
 
 export interface PaginationTableColumn {
@@ -21,11 +20,11 @@ interface TableRow {
 
 interface PaginationProps {
   /** an Array with data for a single page */
-  data: TableRow[],
+  data: TableRow[];
   /** an Array with objects indicating which columns to show and how. */
-  columns: PaginationTableColumn[],
+  columns: PaginationTableColumn[];
   /** the number of pages */
-  pages: number,
+  pages: number;
   /** the function to perform on pagechange. Gets pageindex as an argument, and should update data */
   pageChange: (page: number) => void;
   /** Function to perform when clicking on a row. Gets data row object as argument */
@@ -35,13 +34,19 @@ interface PaginationProps {
 /**
  * A nice table with pagination
  */
-export default function PaginationTable({ data, columns, pages, pageChange, onClick }: PaginationProps) {
+export default function PaginationTable({
+  data,
+  columns,
+  pages,
+  pageChange,
+  onClick,
+}: PaginationProps) {
   const createHeaderRow = (columns: PaginationTableColumn[]) => {
     return columns.map((col, i) => {
       if (col.hide) return null;
 
       return (
-        <Table.HeaderCell key={i} width={col.width || null }>
+        <Table.HeaderCell key={i} width={col.width || null}>
           <span title={col.name}>{col.name}</span>
         </Table.HeaderCell>
       );
@@ -124,7 +129,7 @@ export default function PaginationTable({ data, columns, pages, pageChange, onCl
                   secondary
                   defaultActivePage={1}
                   totalPages={pages}
-                  onPageChange={(e, d) => pageChange(d.activePage as number - 1)}
+                  onPageChange={(e, d) => pageChange((d.activePage as number) - 1)}
                 ></Pagination>
               ) : null}
             </Table.HeaderCell>

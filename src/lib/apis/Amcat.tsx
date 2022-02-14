@@ -1,5 +1,5 @@
-import Axios, { AxiosError, AxiosInstance } from "axios";
-import { AmcatDocument } from "..";
+import Axios, { AxiosError } from "axios";
+import { AmcatDocument, AmcatFilters } from "..";
 import { AggregateData, AggregationAxis, AmcatIndex, AmcatQuery, AmcatUser } from "../interfaces";
 
 // Server-level functions, i.e. not linked to an index
@@ -31,7 +31,6 @@ export function getIndices(user: AmcatUser) {
 // Functions on an index
 
 function api(index: AmcatIndex) {
-  console.log({ index });
   return Axios.create({
     baseURL: `${index.host}/index/${index.index}`,
     headers: { Authorization: `Bearer ${index.token}` },
@@ -117,4 +116,9 @@ function describeError(e: AxiosError): string {
   if (e.response) return `HTTP error ${e.response.status}`;
   if (e.request) return "No reply from server";
   return "Something went wrong trying to query the AmCAT backend";
+}
+
+export function addFilter(q: AmcatQuery, filters: AmcatFilters): AmcatQuery {
+  if (q == null) q = {};
+  return { queries: { ...q.queries }, filters: { ...q.filters, ...filters } };
 }
