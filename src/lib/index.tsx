@@ -3,6 +3,7 @@ import AggregateResult from "./Aggregate/AggregateResult";
 import AggregateOptionsChooser from "./Aggregate/AggregateOptionsChooser";
 import Articles from "./Articles/Articles";
 import Login from "./Login/Login";
+import IndexLogin from "./Login/IndexLogin";
 import IndexPicker from "./Index/IndexPicker";
 import Query from "./Query/Query";
 import Upload from "./Upload/Upload";
@@ -36,6 +37,7 @@ export {
   Articles,
   Login,
   LoginForm,
+  IndexLogin,
   IndexPicker,
   Query,
   Upload,

@@ -9,7 +9,9 @@ export interface AggregationAxis {
 }
 
 export interface AggregationOptions {
+  /* Aggregation axes, i.e. [{field: "publisher"}] */
   axes: AggregationAxis[];
+  /* Display option, i,e, "linechart" or "barchart" */
   display: DisplayOption;
 }
 
@@ -19,6 +21,7 @@ export interface DateFilter {
   lt?: string;
   gt?: string;
 }
+
 export interface AmcatFilter extends DateFilter {
   values?: (string | number)[];
   exists?: boolean;
@@ -56,7 +59,9 @@ export interface AggregateVisualizerProps {
    * should be an array of values of equal length to the # of axes
    * */
   onClick: (value: any[]) => void;
+  /* Width of the component (default: 100%) */
   width?: string | number;
+  /* Height of the component (default: 300) */
   height?: string | number;
 }
 

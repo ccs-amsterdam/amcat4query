@@ -8,20 +8,20 @@ const options = {
 };
 
 interface Prop {
-  name: string,
-  description: string,
-  type: {name: string},
-  required: boolean
+  name: string;
+  description: string;
+  type: { name: string };
+  required: boolean;
 }
 interface Component {
-  filePath: string,
-  description: string,
-  displayName: string,
-  props: {[key: string]: Prop}
+  filePath: string;
+  description: string;
+  displayName: string;
+  props: { [key: string]: Prop };
 }
 
 function component(c: Component): string {
-  const block = "\`\`\`";
+  const block = "```";
   return `### ${c.displayName}
 
 Filename: [${c.filePath}](${c.filePath})
@@ -36,23 +36,23 @@ ${props(c.props)}
 `;
 }
 
-function props(props: {[key: string]: Prop}): string {
-  const prefix = "Name | Type | Required | Descriptipn\n--- | --- | --- | ---"
+function props(props: { [key: string]: Prop }): string {
+  const prefix = "Name | Type | Required | Descriptipn\n--- | --- | --- | ---";
   const rows: string[] = Object.keys(props).map((key) => {
     const p = props[key];
     let type = p.type.name.replaceAll("|", "\\|");
-    Object.keys(interfaces).forEach(key => {
-      type = type.replaceAll(key, `[${key}](src/lib/interfaces.tsx#L${interfaces[key]})`)
-    })
+    Object.keys(interfaces).forEach((key) => {
+      type = type.replaceAll(key, `[${key}](src/lib/interfaces.tsx#L${interfaces[key]})`);
+    });
     //console.log({type, x:type in interfaces})
     //if (type in interfaces) type = `[${type}](src/lib/interfaces.tsx#L${interfaces[type]})`
     //else type = `\`${type.replaceAll("|", "\\|")}\``
-    return `\`${p.name}\` | ${type} | ${p.required} | ${p.description}`
-  })
-  return `${prefix}\n${rows.join("\n")}`
+    return `\`${p.name}\` | ${type} | ${p.required} | ${p.description}`;
+  });
+  return `${prefix}\n${rows.join("\n")}`;
 }
 
-const sections: {[key:string]: string[]} = {
+const sections: { [key: string]: string[] } = {
   "Main components": [
     "src/lib/Login/Login.tsx",
     "src/lib/Query/Query.tsx",
@@ -61,55 +61,56 @@ const sections: {[key:string]: string[]} = {
     "src/lib/Aggregate/AggregateOptionsChooser.tsx",
     "src/lib/Article/Article.tsx",
     "src/lib/Articles/Articles.tsx",
+    "src/lib/Location/LocationHeatmap.tsx",
+    "src/lib/Location/LocationPane.tsx",
+    "src/lib/Location/LocationOptionChooser.tsx",
   ],
-  "Aggregation": [
+  Aggregation: [
     "src/lib/Aggregate/AxisPicker.tsx",
     "src/lib/Aggregate/AggregateTable.tsx",
     "src/lib/Aggregate/AggregateLineChart.tsx",
     "src/lib/Aggregate/AggregatePane.tsx",
     "src/lib/Aggregate/AggregateBarChart.tsx",
   ],
-  "Articles": [
-  "src/lib/components/PaginationTable.tsx",
-  ],
-  "Login & Index": [
-    "src/lib/Index/IndexCreate.tsx",
-    "src/lib/Index/IndexDelete.tsx",
-  ], 
-  "Queries": [
+  Articles: ["src/lib/components/PaginationTable.tsx"],
+  "Login & Index": ["src/lib/Index/IndexCreate.tsx", "src/lib/Index/IndexDelete.tsx"],
+  Queries: [
     "src/lib/Query/KeywordField.tsx",
     "src/lib/Query/Filters.tsx",
     "src/lib/Query/DateField.tsx",
     "src/lib/Query/FilterButton.tsx",
     "src/lib/Query/QueryString.tsx",
-  ]
-}
-
+  ],
+};
 
 // Parse interface definitions
-const lines = String(fs.readFileSync("src/lib/interfaces.tsx")).split("\n")
-const interfaces: {[key: string]: number} = {}
+const lines = String(fs.readFileSync("src/lib/interfaces.tsx")).split("\n");
+const interfaces: { [key: string]: number } = {};
 lines.forEach((line, i) => {
-    const found = line.match(/export interface (\w+) {/);
-    if (found) interfaces[found[1]] = i+1
-})
+  const found = line.match(/export interface (\w+) {/);
+  if (found) interfaces[found[1]] = i + 1;
+});
 
-const content:string[] = ["## AmCAT4 React components documentation",
-"Generated with `npx ts-node document.tsx`"];
+const content: string[] = [
+  "## AmCAT4 React components documentation",
+  "Generated with `npx ts-node document.tsx`",
+];
 // TOC
-const toc = Object.keys(sections).map(section => 
-    `1. [${section}](#${section.toLowerCase().replaceAll(" ", "-").replaceAll("&", "")})`
-  ).join("\n");
-content.push(toc)
+const toc = Object.keys(sections)
+  .map(
+    (section) =>
+      `1. [${section}](#${section.toLowerCase().replaceAll(" ", "-").replaceAll("&", "")})`
+  )
+  .join("\n");
+content.push(toc);
 
 // Component definitions
-Object.keys(sections).forEach(section => {
-  content.push(`## ${section}`)
+Object.keys(sections).forEach((section) => {
+  content.push(`## ${section}`);
   const x = docgen.parse(sections[section]);
-  const p = x.map(component).join("\n\n")
-  content.push(p)
-  content.push("---")
-})
+  const p = x.map(component).join("\n\n");
+  content.push(p);
+  content.push("---");
+});
 
-fs.writeFileSync("components.md", content.join("\n\n"))
-
+fs.writeFileSync("components.md", content.join("\n\n"));

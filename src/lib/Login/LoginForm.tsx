@@ -5,9 +5,10 @@ import { getToken } from "../apis/Amcat";
 
 interface LoginFormProps {
   value?: AmcatUser;
+  fix_host?: string;
   onLogin: (user: AmcatUser) => void;
 }
-export default function LoginForm({ value, onLogin }: LoginFormProps) {
+export default function LoginForm({ value, onLogin, fix_host }: LoginFormProps) {
   const [host, setHost] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("admin");
@@ -15,7 +16,8 @@ export default function LoginForm({ value, onLogin }: LoginFormProps) {
 
   useEffect(() => {
     if (value?.email) setEmail(value.email);
-    if (value?.host) setHost(value.host);
+    if (fix_host) setHost(fix_host);
+    else if (value?.host) setHost(value.host);
   }, [value]);
 
   const tryPasswordLogin = async () => {
@@ -42,25 +44,26 @@ export default function LoginForm({ value, onLogin }: LoginFormProps) {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
   if (email === "admin") emailError = false;
-
   return (
     <Form size="large" error={error && error.field === undefined}>
       <Segment stacked>
         <Message error header={error?.message} />
-        <Form.Input
-          fluid
-          placeholder="Host"
-          name="host"
-          label="Host"
-          value={host}
-          onChange={(e, d) => {
-            if (d.value.length < 100) setHost(d.value);
-          }}
-          error={error?.field === "host" ? error.message : false}
-          icon="home"
-          iconPosition="left"
-          autoFocus
-        />
+        {fix_host != null ? null : (
+          <Form.Input
+            fluid
+            placeholder="Host"
+            name="host"
+            label="Host"
+            value={host}
+            onChange={(e, d) => {
+              if (d.value.length < 100) setHost(d.value);
+            }}
+            error={error?.field === "host" ? error.message : false}
+            icon="home"
+            iconPosition="left"
+            autoFocus
+          />
+        )}
 
         <Form.Input
           fluid
@@ -101,7 +104,6 @@ export default function LoginForm({ value, onLogin }: LoginFormProps) {
           Sign in
         </Button>
       </Segment>
-      <Message>Don't have an account? pweh!</Message>
     </Form>
   );
 }

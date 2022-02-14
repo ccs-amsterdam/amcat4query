@@ -9,12 +9,13 @@ interface LoginProps {
   value: AmcatUser;
   /** Callback that will be called on login (with a user)/logout (with undefined) */
   onLogin: (amcat: AmcatUser) => void;
+  fix_host?: string;
 }
 
 /**
  * An AmCAT login form.
  */
-export default function Login({ value, onLogin }: LoginProps) {
+export default function Login({ value, onLogin, fix_host }: LoginProps) {
   const [cookies, setCookies] = useCookies(["amcat"]);
 
   const amcat = useMemo(
@@ -42,7 +43,7 @@ export default function Login({ value, onLogin }: LoginProps) {
 
   // if logged in, show log out
   if (value) return <SignOut value={value} onLogout={handleLogout} />;
-  return <LoginForm value={amcat} onLogin={handleLogin} />;
+  return <LoginForm value={amcat} onLogin={handleLogin} fix_host={fix_host} />;
 }
 
 interface SignOutProps {

@@ -112,7 +112,7 @@ export async function getToken(host: string, email: string, password: string) {
   return response.data.token;
 }
 
-function describeError(e: AxiosError): string {
+export function describeError(e: AxiosError): string {
   if (e.response) return `HTTP error ${e.response.status}`;
   if (e.request) return "No reply from server";
   return "Something went wrong trying to query the AmCAT backend";

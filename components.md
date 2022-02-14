@@ -22,8 +22,9 @@ An AmCAT login form.
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`value` | [AmcatUser](src/lib/interfaces.tsx#L60) | true | Current logged in user (if any)
-`onLogin` | (amcat: [AmcatUser](src/lib/interfaces.tsx#L60)) => void | true | Callback that will be called on login (with a user)/logout (with undefined)
+`value` | [AmcatUser](src/lib/interfaces.tsx#L68) | true | Current logged in user (if any)
+`onLogin` | (amcat: [AmcatUser](src/lib/interfaces.tsx#L68)) => void | true | Callback that will be called on login (with a user)/logout (with undefined)
+`fix_host` | string | false | 
 
 
 ### Query
@@ -39,8 +40,8 @@ Specify a full AmCAT **query**, i.e. querystrings and filters
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `index` | AmcatIndex | true | 
-`value` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
-`onSubmit` | (value: [AmcatQuery](src/lib/interfaces.tsx#L35)) => void | true | callback that will be called with a valid AmCAT query when the user clicks submit
+`value` | [AmcatQuery](src/lib/interfaces.tsx#L39) | true | AmCAT query to be displayed, e.g. {"queries": [...], "filters": {...}}
+`onSubmit` | (value: [AmcatQuery](src/lib/interfaces.tsx#L39)) => void | true | callback that will be called with a valid AmCAT query when the user clicks submit
 
 
 ### AggregateResult
@@ -49,11 +50,6 @@ Filename: [/home/wva/amcat4react/src/lib/Aggregate/AggregateResult.tsx](/home/wv
   
 ```
 Display the results of an aggregate search
-props:
-- amcat
-- index
-- query: an AmCAT query object {query, filters}
-- options: aggregation options {display, axes}
 ```
   
 #### Props:
@@ -61,8 +57,10 @@ props:
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `index` | AmcatIndex | true | 
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | The query for the results to show
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L39) | true | The query for the results to show
 `options` | [AggregationOptions](src/lib/interfaces.tsx#L11) | true | Aggregation options (display and axes information)
+`width` | string \| number | false | 
+`height` | string \| number | false | 
 
 
 ### AggregateOptionsChooser
@@ -96,7 +94,7 @@ Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `index` | AmcatIndex | true | 
 `id` | number \| [number] | true | An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | A query, used for highlighting
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L39) | true | A query, used for highlighting
 
 
 ### Articles
@@ -112,9 +110,59 @@ Table overview of a subset of articles
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `index` | AmcatIndex | true | 
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | Query/filter of which documents to show
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L39) | true | Query/filter of which documents to show
 `columns` | PaginationTableColumn[] | false | an Array with objects indicating which columns to show and how
 `allColumns` | boolean | false | if true, include all columns AFTER the columns specified in the columns argument
+
+
+### LocationHeatmap
+
+Filename: [/home/wva/amcat4react/src/lib/Location/LocationHeatmap.tsx](/home/wva/amcat4react/src/lib/Location/LocationHeatmap.tsx)
+  
+```
+
+```
+  
+#### Props:
+
+Name | Type | Required | Descriptipn
+--- | --- | --- | ---
+`index` | AmcatIndex | true | The index to run the query on
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L39) | false | An optional query to limit results
+`options` | [LocationOptions](src/lib/interfaces.tsx#L96) | true | Additional options for location visualization ({field, numdocs})
+
+
+### LocationPane
+
+Filename: [/home/wva/amcat4react/src/lib/Location/LocationPane.tsx](/home/wva/amcat4react/src/lib/Location/LocationPane.tsx)
+  
+```
+
+```
+  
+#### Props:
+
+Name | Type | Required | Descriptipn
+--- | --- | --- | ---
+`index` | AmcatIndex | true | 
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L39) | true | 
+
+
+### LocationOptionChooser
+
+Filename: [/home/wva/amcat4react/src/lib/Location/LocationOptionChooser.tsx](/home/wva/amcat4react/src/lib/Location/LocationOptionChooser.tsx)
+  
+```
+
+```
+  
+#### Props:
+
+Name | Type | Required | Descriptipn
+--- | --- | --- | ---
+`index` | AmcatIndex | true | 
+`value` | [LocationOptions](src/lib/interfaces.tsx#L96) | true | 
+`onChange` | (value: [LocationOptions](src/lib/interfaces.tsx#L96)) => void | true | 
 
 
 ---
@@ -155,6 +203,8 @@ Name | Type | Required | Descriptipn
 The data to visualize
 `onClick` | (value: any[]) => void | true | Callback when user clicks on a point,
 should be an array of values of equal length to the # of axes
+`width` | string \| number | false | 
+`height` | string \| number | false | 
 
 
 ### AggregateLineChart
@@ -173,6 +223,8 @@ Name | Type | Required | Descriptipn
 The data to visualize
 `onClick` | (value: any[]) => void | true | Callback when user clicks on a point,
 should be an array of values of equal length to the # of axes
+`width` | string \| number | false | 
+`height` | string \| number | false | 
 
 
 ### AggregatePane
@@ -188,7 +240,7 @@ Filename: [src/lib/Aggregate/AggregatePane.tsx](src/lib/Aggregate/AggregatePane.
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `index` | AmcatIndex | true | 
-`query` | [AmcatQuery](src/lib/interfaces.tsx#L35) | true | 
+`query` | [AmcatQuery](src/lib/interfaces.tsx#L39) | true | 
 
 
 ### AggregateBarChart
@@ -207,6 +259,8 @@ Name | Type | Required | Descriptipn
 The data to visualize
 `onClick` | (value: any[]) => void | true | Callback when user clicks on a point,
 should be an array of values of equal length to the # of axes
+`width` | string \| number | false | 
+`height` | string \| number | false | 
 
 
 ---
@@ -248,14 +302,14 @@ Filename: [src/lib/Index/IndexCreate.tsx](src/lib/Index/IndexCreate.tsx)
 
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
-`user` | [AmcatUser](src/lib/interfaces.tsx#L60) | true | An Amcat connection/user specification (e.g. from Login)
+`user` | [AmcatUser](src/lib/interfaces.tsx#L68) | true | An Amcat connection/user specification (e.g. from Login)
 `open` | boolean | true | 
 `onClose` | (name?: string) => void | true | 
 
 
 ### IndexDelete
 
-Filename: [src/lib/Index/IndexDelete.tsx](src/lib/Index/IndexDelete.tsx)
+Filename: [/home/wva/amcat4react/src/lib/Index/IndexDelete.tsx](/home/wva/amcat4react/src/lib/Index/IndexDelete.tsx)
   
 ```
 
@@ -306,8 +360,8 @@ Props:
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `index` | AmcatIndex | true | 
-`value` | [AmcatFilters](src/lib/interfaces.tsx#L31) | true | the current filters, e.g. {"publisher": {"values": ["nrc"]}}
-`onChange` | (value: [AmcatFilters](src/lib/interfaces.tsx#L31)) => void | true | Callback that will be called when the filter selection changes with a new filter object
+`value` | [AmcatFilters](src/lib/interfaces.tsx#L35) | true | the current filters, e.g. {"publisher": {"values": ["nrc"]}}
+`onChange` | (value: [AmcatFilters](src/lib/interfaces.tsx#L35)) => void | true | Callback that will be called when the filter selection changes with a new filter object
   (note that the filter might be incomplete, i.e. have only a key and an empty body if the user is still selecting)
 
 
@@ -324,8 +378,8 @@ Field for creating a date filter
 Name | Type | Required | Descriptipn
 --- | --- | --- | ---
 `field` | string | true | the field name of the current field
-`value` | [DateFilter](src/lib/interfaces.tsx#L16) | true | the current value of the filter, e.g. {"gte": "2020-01-01"}
-`onChange` | (value: [DateFilter](src/lib/interfaces.tsx#L16)) => void | true | callback that will be called with a new filter value
+`value` | [DateFilter](src/lib/interfaces.tsx#L18) | true | the current value of the filter, e.g. {"gte": "2020-01-01"}
+`onChange` | (value: [DateFilter](src/lib/interfaces.tsx#L18)) => void | true | callback that will be called with a new filter value
 
 
 ### FilterButton

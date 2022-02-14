@@ -23,17 +23,14 @@ interface AggregateResultProps {
   query: AmcatQuery;
   /** Aggregation options (display and axes information) */
   options: AggregationOptions;
+  /* Width of the component */
   width?: string | number;
+  /* Height of the component */
   height?: string | number;
 }
 
 /**
  * Display the results of an aggregate search
- * props:
- * - amcat
- * - index
- * - query: an AmCAT query object {query, filters}
- * - options: aggregation options {display, axes}
  */
 export default function AggregateResult({
   index,
