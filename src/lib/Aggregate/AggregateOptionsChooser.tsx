@@ -25,10 +25,9 @@ const displayOptions = [
 ];
 
 const aggregation_labels = {
-  default: ["Group results by", "And then by"],
-  list: ["Group results by", "And then by"],
-  linechart: ["Horizontal (X) axis", "Multiple lines"],
-  barchart: ["Create bars for", "Cluster bars by"],
+  list: ["Group results by", "And then by", "Maximum number of rows"],
+  linechart: ["Horizontal (X) axis", "Multiple lines", "Maximum number of lines"],
+  barchart: ["Create bars for", "Cluster bars by", "Maximum number of bars"],
 };
 
 interface AggregateOptionsChooserProps {
@@ -47,24 +46,24 @@ export default function AggregateOptionsChooser({
   onSubmit,
 }: AggregateOptionsChooserProps) {
   const fields = useFields(index);
-  const [display, setDisplay] = useState<DisplayOption>();
+  const [display, setDisplay] = useState<DisplayOption>("list");
   const [axis1, setAxis1] = useState<AggregationAxis>();
   const [axis2, setAxis2] = useState<AggregationAxis>();
+  const [limit, setLimit] = useState<number>();
 
   useEffect(() => {
     setDisplay(value?.display || "list");
     setAxis1(value?.axes?.[0]);
     setAxis2(value?.axes?.[1]);
   }, [value]);
-
   function doSubmit() {
     const axes = [axis1, axis2].filter((axis) => axis?.field);
-    onSubmit({ axes, display });
+    onSubmit({ axes, display, limit });
   }
-  const labels = aggregation_labels[display] || aggregation_labels["default"];
+  const labels = aggregation_labels[display];
 
   return (
-    <Form>
+    <Form onSubmit={doSubmit}>
       <Form.Dropdown
         placeholder="Select result display option"
         clearable
@@ -77,7 +76,13 @@ export default function AggregateOptionsChooser({
       />
       <AxisPicker fields={fields} value={axis1} onChange={setAxis1} label={labels[0]} />
       <AxisPicker fields={fields} value={axis2} onChange={setAxis2} label={labels[1]} />
-
+      <Form.Input
+        placeholder="Set limit"
+        label={labels[2]}
+        value={limit || ""}
+        onChange={(_e, { value }) => setLimit(parseInt(value))}
+        type="number"
+      />
       <Button primary onClick={doSubmit}>
         Submit
       </Button>

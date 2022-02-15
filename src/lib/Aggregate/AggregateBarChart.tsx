@@ -8,6 +8,7 @@ export default function AggregateBarChart({
   onClick,
   width,
   height,
+  limit,
 }: AggregateVisualizerProps) {
   const { d, columns } = createChartData(data);
   const colors = qualitativeColors(columns.length);
@@ -25,7 +26,9 @@ export default function AggregateBarChart({
     onClick(values);
   };
   if (height == null) height = Math.max(250, d.length * 30);
-  const sorted = d.sort((e1, e2) => e2.n - e1.n);
+  let sorted = d.sort((e1, e2) => e2.n - e1.n);
+  if (limit && sorted.length > limit) sorted = sorted.slice(0, limit);
+  if (width == null) width = "100%";
   return (
     <ResponsiveContainer width={width} height={height}>
       <BarChart data={sorted} layout="vertical">

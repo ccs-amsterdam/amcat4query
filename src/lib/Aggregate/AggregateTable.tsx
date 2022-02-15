@@ -1,12 +1,13 @@
 import { Table } from "semantic-ui-react";
 import { AggregateDataPoint, AggregateVisualizerProps } from "../interfaces";
 
-export default function AggregateTable({ data, onClick }: AggregateVisualizerProps) {
+export default function AggregateTable({ data, onClick, limit }: AggregateVisualizerProps) {
   const handleClick = (row: AggregateDataPoint) => {
     const values = data.meta.axes.map((axis) => row[axis.field]);
     onClick(values);
   };
-
+  let d = data.data;
+  if (limit && d.length > limit) d = d.slice(0, limit);
   return (
     <Table celled>
       <Table.Header>
@@ -18,7 +19,7 @@ export default function AggregateTable({ data, onClick }: AggregateVisualizerPro
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {data.data.map((row, i) => {
+        {d.map((row, i) => {
           return (
             <Table.Row key={i}>
               {data.meta.axes.map((axis, j) => (

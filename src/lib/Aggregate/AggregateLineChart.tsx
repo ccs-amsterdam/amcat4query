@@ -17,8 +17,9 @@ export default function AggregateLineChart({
   onClick,
   width,
   height,
+  limit,
 }: AggregateVisualizerProps) {
-  const { d, columns } = createChartData(data);
+  let { d, columns } = createChartData(data);
   const colors = qualitativeColors(columns.length);
 
   const handleClick = (line: number, point: any) => {
@@ -30,7 +31,17 @@ export default function AggregateLineChart({
     }
     onClick(values);
   };
-  if (height == null) height = "300px";
+  if (limit && columns.length > limit) {
+    const counts = Object.fromEntries(columns.map((c) => [c, 0]));
+    const f = data.meta.axes[1].field;
+    data.data.forEach((row) => (counts[row[f]] += row.n));
+    columns = Object.keys(counts)
+      .sort((k1, k2) => counts[k2] - counts[k1])
+      .slice(0, limit);
+  }
+
+  if (height == null) height = 300;
+  if (width == null) width = "100%";
   return (
     <ResponsiveContainer height={height} width={width}>
       <LineChart data={d}>

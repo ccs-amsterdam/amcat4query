@@ -105,7 +105,13 @@ export default function AggregateResult({
   return (
     <div>
       {getArticleList(index, zoom, () => setZoom(undefined))}
-      <Element data={data} onClick={handleClick} width={width} height={height} />
+      <Element
+        data={data}
+        onClick={handleClick}
+        width={width}
+        height={height}
+        limit={options.limit}
+      />
     </div>
   );
 }

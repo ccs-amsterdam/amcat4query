@@ -8,11 +8,14 @@ export interface AggregationAxis {
   interval?: AggregationInterval;
 }
 
+//TODO: think about how visual and data options relate, e.g. limit.
 export interface AggregationOptions {
   /* Aggregation axes, i.e. [{field: "publisher"}] */
   axes: AggregationAxis[];
   /* Display option, i,e, "linechart" or "barchart" */
   display: DisplayOption;
+  /* Limit the number of rows/lines/bars */
+  limit?: number;
 }
 
 export interface DateFilter {
@@ -63,6 +66,8 @@ export interface AggregateVisualizerProps {
   width?: string | number;
   /* Height of the component (default: 300) */
   height?: string | number;
+  /* Limit the number of bars/lines/rows */
+  limit?: number;
 }
 
 export interface AmcatUser {
