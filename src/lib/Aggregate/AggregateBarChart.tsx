@@ -25,9 +25,9 @@ export default function AggregateBarChart({
     }
     onClick(values);
   };
-  if (height == null) height = Math.max(250, d.length * 30);
   let sorted = d.sort((e1, e2) => e2.n - e1.n);
   if (limit && sorted.length > limit) sorted = sorted.slice(0, limit);
+  if (height == null) height = Math.max(250, sorted.length * 30);
   if (width == null) width = "100%";
   return (
     <ResponsiveContainer width={width} height={height}>
