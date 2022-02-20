@@ -8,8 +8,7 @@ export interface AggregationAxis {
   interval?: AggregationInterval;
 }
 
-export const metricFunctions = ["avg", "min", "max", "sum"];
-export type MetricFunction = typeof metricFunctions;
+export type MetricFunction = "avg" | "min" | "max" | "sum";
 
 export interface AggregationMetric {
   field: string;

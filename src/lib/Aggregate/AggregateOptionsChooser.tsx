@@ -8,7 +8,6 @@ import {
   AggregationOptions,
   AmcatIndex,
   MetricFunction,
-  metricFunctions,
 } from "../interfaces";
 const displayOptions = [
   {
@@ -84,7 +83,8 @@ export default function AggregateOptionsChooser({
       value: f.name,
       icon: f.type === "date" ? "calendar outline" : "sort numeric down",
     }));
-  const metricFunctionOptions = metricFunctions.map((f) => ({
+
+  const metricFunctionOptions = ["avg", "min", "max", "sum"].map((f) => ({
     key: f,
     text: f,
     value: f,

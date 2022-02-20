@@ -98,10 +98,20 @@ export function postAggregate(index: AmcatIndex, query: AmcatQuery, options: Agg
  * @returns
  */
 export async function getToken(host: string, email: string, password: string) {
-  const response = await Axios.get(`${host}/auth/token/`, {
+  const response = await Axios.get(`${host}/auth/token`, {
     auth: { username: email, password: password },
   });
   return response.data.token;
+}
+
+/**
+ * Refresh AmCAT token
+ * @param {*} host      The amcat Host adress
+ * @param {*} token     Token
+ * @returns
+ */
+export function refreshToken(user: AmcatUser) {
+  return api_user(user).get("/auth/token");
 }
 
 export function describeError(e: AxiosError): string {

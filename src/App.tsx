@@ -12,6 +12,7 @@ import AggregatePane from "./lib/Aggregate/AggregatePane";
 import { AmcatIndex, AmcatQuery, AmcatUser } from "./lib/interfaces";
 import IndexPicker from "./lib/Index/IndexPicker";
 import LocationPane from "./lib/Location/LocationPane";
+import RefreshToken from "./lib/Login/RefreshToken";
 
 const menuItems = ["Upload", "Articles", "Aggregate", "Location"];
 
@@ -50,11 +51,13 @@ export default function App() {
         return null;
     }
   };
+
   return (
     <Grid columns={2} style={{ margin: "10px" }}>
       <Grid.Column width={4}>
         <Grid.Row>
           <Login value={user} onLogin={setUser} />
+          <RefreshToken value={user} onRefresh={setUser} />
         </Grid.Row>
         <br />
         <Grid.Row>

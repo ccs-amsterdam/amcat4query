@@ -15,7 +15,7 @@ import LocationOptionChooser from "./Location/LocationOptionChooser";
 
 import * as Amcat from "./apis/Amcat";
 
-import {
+import type {
   AmcatQuery,
   AmcatQueryResult,
   AggregationOptions,
@@ -45,6 +45,9 @@ export {
   LocationHeatmap,
   LocationOptionChooser,
   Amcat,
+};
+
+export type {
   AmcatQuery,
   AmcatQueryResult,
   AggregationOptions,
