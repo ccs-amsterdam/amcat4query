@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { Button, Form } from "semantic-ui-react";
 import useFields from "../components/useFields";
 import AxisPicker from "./AxisPicker";
-import { AggregationAxis, DisplayOption, AggregationOptions, AmcatIndex } from "../interfaces";
+import {
+  AggregationAxis,
+  DisplayOption,
+  AggregationOptions,
+  AmcatIndex,
+  MetricFunction,
+  metricFunctions,
+} from "../interfaces";
 const displayOptions = [
   {
     key: 1,
@@ -50,17 +57,43 @@ export default function AggregateOptionsChooser({
   const [axis1, setAxis1] = useState<AggregationAxis>();
   const [axis2, setAxis2] = useState<AggregationAxis>();
   const [limit, setLimit] = useState<number>();
+  const [metricField, setMetricField] = useState<string>();
+  const [metricFunction, setMetricFunction] = useState<MetricFunction>();
 
   useEffect(() => {
     setDisplay(value?.display || "list");
     setAxis1(value?.axes?.[0]);
     setAxis2(value?.axes?.[1]);
+    setMetricField(value?.metric?.field);
+    setMetricFunction(value?.metric?.function);
   }, [value]);
   function doSubmit() {
     const axes = [axis1, axis2].filter((axis) => axis?.field);
-    onSubmit({ axes, display, limit });
+    const options: AggregationOptions = { axes, display, limit };
+    if (metricField && metricFunction)
+      options.metric = { field: metricField, function: metricFunction };
+    console.log(metricField, metricFunction, options);
+    onSubmit(options);
   }
   const labels = aggregation_labels[display];
+  const metricFieldOptions = fields
+    .filter((f) => ["date", "double", "long"].includes(f.type))
+    .map((f) => ({
+      key: f.name,
+      text: f.name,
+      value: f.name,
+      icon: f.type === "date" ? "calendar outline" : "sort numeric down",
+    }));
+  const metricFunctionOptions = metricFunctions.map((f) => ({
+    key: f,
+    text: f,
+    value: f,
+  }));
+  metricFunctionOptions.unshift({
+    key: "_total",
+    text: "Total count",
+    value: "_total",
+  });
 
   return (
     <Form onSubmit={doSubmit}>
@@ -74,6 +107,30 @@ export default function AggregateOptionsChooser({
         value={display}
         onChange={(_e, { value }) => setDisplay(value as DisplayOption)}
       />
+      <Form.Group widths="equal">
+        <Form.Dropdown
+          placeholder="Aggregation function"
+          fluid
+          selection
+          options={metricFunctionOptions}
+          label="Aggregation"
+          value={metricFunction || "_total"}
+          onChange={(_e, { value }) =>
+            setMetricFunction(value === "_total" ? undefined : (value as MetricFunction))
+          }
+        />
+        {metricFunction == null ? null : (
+          <Form.Dropdown
+            placeholder="Aggregation field"
+            fluid
+            selection
+            options={metricFieldOptions}
+            label="Field"
+            value={metricField}
+            onChange={(_e, { value }) => setMetricField(value as string)}
+          />
+        )}
+      </Form.Group>
       <AxisPicker fields={fields} value={axis1} onChange={setAxis1} label={labels[0]} />
       <AxisPicker fields={fields} value={axis2} onChange={setAxis2} label={labels[1]} />
       <Form.Input

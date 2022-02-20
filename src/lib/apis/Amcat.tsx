@@ -1,6 +1,6 @@
 import Axios, { AxiosError } from "axios";
-import { AmcatDocument, AmcatFilters } from "..";
-import { AggregateData, AggregationAxis, AmcatIndex, AmcatQuery, AmcatUser } from "../interfaces";
+import { AggregationOptions, AmcatDocument, AmcatFilters } from "..";
+import { AmcatIndex, AmcatQuery, AmcatUser } from "../interfaces";
 
 // Server-level functions, i.e. not linked to an index
 
@@ -83,19 +83,12 @@ export function getFieldValues(
  * @param setData Callback function that will be called with the data after a succesful call
  * @param setError Callback function that will be called with an error message on failure
  */
-export function postAggregate(
-  index: AmcatIndex,
-  query: AmcatQuery,
-  axes: AggregationAxis[],
-  setData: (data: AggregateData) => void,
-  setError: (error: string) => void
-) {
+export function postAggregate(index: AmcatIndex, query: AmcatQuery, options: AggregationOptions) {
   const params: any = { ...query };
-  if (axes) params["axes"] = axes;
-  return api(index)
-    .post(`/aggregate`, { ...params })
-    .then((d) => setData(d.data))
-    .catch((e) => setError(describeError(e)));
+  if (options?.axes) params["axes"] = options.axes;
+  if (options?.metric) params["aggregations"] = [options.metric];
+  console.log(params);
+  return api(index).post(`/aggregate`, params);
 }
 
 /**

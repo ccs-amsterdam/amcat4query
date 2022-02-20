@@ -13,7 +13,7 @@ import {
 import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
-import { postAggregate } from "../apis/Amcat";
+import { describeError, postAggregate } from "../apis/Amcat";
 
 //TODO: This file is becoming too complex - move some business logic to a lib and add unit tests?
 
@@ -45,22 +45,26 @@ export default function AggregateResult({
 
   // Fetch data and return an error message if it fails
   useEffect(() => {
+    // Prevent data/error being set after component is unmounted
     let cancel = false;
-    // Prevent data/error being set from an earlier request
     // TODO: don't query if index changed but options hasn't been reset (yet)
-    const setResults = (data: AggregateData, error?: string) => {
-      if (!cancel) {
-        setError(error);
-        setData(data);
-      }
-    };
     if (index == null || !options?.axes || options.axes.length === 0) {
       setData(undefined);
       setError(undefined);
     } else {
-      postAggregate(index, query, options.axes, setResults, (e: string) =>
-        setResults(undefined, e)
-      );
+      postAggregate(index, query, options)
+        .then((d) => {
+          if (!cancel) {
+            setData(d.data);
+            setError(undefined);
+          }
+        })
+        .catch((error) => {
+          if (!cancel) {
+            setData(undefined);
+            setError(describeError(error));
+          }
+        });
     }
     return () => {
       cancel = true;

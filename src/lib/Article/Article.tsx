@@ -195,7 +195,11 @@ const formatMetaValue = (article: AmcatDocument, field: AmcatField) => {
     case "tag":
       if (Array.isArray(value)) return value.map((v) => <Label>{v}</Label>);
       else return value ? <Label>{value}</Label> : null;
+    case "long":
+    case "double":
+      return <i>{value}</i>;
     default:
+      if (typeof value === "string") return value;
       return JSON.stringify(value);
   }
 };

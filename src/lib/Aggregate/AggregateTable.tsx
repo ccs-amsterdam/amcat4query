@@ -16,6 +16,9 @@ export default function AggregateTable({ data, onClick, limit }: AggregateVisual
             <Table.HeaderCell key={i}>{axis.field}</Table.HeaderCell>
           ))}
           <Table.HeaderCell>N</Table.HeaderCell>
+          {data.meta.aggregations?.map((metric, i) => (
+            <Table.HeaderCell key={-i}>{metric.name}</Table.HeaderCell>
+          ))}
         </Table.Row>
       </Table.Header>
       <Table.Body>
@@ -28,6 +31,10 @@ export default function AggregateTable({ data, onClick, limit }: AggregateVisual
                 </Table.Cell>
               ))}
               <Table.Cell>{row.n}</Table.Cell>
+
+              {data.meta.aggregations?.map((metric, i) => (
+                <Table.Cell key={-i}>{row[metric.name]}</Table.Cell>
+              ))}
             </Table.Row>
           );
         })}

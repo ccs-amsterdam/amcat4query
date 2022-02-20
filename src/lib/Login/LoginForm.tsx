@@ -22,7 +22,7 @@ export default function LoginForm({ value, onLogin, fix_host }: LoginFormProps) 
     if (value?.email) setEmail(value.email);
     if (fix_host) setHost(fix_host);
     else if (value?.host) setHost(value.host);
-  }, [value]);
+  }, [value, fix_host]);
 
   const tryPasswordLogin = async () => {
     setPassword("");

@@ -28,9 +28,11 @@ interface LongData {
 // Specifically, from [{ row_id, col_id, value }, ...] to [{ row_id, col1: value1, col2: value2, ...}, ...]
 export function createChartData(data: AggregateData): LongData {
   const fields = data.meta.axes.map((axis) => axis.field);
+  const target = data.meta.aggregations.length > 0 ? data.meta.aggregations[0].name : "n";
+  console.log({ agg: data.meta.aggregations, target, fields });
   if (fields.length === 1) {
     // No need to convert
-    return { d: data.data, columns: ["n"] };
+    return { d: data.data, columns: [target] };
   }
   return longToWide(data.data, fields[0], fields[1]);
 }

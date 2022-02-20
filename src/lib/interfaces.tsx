@@ -8,12 +8,24 @@ export interface AggregationAxis {
   interval?: AggregationInterval;
 }
 
+export const metricFunctions = ["avg", "min", "max", "sum"];
+export type MetricFunction = typeof metricFunctions;
+
+export interface AggregationMetric {
+  field: string;
+  function: MetricFunction;
+  name?: string;
+  type?: string;
+}
+
 //TODO: think about how visual and data options relate, e.g. limit.
 export interface AggregationOptions {
   /* Aggregation axes, i.e. [{field: "publisher"}] */
   axes: AggregationAxis[];
   /* Display option, i,e, "linechart" or "barchart" */
   display: DisplayOption;
+  /* Use a specific metric rather than count -- only allow one metric for now */
+  metric?: AggregationMetric;
   /* Limit the number of rows/lines/bars */
   limit?: number;
 }
@@ -32,7 +44,7 @@ export interface AmcatFilter extends DateFilter {
 
 export interface AmcatField {
   name: string;
-  type: "keyword" | "date" | "tag" | "text" | "url" | "geo_point";
+  type: "long" | "double" | "object" | "keyword" | "date" | "tag" | "text" | "url" | "geo_point";
 }
 
 export interface AmcatFilters {
@@ -48,7 +60,7 @@ export type AggregateDataPoint = { [key: string]: any };
 
 export type AggregateData = {
   data: AggregateDataPoint[];
-  meta: { axes: AggregationAxis[] };
+  meta: { axes: AggregationAxis[]; aggregations: AggregationMetric[] };
 };
 
 export type AggregateVisualizer = (props: any) => ReactNode;

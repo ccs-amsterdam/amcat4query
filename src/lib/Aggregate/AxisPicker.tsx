@@ -1,9 +1,6 @@
 import { Form } from "semantic-ui-react";
 import { AggregationAxis, AggregationInterval } from "../interfaces";
 
-const icon_date = "https://img.icons8.com/material-outlined/24/000000/calendar--v1.png";
-const icon_keyword = "https://img.icons8.com/material-outlined/24/000000/activity-feed.png";
-
 const date_intervals = [
   { key: "day", text: "day", value: "day" },
   { key: "week", text: "week", value: "week" },
@@ -42,7 +39,7 @@ export default function AxisPicker({ fields, value, onChange, label }: AxisPicke
       key: f.name,
       text: f.name,
       value: f.name,
-      image: { avatar: true, src: f.type === "date" ? icon_date : icon_keyword },
+      icon: f.type === "date" ? "calendar outline" : "list",
     }));
 
   const setInterval = (newval: AggregationInterval) => {
