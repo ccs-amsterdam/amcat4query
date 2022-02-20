@@ -55,6 +55,7 @@ export default function AggregateResult({
       postAggregate(index, query, options)
         .then((d) => {
           if (!cancel) {
+            console.log(d.data);
             setData(d.data);
             setError(undefined);
           }

@@ -87,7 +87,6 @@ export function postAggregate(index: AmcatIndex, query: AmcatQuery, options: Agg
   const params: any = { ...query };
   if (options?.axes) params["axes"] = options.axes;
   if (options?.metric) params["aggregations"] = [options.metric];
-  console.log(params);
   return api(index).post(`/aggregate`, params);
 }
 

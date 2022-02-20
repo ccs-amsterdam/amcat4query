@@ -131,8 +131,8 @@ export default function AggregateOptionsChooser({
           />
         )}
       </Form.Group>
-      <AxisPicker fields={fields} value={axis1} onChange={setAxis1} label={labels[0]} />
-      <AxisPicker fields={fields} value={axis2} onChange={setAxis2} label={labels[1]} />
+      <AxisPicker fields={fields} value={axis1} onChange={setAxis1} label={labels[0]} byQuery />
+      <AxisPicker fields={fields} value={axis2} onChange={setAxis2} label={labels[1]} byQuery />
       <Form.Input
         placeholder="Set limit"
         label={labels[2]}

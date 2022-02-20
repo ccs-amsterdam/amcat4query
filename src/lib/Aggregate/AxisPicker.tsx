@@ -24,6 +24,8 @@ interface AxisPickerProps {
   fields: Field[];
   /** Current axis value */
   value: AggregationAxis;
+  /** Add 'by query' option? */
+  byQuery?: boolean;
   /** Callback to set axis when user changes field or interval */
   onChange: (value: AggregationAxis) => void;
   label?: string;
@@ -32,7 +34,13 @@ interface AxisPickerProps {
 /**
  * Dropdown to select an aggregation axis and possibly interval
  */
-export default function AxisPicker({ fields, value, onChange, label }: AxisPickerProps) {
+export default function AxisPicker({
+  fields,
+  value,
+  onChange,
+  label,
+  byQuery = false,
+}: AxisPickerProps) {
   const axisOptions = fields
     .filter((f) => ["keyword", "tag", "date"].includes(f.type))
     .map((f) => ({
@@ -41,12 +49,16 @@ export default function AxisPicker({ fields, value, onChange, label }: AxisPicke
       value: f.name,
       icon: f.type === "date" ? "calendar outline" : "list",
     }));
+  if (byQuery) axisOptions.unshift({ key: "_query", text: "By query", value: "_query", icon: "" });
 
   const setInterval = (newval: AggregationInterval) => {
     onChange({ ...value, interval: newval });
   };
   const setField = (newval: string) => {
-    onChange({ ...value, field: newval });
+    const ftype = newval == "_query" ? "_query" : getField(fields, newval).type;
+    const interval = ftype === "date" ? value.interval : undefined;
+    console.log(interval);
+    onChange({ interval: interval, field: newval });
   };
   const field = getField(fields, value?.field);
   return (

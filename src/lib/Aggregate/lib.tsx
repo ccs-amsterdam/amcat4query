@@ -3,14 +3,19 @@ import { AggregateData, AggregateDataPoint } from "../interfaces";
 /*
  * Useful functions in dealing with aggregate data
  */
-function longToWide(data: AggregateDataPoint[], primary: string, secondary: string): LongData {
+function longToWide(
+  data: AggregateDataPoint[],
+  primary: string,
+  secondary: string,
+  target: string
+): LongData {
   // convert results from amcat to wide format
   const d: { [key: string]: LongDataPoint } = {};
   const columns = new Set<string>();
   data.forEach((row) => {
     const key = row[primary];
     if (!(key in d)) d[key] = { [primary]: key };
-    d[key][row[secondary]] = row["n"];
+    d[key][row[secondary]] = row[target];
     columns.add(row[secondary]);
   });
   return { d: Object.values(d), columns: Array.from(columns.values()) };
@@ -29,10 +34,10 @@ interface LongData {
 export function createChartData(data: AggregateData): LongData {
   const fields = data.meta.axes.map((axis) => axis.field);
   const target = data.meta.aggregations.length > 0 ? data.meta.aggregations[0].name : "n";
-  console.log({ agg: data.meta.aggregations, target, fields });
+
   if (fields.length === 1) {
     // No need to convert
     return { d: data.data, columns: [target] };
   }
-  return longToWide(data.data, fields[0], fields[1]);
+  return longToWide(data.data, fields[0], fields[1], target);
 }
