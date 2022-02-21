@@ -1,6 +1,6 @@
 import { Container, Pagination, Table, Icon } from "semantic-ui-react";
 import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
-import { removeElasticTags, highlightElasticTags } from "../functions/highlightElasticTags";
+import { removeElasticTags, highlightElasticTags } from "../Articles/highlightElasticTags";
 import "./paginationTableStyle.css";
 
 export interface PaginationTableColumn {

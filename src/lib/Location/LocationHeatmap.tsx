@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Map, { Layer, MapLayerMouseEvent, Source } from "react-map-gl";
 import { Message } from "semantic-ui-react";
 import { AmcatIndex, AmcatQuery } from "..";
-import { addFilter, postQuery } from "../apis/Amcat";
+import { addFilter, postQuery } from "../Amcat";
 import Article from "../Article/Article";
 import maplibregl from "maplibre-gl";
 import { getArticleList } from "../Aggregate/AggregateResult";

@@ -4,7 +4,7 @@ import { useCSVReader } from "react-papaparse";
 import ImportTable from "./ImportTable";
 import SubmitButton from "./SubmitButton";
 import "./uploadStyle.css";
-import { getFields } from "../apis/Amcat";
+import { getFields } from "../Amcat";
 
 const styles = {
   csvReader: {

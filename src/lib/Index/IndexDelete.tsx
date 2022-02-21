@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button, Header, Icon, Modal, Dimmer, Loader } from "semantic-ui-react";
-import { deleteIndex } from "../apis/Amcat";
+import { deleteIndex } from "../Amcat";
 import { AmcatIndex } from "../interfaces";
 
 interface IndexDeleteProps {

@@ -1,6 +1,6 @@
 import { Form, Message } from "semantic-ui-react";
 import { AmcatIndex } from "..";
-import useFields from "../components/useFields";
+import useFields from "../Amcat";
 import { LocationOptions } from "../interfaces";
 
 interface LocationOptionChooserProps {

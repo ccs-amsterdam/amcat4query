@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Form } from "semantic-ui-react";
-import useFields from "../components/useFields";
+import useFields from "../Amcat";
 import AxisPicker from "./AxisPicker";
 import {
   AggregationAxis,

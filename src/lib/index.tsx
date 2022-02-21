@@ -13,7 +13,7 @@ import LocationHeatmap from "./Location/LocationHeatmap";
 import LocationPane from "./Location/LocationPane";
 import LocationOptionChooser from "./Location/LocationOptionChooser";
 
-import * as Amcat from "./apis/Amcat";
+import * as Amcat from "./Amcat";
 
 import type {
   AmcatQuery,

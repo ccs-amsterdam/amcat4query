@@ -13,7 +13,7 @@ import {
 import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
-import { describeError, postAggregate } from "../apis/Amcat";
+import { describeError, postAggregate } from "../Amcat";
 
 //TODO: This file is becoming too complex - move some business logic to a lib and add unit tests?
 

@@ -13,6 +13,7 @@ import { AmcatIndex, AmcatQuery, AmcatUser } from "./lib/interfaces";
 import IndexPicker from "./lib/Index/IndexPicker";
 import LocationPane from "./lib/Location/LocationPane";
 import RefreshToken from "./lib/Login/RefreshToken";
+import ArticlesPane from "./helpers/ArticlesPane";
 
 const menuItems = ["Upload", "Articles", "Aggregate", "Location"];
 
@@ -28,7 +29,6 @@ export default function App() {
   const [user, setUser] = useState<AmcatUser>();
   const [index, setIndex] = useState<AmcatIndex>();
   const [query, setQuery] = useState<AmcatQuery>();
-  const [useSnippets, setUseSnippets] = useState(false);
 
   // Reset index and query if user or index change
   useEffect(() => {
@@ -43,23 +43,7 @@ export default function App() {
       case "Upload":
         return <Upload index={index} />;
       case "Articles":
-        return (
-          <>
-            <Form>
-              <Form.Checkbox
-                label="Output as snippets?"
-                checked={useSnippets}
-                onChange={(_, { checked }) => setUseSnippets(checked)}
-              />
-            </Form>
-            <Articles
-              index={index}
-              query={query}
-              asSnippets={useSnippets}
-              allColumns={!useSnippets}
-            />
-          </>
-        );
+        return <ArticlesPane index={index} query={query} />;
       case "Aggregate":
         return <AggregatePane index={index} query={query} />;
       case "Location":

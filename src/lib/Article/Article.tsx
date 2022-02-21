@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import useFields from "../components/useFields";
+import useFields from "../Amcat";
 import prepareArticle from "./prepareArticle";
 import { Grid, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
 import { AmcatDocument, AmcatField, AmcatQuery, AmcatIndex } from "../interfaces";
-import { addFilter, postQuery } from "../apis/Amcat";
+import { addFilter, postQuery } from "../Amcat";
 
 interface ArticleProps {
   index: AmcatIndex;

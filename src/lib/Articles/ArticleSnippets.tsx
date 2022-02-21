@@ -1,5 +1,5 @@
 import { List } from "semantic-ui-react";
-import { highlightElasticTags, removeElasticTags } from "../functions/highlightElasticTags";
+import { highlightElasticTags, removeElasticTags } from "./highlightElasticTags";
 import { PaginationFooter, PaginationProps, PaginationTableColumn } from "./PaginationTable";
 
 export default function ArticleSnippets({

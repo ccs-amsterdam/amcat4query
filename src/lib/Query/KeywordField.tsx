@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dropdown } from "semantic-ui-react";
-import { getFieldValues } from "../apis/Amcat";
+import { getFieldValues } from "../Amcat";
 import { AmcatFilter, AmcatIndex } from "../interfaces";
 import FilterButton from "./FilterButton";
 

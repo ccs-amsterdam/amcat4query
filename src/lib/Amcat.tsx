@@ -1,6 +1,7 @@
 import Axios, { AxiosError } from "axios";
-import { AggregationOptions, AmcatDocument, AmcatFilters } from "..";
-import { AmcatIndex, AmcatQuery, AmcatUser } from "../interfaces";
+import { useEffect, useState } from "react";
+import { AggregationOptions, AmcatDocument, AmcatField, AmcatFilters } from ".";
+import { AmcatIndex, AmcatQuery, AmcatUser } from "./interfaces";
 
 // Server-level functions, i.e. not linked to an index
 
@@ -123,4 +124,28 @@ export function describeError(e: AxiosError): string {
 export function addFilter(q: AmcatQuery, filters: AmcatFilters): AmcatQuery {
   if (q == null) q = {};
   return { queries: { ...q.queries }, filters: { ...q.filters, ...filters } };
+}
+
+/** Hook to get fields from amcat
+ * @param index Login information for this index
+ * @returns a list of field objects
+ */
+export default function useFields(index: AmcatIndex): AmcatField[] {
+  const [fields, setFields] = useState<AmcatField[]>([]);
+
+  useEffect(() => {
+    if (index) {
+      getFields(index)
+        .then((res: any) => {
+          setFields(Object.values(res.data));
+        })
+        .catch((_e: Error) => {
+          setFields([]);
+        });
+    } else {
+      setFields([]);
+    }
+  }, [index]);
+
+  return Object.values(fields);
 }

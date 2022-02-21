@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Container, Button, Message, Dimmer, Loader, Modal, Header } from "semantic-ui-react";
-import { createDocuments } from "../apis/Amcat";
+import { createDocuments } from "../Amcat";
 
 const REQUIRED_FIELDS = ["title", "date", "text"];
 

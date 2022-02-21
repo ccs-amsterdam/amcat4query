@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dropdown, Button, DropdownItemProps } from "semantic-ui-react";
-import { getIndices } from "../apis/Amcat";
+import { getIndices } from "../Amcat";
 import { AmcatIndex, AmcatUser } from "../interfaces";
 
 import IndexCreate from "./IndexCreate";

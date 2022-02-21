@@ -1,11 +1,9 @@
-import PaginationTable, { PaginationTableColumn } from "../components/PaginationTable";
-import ArticleSnippets from "../components/ArticleSnippets";
+import PaginationTable, { PaginationTableColumn } from "./PaginationTable";
+import ArticleSnippets from "./ArticleSnippets";
 import { useEffect, useMemo, useState } from "react";
 import Article from "../Article/Article";
 import { AmcatIndex, AmcatQuery, AmcatQueryResult } from "../interfaces";
-import { postQuery } from "../apis/Amcat";
-
-const per_page = 15;
+import { postQuery } from "../Amcat";
 
 const COLUMNS: PaginationTableColumn[] = [
   { name: "_id", hide: true },
@@ -15,7 +13,7 @@ const COLUMNS: PaginationTableColumn[] = [
   { name: "text" },
 ];
 
-interface ArticlesProps {
+export interface ArticlesProps {
   index: AmcatIndex;
   /** Query/filter of which documents to show */
   query: AmcatQuery;
@@ -25,6 +23,8 @@ interface ArticlesProps {
   allColumns?: boolean;
   /** if true, show results as snippets rather than as table */
   asSnippets?: boolean;
+  /** Number of articles per page */
+  perPage?: number;
 }
 
 /**
@@ -36,6 +36,7 @@ export default function Articles({
   columns = COLUMNS,
   allColumns = true,
   asSnippets = false,
+  perPage = 15,
 }: ArticlesProps) {
   //TODO: add columns to meta OR retrieve fields (prefer the former) and pass the field types on to the table
   const [articleId, setArticleId] = useState(null);
@@ -44,8 +45,8 @@ export default function Articles({
 
   useEffect(() => {
     const highlight: any = asSnippets ? { number_of_fragments: 3 } : true;
-    fetchArticles(index, query, page, highlight, setData);
-  }, [index, query, page, setData, asSnippets]);
+    fetchArticles(index, query, page, highlight, perPage, setData);
+  }, [index, query, page, setData, asSnippets, perPage]);
 
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
@@ -96,9 +97,10 @@ async function fetchArticles(
   query: AmcatQuery,
   page: number,
   highlight: boolean,
+  perPage: number,
   setData: (data: AmcatQueryResult) => void
 ) {
-  let params = { page, per_page, highlight };
+  let params = { page, highlight, per_page: perPage };
   console.log(JSON.stringify(params));
   try {
     const res = await postQuery(index, query, params);

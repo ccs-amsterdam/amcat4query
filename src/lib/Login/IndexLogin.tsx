@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { Message } from "semantic-ui-react";
 import { AmcatIndex, AmcatUser, LoginForm } from "..";
-import { describeError, getIndex } from "../apis/Amcat";
+import { describeError, getIndex } from "../Amcat";
 
 interface IndexLoginProps {
   /** Which host to log on to */
@@ -20,7 +20,7 @@ export default function IndexLogin({ host, index, onLogin }: IndexLoginProps) {
     getIndex(user, index)
       .then(() => onLogin({ ...user, index }))
       .catch((e: AxiosError) => {
-        if (e.response && e.response.status == 404)
+        if (e.response && e.response.status === 404)
           console.error(`Index ${index} does not exist on ${host}`);
         setError(describeError(e));
       });
