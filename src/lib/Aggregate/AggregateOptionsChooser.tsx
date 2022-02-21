@@ -63,14 +63,14 @@ export default function AggregateOptionsChooser({
     setDisplay(value?.display || "list");
     setAxis1(value?.axes?.[0]);
     setAxis2(value?.axes?.[1]);
-    setMetricField(value?.metric?.field);
-    setMetricFunction(value?.metric?.function);
+    setMetricField(value?.metrics?.[0]?.field);
+    setMetricFunction(value?.metrics?.[0]?.function);
   }, [value]);
   function doSubmit() {
     const axes = [axis1, axis2].filter((axis) => axis?.field);
     const options: AggregationOptions = { axes, display, limit };
     if (metricField && metricFunction)
-      options.metric = { field: metricField, function: metricFunction };
+      options.metrics = [{ field: metricField, function: metricFunction }];
     console.log(metricField, metricFunction, options);
     onSubmit(options);
   }

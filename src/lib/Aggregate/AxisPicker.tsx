@@ -55,7 +55,7 @@ export default function AxisPicker({
     onChange({ ...value, interval: newval });
   };
   const setField = (newval: string) => {
-    const ftype = newval == "_query" ? "_query" : getField(fields, newval).type;
+    const ftype = newval === "_query" ? "_query" : getField(fields, newval).type;
     const interval = ftype === "date" ? value.interval : undefined;
     console.log(interval);
     onChange({ interval: interval, field: newval });

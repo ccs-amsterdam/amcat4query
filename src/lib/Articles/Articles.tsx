@@ -1,4 +1,5 @@
 import PaginationTable, { PaginationTableColumn } from "../components/PaginationTable";
+import ArticleSnippets from "../components/ArticleSnippets";
 import { useEffect, useMemo, useState } from "react";
 import Article from "../Article/Article";
 import { AmcatIndex, AmcatQuery, AmcatQueryResult } from "../interfaces";
@@ -22,6 +23,8 @@ interface ArticlesProps {
   columns?: PaginationTableColumn[];
   /** if true, include all columns AFTER the columns specified in the columns argument */
   allColumns?: boolean;
+  /** if true, show results as snippets rather than as table */
+  asSnippets?: boolean;
 }
 
 /**
@@ -32,6 +35,7 @@ export default function Articles({
   query,
   columns = COLUMNS,
   allColumns = true,
+  asSnippets = false,
 }: ArticlesProps) {
   //TODO: add columns to meta OR retrieve fields (prefer the former) and pass the field types on to the table
   const [articleId, setArticleId] = useState(null);
@@ -39,8 +43,9 @@ export default function Articles({
   const [page, setPage] = useState(0);
 
   useEffect(() => {
-    fetchArticles(index, query, page, true, setData);
-  }, [index, query, page, setData]);
+    const highlight: any = asSnippets ? { number_of_fragments: 3 } : true;
+    fetchArticles(index, query, page, highlight, setData);
+  }, [index, query, page, setData, asSnippets]);
 
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
@@ -64,26 +69,37 @@ export default function Articles({
 
   return (
     <>
-      <PaginationTable
-        data={data?.results || []}
-        columns={columnList}
-        pages={data?.meta?.page_count || 0}
-        pageChange={setPage}
-        onClick={onClick}
-      />
+      {asSnippets ? (
+        <ArticleSnippets
+          data={data?.results || []}
+          columns={columnList}
+          pages={data?.meta?.page_count || 0}
+          pageChange={setPage}
+          onClick={onClick}
+        />
+      ) : (
+        <PaginationTable
+          data={data?.results || []}
+          columns={columnList}
+          pages={data?.meta?.page_count || 0}
+          pageChange={setPage}
+          onClick={onClick}
+        />
+      )}
       <Article index={index} id={articleId} query={query} />
     </>
   );
 }
 
-const fetchArticles = async (
+async function fetchArticles(
   index: AmcatIndex,
   query: AmcatQuery,
   page: number,
   highlight: boolean,
   setData: (data: AmcatQueryResult) => void
-) => {
+) {
   let params = { page, per_page, highlight };
+  console.log(JSON.stringify(params));
   try {
     const res = await postQuery(index, query, params);
     setData(res.data);
@@ -91,4 +107,4 @@ const fetchArticles = async (
     console.log(e);
     setData(undefined);
   }
-};
+}

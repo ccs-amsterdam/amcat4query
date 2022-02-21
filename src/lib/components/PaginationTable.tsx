@@ -18,17 +18,54 @@ interface TableRow {
   [key: string]: any;
 }
 
-interface PaginationProps {
+export interface PaginationFooterProps {
+  /** the number of pages */
+  pages: number;
+  /** the function to perform on pagechange. Gets pageindex as an argument, and should update data */
+  pageChange: (page: number) => void;
+}
+
+export interface PaginationProps extends PaginationFooterProps {
   /** an Array with data for a single page */
   data: TableRow[];
   /** an Array with objects indicating which columns to show and how. */
   columns: PaginationTableColumn[];
   /** the number of pages */
-  pages: number;
-  /** the function to perform on pagechange. Gets pageindex as an argument, and should update data */
-  pageChange: (page: number) => void;
-  /** Function to perform when clicking on a row. Gets data row object as argument */
   onClick: (value: any) => void;
+}
+
+export function PaginationFooter({ pages, pageChange }: PaginationFooterProps) {
+  if (pages <= 1) return null;
+  return (
+    <Pagination
+      fluid
+      size="mini"
+      boundaryRange={1}
+      siblingRange={1}
+      ellipsisItem={{
+        content: <Icon name="ellipsis horizontal" />,
+        icon: true,
+      }}
+      firstItem={{
+        content: <Icon name="angle double left" />,
+        icon: true,
+      }}
+      lastItem={{
+        content: <Icon name="angle double right" />,
+        icon: true,
+      }}
+      prevItem={{ content: <Icon name="angle left" />, icon: true }}
+      nextItem={{
+        content: <Icon name="angle right" />,
+        icon: true,
+      }}
+      pointing
+      secondary
+      defaultActivePage={1}
+      totalPages={pages}
+      onPageChange={(e, d) => pageChange((d.activePage as number) - 1)}
+    ></Pagination>
+  );
 }
 
 /**
@@ -102,36 +139,7 @@ export default function PaginationTable({
         <Table.Footer>
           <Table.Row>
             <Table.HeaderCell colSpan={columnSelection.length}>
-              {pages > 1 ? (
-                <Pagination
-                  fluid
-                  size="mini"
-                  boundaryRange={1}
-                  siblingRange={1}
-                  ellipsisItem={{
-                    content: <Icon name="ellipsis horizontal" />,
-                    icon: true,
-                  }}
-                  firstItem={{
-                    content: <Icon name="angle double left" />,
-                    icon: true,
-                  }}
-                  lastItem={{
-                    content: <Icon name="angle double right" />,
-                    icon: true,
-                  }}
-                  prevItem={{ content: <Icon name="angle left" />, icon: true }}
-                  nextItem={{
-                    content: <Icon name="angle right" />,
-                    icon: true,
-                  }}
-                  pointing
-                  secondary
-                  defaultActivePage={1}
-                  totalPages={pages}
-                  onPageChange={(e, d) => pageChange((d.activePage as number) - 1)}
-                ></Pagination>
-              ) : null}
+              <PaginationFooter pages={pages} pageChange={pageChange} />
             </Table.HeaderCell>
           </Table.Row>
         </Table.Footer>

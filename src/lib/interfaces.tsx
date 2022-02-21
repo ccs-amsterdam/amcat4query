@@ -20,11 +20,11 @@ export interface AggregationMetric {
 //TODO: think about how visual and data options relate, e.g. limit.
 export interface AggregationOptions {
   /* Aggregation axes, i.e. [{field: "publisher"}] */
-  axes: AggregationAxis[];
+  axes?: AggregationAxis[];
   /* Display option, i,e, "linechart" or "barchart" */
   display: DisplayOption;
   /* Use a specific metric rather than count -- only allow one metric for now */
-  metric?: AggregationMetric;
+  metrics?: AggregationMetric[];
   /* Limit the number of rows/lines/bars */
   limit?: number;
 }

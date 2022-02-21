@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, Menu, Segment } from "semantic-ui-react";
+import { Form, Grid, Menu, Segment } from "semantic-ui-react";
 
 // Left column
 import Login from "./lib/Login/Login";
@@ -28,6 +28,7 @@ export default function App() {
   const [user, setUser] = useState<AmcatUser>();
   const [index, setIndex] = useState<AmcatIndex>();
   const [query, setQuery] = useState<AmcatQuery>();
+  const [useSnippets, setUseSnippets] = useState(false);
 
   // Reset index and query if user or index change
   useEffect(() => {
@@ -42,7 +43,23 @@ export default function App() {
       case "Upload":
         return <Upload index={index} />;
       case "Articles":
-        return <Articles index={index} query={query} />;
+        return (
+          <>
+            <Form>
+              <Form.Checkbox
+                label="Output as snippets?"
+                checked={useSnippets}
+                onChange={(_, { checked }) => setUseSnippets(checked)}
+              />
+            </Form>
+            <Articles
+              index={index}
+              query={query}
+              asSnippets={useSnippets}
+              allColumns={!useSnippets}
+            />
+          </>
+        );
       case "Aggregate":
         return <AggregatePane index={index} query={query} />;
       case "Location":
