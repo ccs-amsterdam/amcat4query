@@ -6,6 +6,7 @@ import Login from "./Login/Login";
 import IndexLogin from "./Login/IndexLogin";
 import IndexPicker from "./Index/IndexPicker";
 import Query from "./Query/Query";
+import Filter from "./Query/Filter";
 import Upload from "./Upload/Upload";
 import LoginForm from "./Login/LoginForm";
 import AggregatePane from "./Aggregate/AggregatePane";
@@ -44,6 +45,7 @@ export {
   LocationPane,
   LocationHeatmap,
   LocationOptionChooser,
+  Filter,
   Amcat,
 };
 

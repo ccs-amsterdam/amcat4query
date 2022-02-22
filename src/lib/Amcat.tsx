@@ -1,5 +1,6 @@
 import Axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
+import { SemanticICONS } from "semantic-ui-react";
 import { AggregationOptions, AmcatDocument, AmcatField, AmcatFilters } from ".";
 import { AmcatIndex, AmcatQuery, AmcatUser } from "./interfaces";
 
@@ -62,19 +63,9 @@ export function getFields(index: AmcatIndex) {
 /** Get the values for a field
  * @param index Index name
  * @param field Field name
- * @param setData Callback function to call on success
- * @param setError Callback function to call on failure
  */
-export function getFieldValues(
-  index: AmcatIndex,
-  field: string,
-  setData: (data: string[]) => void,
-  setError: (error: string) => void
-) {
-  return api(index)
-    .get(`/fields/${field}/values`)
-    .then((result) => setData(result.data))
-    .catch((error) => setError(describeError(error)));
+export function getFieldValues(index: AmcatIndex, field: string) {
+  return api(index).get(`/fields/${field}/values`);
 }
 
 /** POST an aggregate query to AmCAT
@@ -148,4 +139,19 @@ export default function useFields(index: AmcatIndex): AmcatField[] {
   }, [index]);
 
   return Object.values(fields);
+}
+
+export function getField(fields: AmcatField[], fieldname: string) {
+  const i = fields.map((f) => f.name).indexOf(fieldname);
+  if (i === -1) return undefined;
+  return fields[i];
+}
+
+const ICONS: { [field: string]: SemanticICONS } = {
+  date: "calendar alternate outline",
+  keyword: "list",
+};
+
+export function getFieldTypeIcon(fieldtype: string) {
+  return ICONS[fieldtype];
 }

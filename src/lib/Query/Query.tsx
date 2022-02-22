@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Grid, Button, Icon } from "semantic-ui-react";
 import QueryString from "./QueryString";
-import Filters from "./Filters";
+import Filter from "./Filter";
 import { AmcatFilters, AmcatIndex, AmcatQuery } from "../interfaces";
 
 interface QueryProps {
@@ -33,9 +33,9 @@ export default function Query({ index, value, onSubmit }: QueryProps) {
     }
     // Copy filters and remove empty filters
     const filtercopy = filters !== undefined ? { ...filters } : {};
-    Object.keys(filtercopy)
+    /*Object.keys(filtercopy)
       .filter((k) => Object.keys(filtercopy[k]).length === 0)
-      .forEach((k) => delete filtercopy[k]);
+      .forEach((k) => delete filtercopy[k]);*/
     if (Object.keys(filtercopy).length !== 0) q.filters = filtercopy;
     console.log(JSON.stringify(q));
     onSubmit(q);
@@ -48,9 +48,10 @@ export default function Query({ index, value, onSubmit }: QueryProps) {
       <Grid.Row>
         <Grid.Column floated="left" width={16}>
           <QueryString value={queryStrings} onChange={setQueryStrings} rows={5} />
-          <Button.Group style={{ width: "100%", marginBottom: "10px" }}>
+          <Filter index={index} value={filters} onChange={setFilters} />
+          {/*<Button.Group style={{ width: "100%", marginBottom: "10px" }}>
             <Filters index={index} value={filters} onChange={setFilters} />
-          </Button.Group>{" "}
+          </Button.Group>{" "}*/}
           <Button fluid primary type="submit" onClick={onClick}>
             <Icon name="search" />
             Execute Query

@@ -1,4 +1,6 @@
 import { Form } from "semantic-ui-react";
+import { AmcatField } from "../interfaces";
+import { getField } from "../Amcat";
 import { AggregationAxis, AggregationInterval } from "../interfaces";
 
 const date_intervals = [
@@ -9,19 +11,9 @@ const date_intervals = [
   { key: "year", text: "year", value: "year" },
 ];
 
-interface Field {
-  name: string;
-  type: string;
-}
-function getField(fields: Field[], fieldname: string): Field {
-  const i = fields.map((f) => f.name).indexOf(fieldname);
-  if (i === -1) return undefined;
-  return fields[i];
-}
-
 interface AxisPickerProps {
   /** index fields to choose from */
-  fields: Field[];
+  fields: AmcatField[];
   /** Current axis value */
   value: AggregationAxis;
   /** Add 'by query' option? */
