@@ -141,7 +141,25 @@ export default function useFields(index: AmcatIndex): AmcatField[] {
   return Object.values(fields);
 }
 
-export function getField(fields: AmcatField[], fieldname: string) {
+/*** Hook to get field values from AmCAT
+ * @param index Login information for this index
+ * @param field Name of the field
+ * @returns a list of values (strings)
+ */
+
+export function useFieldValues(index: AmcatIndex, field: string): string[] {
+  const [values, setValues] = useState([]);
+  useEffect(() => {
+    getFieldValues(index, field)
+      .then((d) => setValues(d.data))
+      .catch(() => {
+        setValues(undefined);
+      });
+  }, [index, field, setValues]);
+  return values;
+}
+
+export function getField(fields: AmcatField[], fieldname: string): AmcatField {
   const i = fields.map((f) => f.name).indexOf(fieldname);
   if (i === -1) return undefined;
   return fields[i];

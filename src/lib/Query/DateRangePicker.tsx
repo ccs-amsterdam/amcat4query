@@ -12,7 +12,11 @@ function date2str(date: Date, ifNone = ""): string {
   return year + "-" + month + "-" + day;
 }
 
-export default function DateRangePicker({ value, onChange }: FilterElementProps) {
+export default function DateRangePicker({
+  value,
+  onChange,
+  placeholder = "Select date range",
+}: FilterElementProps) {
   const handleChange = (key: keyof DateFilter, newval: Date) => {
     let result = { ...value };
     if (newval == null) delete result[key];
@@ -23,7 +27,7 @@ export default function DateRangePicker({ value, onChange }: FilterElementProps)
     if (filter.gte && filter.lte) return `${filter.gte} - ${filter.lte}`;
     if (filter.gte) return `from ${filter.gte}`;
     if (filter.lte) return `until ${filter.lte}`;
-    return "Select date range";
+    return placeholder;
   };
 
   return (

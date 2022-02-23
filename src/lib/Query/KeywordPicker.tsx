@@ -3,7 +3,13 @@ import { Dropdown } from "semantic-ui-react";
 import { Amcat } from "..";
 import { FilterElementProps } from "./Filter";
 
-export default function KeywordPicker({ index, value, field, onChange }: FilterElementProps) {
+export default function KeywordPicker({
+  index,
+  value,
+  field,
+  onChange,
+  placeholder = "Select values",
+}: FilterElementProps) {
   const [values, setValues] = useState<string[]>();
   useEffect(() => {
     Amcat.getFieldValues(index, field.name)
@@ -21,9 +27,8 @@ export default function KeywordPicker({ index, value, field, onChange }: FilterE
     <Dropdown
       multiple={!loading}
       scrolling
-      search={!loading}
       selection={!loading}
-      placeholder="Select values"
+      placeholder={placeholder}
       loading={!options}
       button
       className="attached valuepicker"

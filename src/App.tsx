@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { Form, Grid, Menu, Segment } from "semantic-ui-react";
-
+import { Grid, Menu, Segment } from "semantic-ui-react";
+import ArticlesPane from "./helpers/ArticlesPane";
+import AggregatePane from "./lib/Aggregate/AggregatePane";
+import IndexPicker from "./lib/Index/IndexPicker";
+import { AmcatIndex, AmcatQuery, AmcatUser } from "./lib/interfaces";
+import LocationPane from "./lib/Location/LocationPane";
 // Left column
 import Login from "./lib/Login/Login";
+import RefreshToken from "./lib/Login/RefreshToken";
 import Query from "./lib/Query/Query";
-
+import QueryForm from "./lib/Query/SimpleQueryForm";
 // Right column
 import Upload from "./lib/Upload/Upload";
-import Articles from "./lib/Articles/Articles";
-import AggregatePane from "./lib/Aggregate/AggregatePane";
-import { AmcatIndex, AmcatQuery, AmcatUser } from "./lib/interfaces";
-import IndexPicker from "./lib/Index/IndexPicker";
-import LocationPane from "./lib/Location/LocationPane";
-import RefreshToken from "./lib/Login/RefreshToken";
-import ArticlesPane from "./helpers/ArticlesPane";
 
 const menuItems = ["Upload", "Articles", "Aggregate", "Location"];
 
@@ -54,30 +52,33 @@ export default function App() {
   };
 
   return (
-    <Grid columns={2} style={{ margin: "10px" }}>
-      <Grid.Column width={4}>
-        <Grid.Row>
-          <Login value={user} onLogin={setUser} />
-          <RefreshToken value={user} onRefresh={setUser} />
-        </Grid.Row>
-        <br />
-        <Grid.Row>
-          <IndexPicker user={user} value={index} onChange={setIndex} />
-        </Grid.Row>
-        <br />
-        <Grid.Row>
-          {index ? <Query index={index} value={query} onSubmit={setQuery} /> : null}
-        </Grid.Row>
-      </Grid.Column>
-      <Grid.Column width={12}>
-        <ComponentMenu index={index} selected={selected} setSelected={setSelected} />
-        {index ? (
-          <Segment attached="bottom" style={{ width: "100%" }}>
-            {render()}
-          </Segment>
-        ) : null}
-      </Grid.Column>
-    </Grid>
+    <>
+      <QueryForm index={index} value={query} onSubmit={setQuery} />
+      <Grid columns={2} style={{ margin: "10px" }}>
+        <Grid.Column width={4}>
+          <Grid.Row>
+            <Login value={user} onLogin={setUser} />
+            <RefreshToken value={user} onRefresh={setUser} />
+          </Grid.Row>
+          <br />
+          <Grid.Row>
+            <IndexPicker user={user} value={index} onChange={setIndex} />
+          </Grid.Row>
+          <br />
+          <Grid.Row>
+            {index ? <Query index={index} value={query} onSubmit={setQuery} /> : null}
+          </Grid.Row>
+        </Grid.Column>
+        <Grid.Column width={12}>
+          <ComponentMenu index={index} selected={selected} setSelected={setSelected} />
+          {index ? (
+            <Segment attached="bottom" style={{ width: "100%" }}>
+              {render()}
+            </Segment>
+          ) : null}
+        </Grid.Column>
+      </Grid>
+    </>
   );
 }
 
