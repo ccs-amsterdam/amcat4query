@@ -9,7 +9,7 @@ import LocationPane from "./lib/Location/LocationPane";
 import Login from "./lib/Login/Login";
 import RefreshToken from "./lib/Login/RefreshToken";
 import Query from "./lib/Query/Query";
-import QueryForm from "./lib/Query/SimpleQueryForm";
+import QueryForm from "./lib/Query/QueryForm";
 // Right column
 import Upload from "./lib/Upload/Upload";
 
@@ -54,6 +54,7 @@ export default function App() {
   return (
     <>
       <QueryForm index={index} value={query} onSubmit={setQuery} />
+
       <Grid columns={2} style={{ margin: "10px" }}>
         <Grid.Column width={4}>
           <Grid.Row>

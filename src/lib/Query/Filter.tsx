@@ -1,9 +1,7 @@
 import { Dropdown, Grid } from "semantic-ui-react";
 import { AmcatField, AmcatFilter, AmcatFilters, AmcatIndex } from "../interfaces";
 import useFields, { getField, getFieldTypeIcon } from "../Amcat";
-import DateRangePicker from "./DateRangePicker";
-import "./Filter.css";
-import KeywordPicker from "./KeywordPicker";
+import FilterPicker from "./FilterPicker";
 
 export function filterOption(field: AmcatField) {
   return {
@@ -113,7 +111,6 @@ export function FilterField({
     filterOption(field),
     ...fieldOptions,
   ];
-  const Picker = field.type === "date" ? DateRangePicker : KeywordPicker;
   return (
     <Grid.Row stretched>
       <Grid.Column width={6}>
@@ -130,21 +127,14 @@ export function FilterField({
         />
       </Grid.Column>
       <Grid.Column width={10}>
-        <Picker
+        <FilterPicker
           index={index}
           field={field}
           value={value}
-          onChange={(value) => onChangeFilter(field.name, value)}
+          attached
+          onChange={(value: any) => onChangeFilter(field.name, value)}
         />
       </Grid.Column>
     </Grid.Row>
   );
-}
-
-export interface FilterElementProps {
-  index: AmcatIndex;
-  field: AmcatField;
-  value: AmcatFilter;
-  onChange: (value: AmcatFilter) => void;
-  placeholder?: string;
 }
