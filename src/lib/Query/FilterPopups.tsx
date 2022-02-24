@@ -11,6 +11,7 @@ interface FilterPopupProps {
 }
 
 export function filterLabel(field: AmcatField, filter: AmcatFilter, includeName = false) {
+  if (field == null) return "";
   const name = includeName ? `${field.name} ` : "";
   if (field.type === "date") {
     if (filter.gte && filter.lte) return `${name}${filter.gte} - ${filter.lte}`;

@@ -13,6 +13,9 @@ import AggregatePane from "./Aggregate/AggregatePane";
 import LocationHeatmap from "./Location/LocationHeatmap";
 import LocationPane from "./Location/LocationPane";
 import LocationOptionChooser from "./Location/LocationOptionChooser";
+import QueryForm from "./Query/QueryForm";
+import SimpleQueryForm from "./Query/SimpleQueryForm";
+import MultilineQueryForm from "./Query/MultilineQueryForm";
 
 import * as Amcat from "./Amcat";
 
@@ -46,6 +49,9 @@ export {
   LocationHeatmap,
   LocationOptionChooser,
   Filter,
+  QueryForm,
+  SimpleQueryForm,
+  MultilineQueryForm,
   Amcat,
 };
 

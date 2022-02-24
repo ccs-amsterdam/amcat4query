@@ -10,7 +10,7 @@ export interface QueryFormProps {
   onSubmit: (value: AmcatQuery) => void;
 }
 
-export default function QueryForm({ index, value, onSubmit }) {
+export default function QueryForm({ index, value, onSubmit }: QueryFormProps) {
   const [simple, setSimple] = useState(true);
   if (!index) return null;
   const QForm = simple ? SimpleQueryForm : MultilineQueryForm;
