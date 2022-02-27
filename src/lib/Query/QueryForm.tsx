@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AmcatIndex, AmcatQuery } from "..";
 import MultilineQueryForm from "./MultilineQueryForm";
-import "./QueryForm.css";
+import "./QueryForm.scss";
 import SimpleQueryForm from "./SimpleQueryForm";
 
 export interface QueryFormProps {

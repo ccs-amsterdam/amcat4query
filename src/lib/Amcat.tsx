@@ -121,7 +121,7 @@ export function addFilter(q: AmcatQuery, filters: AmcatFilters): AmcatQuery {
  * @param index Login information for this index
  * @returns a list of field objects
  */
-export default function useFields(index: AmcatIndex): AmcatField[] {
+export function useFields(index: AmcatIndex | undefined): AmcatField[] {
   const [fields, setFields] = useState<AmcatField[]>([]);
 
   useEffect(() => {

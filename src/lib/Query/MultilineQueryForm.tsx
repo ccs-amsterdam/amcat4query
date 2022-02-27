@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Grid, Header } from "semantic-ui-react";
-import useFields, { getField } from "../Amcat";
+import { Button, Form } from "semantic-ui-react";
+import { useFields, getField } from "../Amcat";
 import FilterPicker from "./FilterPicker";
 import { QueryFormProps } from "./QueryForm";
-import "./QueryForm.css";
+import "./QueryForm.scss";
 import { AddFilterButton, fieldOptions } from "./SimpleQueryForm";
 
 export default function MultilineQueryForm({ index, value, onSubmit }: QueryFormProps) {
@@ -32,31 +32,27 @@ export default function MultilineQueryForm({ index, value, onSubmit }: QueryForm
   }
 
   return (
-    <Grid className="multilinequery">
-      <Grid.Column width={10}>
-        <Form className="querycol">
-          <b>Query:</b> (use control+Enter to submit)
-          <br />
-          <Form.TextArea
-            rows={8}
-            style={{ BorderRadius: "15px" }}
-            placeholder={"Query (use control+Enter to submit)"}
-            onChange={(_, { value }) => setQ(value as string)}
-            onKeyDown={handleKeyDown}
-            value={q || ""}
-          />
-        </Form>
-      </Grid.Column>
-      <Grid.Column width={6} className="filtercol">
+    <div className="multilinequery">
+      <Form className="querycol">
+        <b>Query:</b> (use control+Enter to submit)
+        <br />
+        <Form.TextArea
+          rows={8}
+          style={{ BorderRadius: "15px" }}
+          placeholder={"Query (use control+Enter to submit)"}
+          onChange={(_, { value }) => setQ(value as string)}
+          onKeyDown={handleKeyDown}
+          value={q || ""}
+        />
+      </Form>
+      <div className="filtercol">
         <b>Filters:</b>
         <br />
-        <Grid>
+        <div className="filterlist">
           {Object.keys(value?.filters || {}).map((f, i) => (
-            <Grid.Row key={i}>
-              <Grid.Column width={2} verticalAlign="middle">
-                {f}:
-              </Grid.Column>
-              <Grid.Column width={12}>
+            <div className="filter" key={i}>
+              <div className="filterlabel">{f}:</div>
+              <div className="filterpicker">
                 <FilterPicker
                   circular
                   basic
@@ -69,30 +65,29 @@ export default function MultilineQueryForm({ index, value, onSubmit }: QueryForm
                     onSubmit({ ...value, filters: { ...value?.filters, [f]: newval } })
                   }
                 />
-              </Grid.Column>
-              <Grid.Column width={2}>
+              </div>
+              <div className="filterdelete">
                 <Button icon="delete" circular onClick={() => deleteFilter(f)} />
-              </Grid.Column>
-            </Grid.Row>
+              </div>
+            </div>
           ))}
-          <Grid.Row>
-            <Grid.Column width={2}></Grid.Column>
-            <Grid.Column width={14}>
+          <div className="filter">
+            <div className="filterlabel"></div>
+            <div className="filterpicker">
               <AddFilterButton
-                text=" &nbsp;&nbsp;Add Filter"
                 options={fieldOptions(fields, value)}
                 onClick={(field) => {
                   addFilter(field);
                 }}
               />
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Grid.Column>
+            </div>
+          </div>
+        </div>
 
-      {/*<br />
+        {/*<br />
       <Button primary content="Submit Query" />
       */}
-    </Grid>
+      </div>
+    </div>
   );
 }

@@ -11,7 +11,6 @@ export default function ArticleSnippets({
 }: PaginationProps) {
   const metavalue = (row: any, column: PaginationTableColumn) => {
     const val = row[column.name];
-    console.log({ val, column });
     if (val && column.f) return column.f(row);
     return val;
   };

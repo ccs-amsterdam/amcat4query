@@ -1,8 +1,8 @@
 import { Dropdown, Grid } from "semantic-ui-react";
 import { AmcatField, AmcatFilter, AmcatFilters, AmcatIndex } from "../interfaces";
-import useFields, { getField, getFieldTypeIcon } from "../Amcat";
+import { useFields, getField, getFieldTypeIcon } from "../Amcat";
 import FilterPicker from "./FilterPicker";
-
+import "./Filter.scss";
 export function filterOption(field: AmcatField) {
   return {
     key: field.name,

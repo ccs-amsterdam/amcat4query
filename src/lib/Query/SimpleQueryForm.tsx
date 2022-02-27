@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Icon, Input, Popup } from "semantic-ui-react";
 import { AmcatField } from "..";
-import useFields, { getField, getFieldTypeIcon } from "../Amcat";
+import { useFields, getField, getFieldTypeIcon } from "../Amcat";
 import { AmcatQuery } from "../interfaces";
 import FilterPicker from "./FilterPicker";
 import { QueryFormProps } from "./QueryForm";
-import "./QueryForm.css";
+import "./QueryForm.scss";
 
 export function fieldOptions(fields: AmcatField[], query: AmcatQuery) {
   return fields
@@ -80,9 +80,8 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
 interface AddFilterProps {
   options: AmcatField[];
   onClick: (value: string) => void;
-  text?: string;
 }
-export function AddFilterButton({ options, onClick, text = "" }: AddFilterProps) {
+export function AddFilterButton({ options, onClick }: AddFilterProps) {
   const [addOpen, setAddOpen] = useState(false);
 
   return (
@@ -97,7 +96,7 @@ export function AddFilterButton({ options, onClick, text = "" }: AddFilterProps)
             <Icon name="filter" />
             <Icon corner name="add" color="blue" />
           </Icon.Group>
-          {text}
+          <span className="addfiltertext">Add Filter</span>
         </Button>
       }
     >

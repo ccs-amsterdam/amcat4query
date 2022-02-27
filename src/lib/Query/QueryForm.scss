@@ -1,0 +1,99 @@
+$gap: 0.5em;
+$rounding: 24px;
+$mobile: 480px;
+
+.singlequeryform {
+  width: 100%;
+  display: flex;
+  gap: $gap;
+}
+
+.singlequeryform .querystring {
+  flex: 1;
+}
+.addfiltertext {
+  padding-left: 0.5em;
+}
+
+@media screen and (min-width: $mobile) {
+  .singlequeryform .addfiltertext {
+    display: none;
+    width: 0;
+  }
+}
+
+@media screen and (max-width: $mobile) {
+  .singlequeryform {
+    flex-direction: column;
+  }
+}
+
+.singlequeryform input {
+  border-radius: $rounding !important;
+}
+
+.multilinequery {
+  display: flex;
+}
+
+@media screen and (max-width: $mobile) {
+  .multilinequery {
+    flex-direction: column;
+  }
+}
+
+.multilinequery .querycol {
+  flex-grow: 3;
+  padding-right: 1em;
+}
+
+.multilinequery .filtercol {
+  width: 30em;
+}
+.multilinequery textarea {
+  width: 100%;
+  border-radius: $rounding !important;
+  border-color: rgba(34, 36, 38, 0.15);
+}
+
+.filterlist .filter {
+  vertical-align: middle;
+  display: flex;
+  padding-bottom: 2px;
+}
+
+.filterlist .filterlabel {
+  width: 8em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.filterlist .filterdelete {
+  padding-left: 0.5em;
+}
+.filterlist .filter .filterpicker {
+  width: 20em;
+}
+
+.filterlist .valuepicker {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100% !important;
+}
+
+.multilinequery .submit {
+  position: absolute;
+  bottom: 0;
+  right: 1em;
+}
+
+.chevron {
+  color: darkblue;
+  padding: 0;
+  z-index: 99;
+}
+.chevron:hover {
+  cursor: pointer;
+}

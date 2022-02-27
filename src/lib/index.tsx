@@ -32,6 +32,8 @@ import type {
   AmcatUser,
   AmcatIndex,
   LocationOptions,
+  AggregationMetric,
+  DisplayOption,
 } from "./interfaces";
 
 export {
@@ -61,6 +63,8 @@ export type {
   AggregationOptions,
   AggregationAxis,
   AggregationInterval,
+  AggregationMetric,
+  DisplayOption,
   AmcatField,
   AmcatFilter,
   AmcatFilters,

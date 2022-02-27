@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, Menu, Segment } from "semantic-ui-react";
+import { Container, Grid, Menu, Segment } from "semantic-ui-react";
 import ArticlesPane from "./helpers/ArticlesPane";
 import AggregatePane from "./lib/Aggregate/AggregatePane";
 import IndexPicker from "./lib/Index/IndexPicker";
@@ -53,8 +53,9 @@ export default function App() {
 
   return (
     <>
-      <QueryForm index={index} value={query} onSubmit={setQuery} />
-
+      <Container>
+        <QueryForm index={index} value={query} onSubmit={setQuery} />
+      </Container>
       <Grid columns={2} style={{ margin: "10px" }}>
         <Grid.Column width={4}>
           <Grid.Row>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import useFields from "../Amcat";
+import { useFields } from "../Amcat";
 import prepareArticle from "./prepareArticle";
 import { Grid, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
