@@ -33,7 +33,7 @@ export default function LocationHeatmap({ index, query, options }: LocationResul
     postQuery(index, q, {
       fields: options.field,
       per_page: options.numdocs || 100,
-      sort: "date:desc",
+      sort: { date: "desc" },
     })
       .then((data) => setData(data.data.results))
       .catch((error) => console.error(error));
