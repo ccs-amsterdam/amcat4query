@@ -25,6 +25,12 @@ export interface ArticlesProps {
   asSnippets?: boolean;
   /** Number of articles per page */
   perPage?: number;
+  /** How to sort results */
+  sort?:
+    | string
+    | string[]
+    | { [field: string]: { order?: "asc" | "desc" } }
+    | { [field: string]: { order?: "asc" | "desc" } }[];
 }
 
 /**
@@ -37,6 +43,7 @@ export default function Articles({
   allColumns = true,
   asSnippets = false,
   perPage = 15,
+  sort,
 }: ArticlesProps) {
   //TODO: add columns to meta OR retrieve fields (prefer the former) and pass the field types on to the table
   const [articleId, setArticleId] = useState(null);
@@ -44,9 +51,10 @@ export default function Articles({
   const [page, setPage] = useState(0);
 
   useEffect(() => {
+    console.log(sort);
     const highlight: any = asSnippets ? { number_of_fragments: 3 } : true;
-    fetchArticles(index, query, page, highlight, perPage, setData);
-  }, [index, query, page, setData, asSnippets, perPage]);
+    fetchArticles(index, query, page, highlight, perPage, sort, setData);
+  }, [index, query, page, setData, asSnippets, perPage, sort]);
 
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
@@ -98,9 +106,10 @@ async function fetchArticles(
   page: number,
   highlight: boolean,
   perPage: number,
+  sort: any,
   setData: (data: AmcatQueryResult) => void
 ) {
-  let params = { page, highlight, per_page: perPage };
+  let params = { page, highlight, per_page: perPage, sort };
   console.log(JSON.stringify(params));
   try {
     const res = await postQuery(index, query, params);

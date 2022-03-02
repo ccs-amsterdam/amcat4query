@@ -52,6 +52,7 @@ export function deleteIndex(index: AmcatIndex) {
 
 /** POST an AmcatQuery and fetch the resulting articles */
 export function postQuery(index: AmcatIndex, query: AmcatQuery, params: any) {
+  console.log(JSON.stringify({ ...query, ...params }));
   return api(index).post("/query", { ...query, ...params });
 }
 
