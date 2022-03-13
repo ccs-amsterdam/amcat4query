@@ -10,6 +10,7 @@ import {
   AmcatQuery,
   DateFilter,
 } from "../interfaces";
+import AggregateList from "./AggregateList";
 import AggregateTable from "./AggregateTable";
 import AggregateBarChart from "./AggregateBarChart";
 import AggregateLineChart from "./AggregateLineChart";
@@ -55,7 +56,6 @@ export default function AggregateResult({
       postAggregate(index, query, options)
         .then((d) => {
           if (!cancel) {
-            console.log(d.data);
             setData(d.data);
             setError(undefined);
           }
@@ -98,7 +98,8 @@ export default function AggregateResult({
 
   // Choose and render result element
   const Element = {
-    list: AggregateTable,
+    list: AggregateList,
+    table: AggregateTable,
     barchart: AggregateBarChart,
     linechart: AggregateLineChart,
   }[options.display];

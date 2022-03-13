@@ -18,12 +18,18 @@ const displayOptions = [
   },
   {
     key: 2,
+    value: "table",
+    text: "Table",
+    image: { src: "https://img.icons8.com/material-outlined/24/000000/bar-chart.png" },
+  },
+  {
+    key: 3,
     value: "barchart",
     text: "Bar Chart",
     image: { src: "https://img.icons8.com/material-outlined/24/000000/bar-chart.png" },
   },
   {
-    key: 3,
+    key: 4,
     value: "linechart",
     text: "Line Chart",
     image: { src: "https://img.icons8.com/material-outlined/24/000000/graph.png" },
@@ -32,6 +38,7 @@ const displayOptions = [
 
 const aggregation_labels = {
   list: ["Group results by", "And then by", "Maximum number of rows"],
+  table: ["Rows", "Columns", "Maximum number of cells"],
   linechart: ["Horizontal (X) axis", "Multiple lines", "Maximum number of lines"],
   barchart: ["Create bars for", "Cluster bars by", "Maximum number of bars"],
 };
@@ -71,7 +78,6 @@ export default function AggregateOptionsChooser({
     const options: AggregationOptions = { axes, display, limit };
     if (metricField && metricFunction)
       options.metrics = [{ field: metricField, function: metricFunction }];
-    console.log(metricField, metricFunction, options);
     onSubmit(options);
   }
   const labels = aggregation_labels[display];

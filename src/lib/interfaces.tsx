@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export type DisplayOption = "list" | "linechart" | "barchart";
+export type DisplayOption = "list" | "table" | "linechart" | "barchart";
 export type AggregationInterval = "day" | "week" | "month" | "quarter" | "year";
 
 export interface AggregationAxis {
