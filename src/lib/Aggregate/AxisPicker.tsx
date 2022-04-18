@@ -4,11 +4,13 @@ import { getField } from "../Amcat";
 import { AggregationAxis, AggregationInterval } from "../interfaces";
 
 const date_intervals = [
-  { key: "day", text: "day", value: "day" },
-  { key: "week", text: "week", value: "week" },
-  { key: "month", text: "month", value: "month" },
-  { key: "quarter", text: "quarter", value: "quarter" },
-  { key: "year", text: "year", value: "year" },
+  { key: "day", text: "Day", value: "day" },
+  { key: "week", text: "Week", value: "week" },
+  { key: "month", text: "Month", value: "month" },
+  { key: "quarter", text: "Quarter", value: "quarter" },
+  { key: "year", text: "Year", value: "year" },
+  { key: "dayofweek", text: "Day of week", value: "dayofweek" },
+  { key: "daypart", text: "Part of day", value: "daypart" },
 ];
 
 interface AxisPickerProps {

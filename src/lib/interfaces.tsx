@@ -1,7 +1,14 @@
 import { ReactNode } from "react";
 
 export type DisplayOption = "list" | "table" | "linechart" | "barchart";
-export type AggregationInterval = "day" | "week" | "month" | "quarter" | "year";
+export type AggregationInterval =
+  | "day"
+  | "week"
+  | "month"
+  | "quarter"
+  | "year"
+  | "daypart"
+  | "dayofweek";
 
 export interface AggregationAxis {
   field: string;
