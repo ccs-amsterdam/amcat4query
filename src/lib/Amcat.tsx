@@ -91,10 +91,11 @@ export function postAggregate(index: AmcatIndex, query: AmcatQuery, options: Agg
  * @returns
  */
 export async function getToken(host: string, email: string, password: string) {
-  const response = await Axios.get(`${host}/auth/token`, {
-    auth: { username: email, password: password },
-  });
-  return response.data.token;
+  var d = new FormData();
+  d.append("username", email);
+  d.append("password", password);
+  const response = await Axios.post(`${host}/auth/token`, d);
+  return response.data.access_token;
 }
 
 /**
