@@ -10,8 +10,9 @@ export default function RefreshToken({ value, onRefresh }: RefreshTokenProps) {
   const handleClick = () => {
     Amcat.refreshToken(value)
       .then((d) => {
-        alert(`${value.token} -> ${d.data.token}`);
-        onRefresh({ ...value, token: d.data.token });
+        console.log(d.data);
+        alert(`${value.token} -> ${d.data.access_token}`);
+        onRefresh({ ...value, token: d.data.access_token });
       })
       .catch((e) => {
         console.error(e);
