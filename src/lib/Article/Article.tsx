@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useFields } from "../Amcat";
 import prepareArticle from "./prepareArticle";
-import { Grid, Label, Modal, Table } from "semantic-ui-react";
+import { Grid, Icon, Label, Modal, Table } from "semantic-ui-react";
 import "./articleStyle.css";
 import { AmcatDocument, AmcatField, AmcatQuery, AmcatIndex } from "../interfaces";
 import { addFilter, postQuery } from "../Amcat";
@@ -12,12 +12,13 @@ interface ArticleProps {
   id: number | [number];
   /** A query, used for highlighting */
   query: AmcatQuery;
+  changeArticle?: (id: number) => void;
 }
 
 /**
  * Show a single article
  */
-export default function Article({ index, id, query }: ArticleProps) {
+export default function Article({ index, id, query, changeArticle }: ArticleProps) {
   const fields = useFields(index);
   const [article, setArticle] = useState(null);
   const [open, setOpen] = useState(false);
@@ -41,7 +42,7 @@ export default function Article({ index, id, query }: ArticleProps) {
         <Modal.Description style={{ height: "100%" }}>
           <Grid stackable>
             <Grid.Column width={6}>
-              <Meta article={article} fields={fields} />
+              <Meta article={article} fields={fields} setArticle={changeArticle} />
             </Grid.Column>
             <Grid.Column width={10}>
               <Body article={article} fields={fields} />
@@ -76,6 +77,7 @@ function fetchArticle(
 interface BodyProps {
   article: AmcatDocument;
   fields: AmcatField[];
+  setArticle?: (id: number) => void;
 }
 
 const Body = ({ article, fields }: BodyProps) => {
@@ -143,11 +145,11 @@ function TextField({ article, field, layout, label }: TextFieldProps) {
   );
 }
 
-const Meta = ({ article, fields }: BodyProps) => {
+const Meta = ({ article, fields, setArticle }: BodyProps) => {
   const metaFields = fields.filter((f) => f.type !== "text" && !["title", "text"].includes(f.name));
   const rows = () => {
     return metaFields.map((field) => {
-      const value = formatMetaValue(article, field);
+      const value = formatMetaValue(article, field, setArticle);
 
       return (
         <Table.Row key={field.name}>
@@ -184,12 +186,19 @@ const Meta = ({ article, fields }: BodyProps) => {
  * @param {*} field
  * @returns
  */
-const formatMetaValue = (article: AmcatDocument, field: AmcatField) => {
+const formatMetaValue = (
+  article: AmcatDocument,
+  field: AmcatField,
+  setArticle: (id: number) => void
+) => {
   const value = article[field.name];
+  if (value == null) return "";
   switch (field.type) {
     case "date":
       // Only remove 'T' for now. But not sure why that's a great idea
       return value.replace("T", " ");
+    case "id":
+      return <Icon link name="linkify" onClick={() => setArticle(value)} />;
     case "url":
       return <a href={value}>{value}</a>;
     case "tag":

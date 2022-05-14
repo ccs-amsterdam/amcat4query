@@ -50,7 +50,17 @@ export interface AmcatFilter extends DateFilter {
 
 export interface AmcatField {
   name: string;
-  type: "long" | "double" | "object" | "keyword" | "date" | "tag" | "text" | "url" | "geo_point";
+  type:
+    | "long"
+    | "double"
+    | "object"
+    | "keyword"
+    | "date"
+    | "tag"
+    | "text"
+    | "url"
+    | "geo_point"
+    | "id";
 }
 
 export interface AmcatFilters {

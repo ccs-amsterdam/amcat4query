@@ -95,7 +95,7 @@ export default function Articles({
           onClick={onClick}
         />
       )}
-      <Article index={index} id={articleId} query={query} />
+      <Article index={index} id={articleId} query={query} changeArticle={setArticleId} />
     </>
   );
 }
