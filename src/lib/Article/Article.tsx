@@ -150,7 +150,7 @@ const Meta = ({ article, fields, setArticle }: BodyProps) => {
   const rows = () => {
     return metaFields.map((field) => {
       const value = formatMetaValue(article, field, setArticle);
-
+      if (value == null) return null;
       return (
         <Table.Row key={field.name}>
           <Table.Cell width={1}>
@@ -192,7 +192,7 @@ const formatMetaValue = (
   setArticle: (id: number) => void
 ) => {
   const value = article[field.name];
-  if (value == null) return "";
+  if (value == null) return null;
   switch (field.type) {
     case "date":
       // Only remove 'T' for now. But not sure why that's a great idea
