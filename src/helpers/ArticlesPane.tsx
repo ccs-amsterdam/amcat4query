@@ -12,7 +12,6 @@ export default function ArticlesPane({ index, query }: ArticlesProps) {
   const fields = useFields(index);
   const sortopt =
     sort == null || sort == "" ? undefined : [{ [sort]: { order: sortdesc ? "desc" : "asc" } }];
-  console.log(JSON.stringify(sortopt));
   if (!index) return null;
   const sortfields = fields
     .filter((f) => ["date", "keyword", "tag", "long"].includes(f.type))

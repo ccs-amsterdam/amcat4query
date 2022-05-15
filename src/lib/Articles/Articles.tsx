@@ -2,15 +2,15 @@ import PaginationTable, { PaginationTableColumn } from "./PaginationTable";
 import ArticleSnippets from "./ArticleSnippets";
 import { useEffect, useMemo, useState } from "react";
 import Article from "../Article/Article";
-import { AmcatIndex, AmcatQuery, AmcatQueryResult } from "../interfaces";
-import { postQuery } from "../Amcat";
+import { AmcatIndex, AmcatQuery, AmcatQueryResult, SortSpec } from "../interfaces";
+import { getField, postQuery, useFields } from "../Amcat";
 
 const COLUMNS: PaginationTableColumn[] = [
-  { name: "_id", hide: true },
-  { name: "date", f: (row) => row.date.replace("T", " ") },
-  { name: "publisher" }, // optional
-  { name: "title" },
-  { name: "text" },
+  { name: "_id", type: "id", hide: true },
+  { name: "date", type: "date", f: (row) => row.date.replace("T", " ") },
+  { name: "publisher", type: "keyword" }, // optional
+  { name: "title", type: "text" },
+  { name: "text", type: "text" },
 ];
 
 export interface ArticlesProps {
@@ -26,10 +26,8 @@ export interface ArticlesProps {
   /** Number of articles per page */
   perPage?: number;
   /** How to sort results */
-  sort?:
-    | string
-    | string[]
-    | { [field: string]: { order?: "asc" | "desc" } }
+  sort?: SortSpec;
+  onSortChange?: (sort: SortSpec) => void;
 }
 
 /**
@@ -48,13 +46,13 @@ export default function Articles({
   const [articleId, setArticleId] = useState(null);
   const [data, setData] = useState<AmcatQueryResult>();
   const [page, setPage] = useState(0);
+  const [currentSort, setCurrentSort] = useState(sort);
 
   useEffect(() => {
-    console.log(sort);
     const highlight: any = asSnippets ? { number_of_fragments: 3 } : true;
-    fetchArticles(index, query, page, highlight, perPage, sort, setData);
-  }, [index, query, page, setData, asSnippets, perPage, sort]);
-
+    fetchArticles(index, query, page, highlight, perPage, currentSort, setData);
+  }, [index, query, page, setData, asSnippets, perPage, currentSort]);
+  const fields = useFields(index);
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
 
@@ -65,16 +63,18 @@ export default function Articles({
     if (allColumns) {
       for (let name of dataColumns) {
         if (columnList.find((c) => c.name === name)) continue;
-        columnList.push({ name });
+        const field = getField(fields, name);
+        if (field != null) columnList.push(field);
       }
     }
     return columnList;
-  }, [data, allColumns, columns]);
+  }, [data, allColumns, columns, fields]);
+
+  if (!fields) return null;
 
   const onClick = (row: any) => {
     setArticleId([row._id]);
   };
-
   return (
     <>
       {asSnippets ? (
@@ -92,6 +92,8 @@ export default function Articles({
           pages={data?.meta?.page_count || 0}
           pageChange={setPage}
           onClick={onClick}
+          sort={currentSort}
+          onSortChange={setCurrentSort}
         />
       )}
       <Article index={index} id={articleId} query={query} changeArticle={setArticleId} />
@@ -109,7 +111,6 @@ async function fetchArticles(
   setData: (data: AmcatQueryResult) => void
 ) {
   let params = { page, highlight, per_page: perPage, sort };
-  console.log(JSON.stringify(params));
   try {
     const res = await postQuery(index, query, params);
     setData(res.data);

@@ -2,3 +2,7 @@
   background: #9cd5f685;
   border-radius: 3px;
 }
+
+.sortableHeader span {
+  cursor: pointer;
+}

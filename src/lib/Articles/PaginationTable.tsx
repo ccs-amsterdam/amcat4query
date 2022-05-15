@@ -1,11 +1,14 @@
-import { Container, Pagination, Table, Icon } from "semantic-ui-react";
+import { isElementType } from "@testing-library/user-event/dist/utils";
+import { useCallback } from "react";
+import { Container, Pagination, Table, Icon, Label } from "semantic-ui-react";
 import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
+import { useFields } from "../Amcat";
 import { removeElasticTags, highlightElasticTags } from "../Articles/highlightElasticTags";
+import { AmcatField, SortSpec } from "../interfaces";
+import { fieldOptions } from "../Query/SimpleQueryForm";
 import "./paginationTableStyle.css";
 
-export interface PaginationTableColumn {
-  /** Object should have key 'name', which by default is both the column name in the table, and the value fetched from data. */
-  name: string;
+export interface PaginationTableColumn extends AmcatField {
   /** Set to true to hide this column */
   hide?: boolean;
   /** Optional transformation function to run over the *row*  */
@@ -31,7 +34,9 @@ export interface PaginationProps extends PaginationFooterProps {
   /** an Array with objects indicating which columns to show and how. */
   columns: PaginationTableColumn[];
   /** the number of pages */
-  onClick: (value: any) => void;
+  onClick?: (value: any) => void;
+  sort?: SortSpec;
+  onSortChange?: (sort: SortSpec) => void;
 }
 
 export function PaginationFooter({ pages, pageChange }: PaginationFooterProps) {
@@ -68,6 +73,18 @@ export function PaginationFooter({ pages, pageChange }: PaginationFooterProps) {
   );
 }
 
+function _sortdir(sort: SortSpec) {
+  if (sort == null) return new Map();
+  if (typeof sort === "string") return new Map([[sort, "asc"]]);
+  return new Map(
+    sort.map((val) => {
+      if (typeof val === "string") return [val, "asc"];
+      const field = Object.keys(val)[0];
+      return [field, val[field].order];
+    })
+  );
+}
+
 /**
  * A nice table with pagination
  */
@@ -77,14 +94,33 @@ export default function PaginationTable({
   pages,
   pageChange,
   onClick,
+  sort,
+  onSortChange,
 }: PaginationProps) {
+  const toggleSort = useCallback(
+    (field, current_order) => {
+      if (onSortChange == null) return;
+      onSortChange([{ [field]: { order: current_order === "asc" ? "desc" : "asc" } }]);
+    },
+    [onSortChange]
+  );
+  const sortdir = _sortdir(sort);
   const createHeaderRow = (columns: PaginationTableColumn[]) => {
     return columns.map((col, i) => {
       if (col.hide) return null;
-
+      const order = sortdir.get(col.name);
+      const canSort = onSortChange != null && col.type != "text";
       return (
-        <Table.HeaderCell key={i} width={col.width || null}>
-          <span title={col.name}>{col.name}</span>
+        <Table.HeaderCell
+          className={canSort ? "sortableHeader" : "header"}
+          key={i}
+          width={col.width || null}
+          onClick={canSort ? () => toggleSort(col.name, order) : null}
+        >
+          <span title={col.name}>
+            {col.name}
+            {order == null ? null : <Icon name={order === "asc" ? "sort up" : "sort down"} />}
+          </span>
         </Table.HeaderCell>
       );
     });
@@ -127,7 +163,7 @@ export default function PaginationTable({
   };
 
   if (data.length < 1) return null;
-  const columnSelection = columns || Object.keys(data[0]).map((name) => ({ name }));
+  const columnSelection = columns; // || Object.keys(data[0]).map((name) => ({ name, type: "text" }));
 
   return (
     <Container style={{ width: "100%", overflow: "auto" }}>

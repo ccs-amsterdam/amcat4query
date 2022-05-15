@@ -136,3 +136,5 @@ export interface LocationOptions {
   /** Height of the map (default: 600) */
   height?: number | string;
 }
+
+export type SortSpec = string | string[] | { [field: string]: { order?: "asc" | "desc" } }[];
