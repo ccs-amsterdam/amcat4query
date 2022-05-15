@@ -58,7 +58,7 @@ export default function Articles({
 
     const dataColumns = Object.keys(data.results[0]);
     // first use the columns as specified in COLUMNS
-    const columnList = columns.filter((c) => dataColumns.includes(c.name));
+    const columnList = [...columns];
     // then add all other columns AFTER
     if (allColumns) {
       for (let name of dataColumns) {
