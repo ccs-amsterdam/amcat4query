@@ -31,9 +31,9 @@ export default function LocationHeatmap({ index, query, options }: LocationResul
     if (index == null || options?.field == null) return;
     const q = addFilter(query, { [options.field]: { exists: true } });
     postQuery(index, q, {
-      fields: options.field,
+      fields: [options.field],
       per_page: options.numdocs || 100,
-      sort: { date: "desc" },
+      sort: [{ date: { order: "desc" } }],
     })
       .then((data) => setData(data.data.results))
       .catch((error) => console.error(error));
