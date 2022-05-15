@@ -10,11 +10,12 @@ export default function ArticlesPane({ index, query }: ArticlesProps) {
   const [sort, setSort] = useState<string>();
   const [sortdesc, setSortdesc] = useState(false);
   const fields = useFields(index);
-  const sortopt = sort == null ? undefined : [{ [sort]: { order: sortdesc ? "desc" : "asc" } }];
+  const sortopt =
+    sort == null || sort == "" ? undefined : [{ [sort]: { order: sortdesc ? "desc" : "asc" } }];
   console.log(JSON.stringify(sortopt));
   if (!index) return null;
   const sortfields = fields
-    .filter((f) => ["date", "keyword", "tag"].includes(f.type))
+    .filter((f) => ["date", "keyword", "tag", "long"].includes(f.type))
     .map((f) => ({
       key: f.name,
       value: f.name,

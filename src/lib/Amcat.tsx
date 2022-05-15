@@ -170,6 +170,8 @@ export function getField(fields: AmcatField[], fieldname: string): AmcatField {
 const ICONS: { [field: string]: SemanticICONS } = {
   date: "calendar alternate outline",
   keyword: "list",
+  long: "chart line",
+  tag: "tags",
 };
 
 export function getFieldTypeIcon(fieldtype: string) {

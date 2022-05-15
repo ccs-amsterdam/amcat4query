@@ -30,7 +30,6 @@ export interface ArticlesProps {
     | string
     | string[]
     | { [field: string]: { order?: "asc" | "desc" } }
-    | { [field: string]: { order?: "asc" | "desc" } }[];
 }
 
 /**
