@@ -1,7 +1,7 @@
-import { BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, ResponsiveContainer } from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AggregateVisualizerProps } from "../interfaces";
 import { qualitativeColors } from "./colors";
-import { createChartData } from "./lib";
+import { createChartData, transform_dateparts } from "./lib";
 
 export default function AggregateBarChart({
   data,
@@ -25,7 +25,14 @@ export default function AggregateBarChart({
     }
     onClick(values);
   };
-  let sorted = d.sort((e1, e2) => e2.n - e1.n);
+  let sorted;
+  if (data.meta.axes[0].interval === "dayofweek" || data.meta.axes[0].interval === "daypart") {
+    sorted = d
+      .map((x) => transform_dateparts(x, data.meta.axes[0].field))
+      .sort((e1, e2) => e1._sort - e2._sort);
+  } else {
+    sorted = d.sort((e1, e2) => e2.n - e1.n);
+  }
   if (limit && sorted.length > limit) sorted = sorted.slice(0, limit);
   if (height == null) height = Math.max(250, sorted.length * 30);
   if (width == null) width = "100%";

@@ -1,5 +1,6 @@
 import { Table } from "semantic-ui-react";
 import { AggregateDataPoint, AggregateVisualizerProps } from "../interfaces";
+import { transform_dateparts } from "./lib";
 
 export default function AggregateList({ data, onClick, limit }: AggregateVisualizerProps) {
   const handleClick = (row: AggregateDataPoint) => {
@@ -7,6 +8,12 @@ export default function AggregateList({ data, onClick, limit }: AggregateVisuali
     onClick(values);
   };
   let d = data.data;
+  if (data.meta.axes[0].interval === "dayofweek" || data.meta.axes[0].interval === "daypart") {
+    d = d
+      .map((x) => transform_dateparts(x, data.meta.axes[0].field))
+      .sort((e1, e2) => e1._sort - e2._sort);
+  }
+
   if (limit && d.length > limit) d = d.slice(0, limit);
   return (
     <Table celled>

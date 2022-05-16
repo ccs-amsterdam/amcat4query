@@ -41,3 +41,23 @@ export function createChartData(data: AggregateData): LongData {
   }
   return longToWide(data.data, fields[0], fields[1], target);
 }
+
+export const DATEPARTS = new Map([
+  ["Monday", { nl: "Maandag", _sort: 1 }],
+  ["Tuesday", { nl: "Dinsdag", _sort: 2 }],
+  ["Wednesday", { nl: "Woensdag", _sort: 3 }],
+  ["Thursday", { nl: "Donderdag", _sort: 4 }],
+  ["Friday", { nl: "Vrijdag", _sort: 5 }],
+  ["Saturday", { nl: "Zaterdag", _sort: 6 }],
+  ["Sunday", { nl: "Zondag", _sort: 7 }],
+  ["Morning", { nl: "Ochtend", _sort: 1 }],
+  ["Afternoon", { nl: "Middag", _sort: 2 }],
+  ["Evening", { nl: "Avond", _sort: 3 }],
+  ["Night", { nl: "Nacht", _sort: 4 }],
+]);
+
+export function transform_dateparts(x: AggregateDataPoint, field: string) {
+  const dp = DATEPARTS.get(x[field]);
+
+  return dp ? { ...x, [field]: dp.nl, _sort: dp._sort } : x;
+}
