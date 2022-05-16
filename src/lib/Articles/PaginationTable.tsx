@@ -3,8 +3,9 @@ import { useCallback } from "react";
 import { Container, Pagination, Table, Icon, Label } from "semantic-ui-react";
 import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
 import { useFields } from "../Amcat";
+import { formatMetaValue } from "../Article/Article";
 import { removeElasticTags, highlightElasticTags } from "../Articles/highlightElasticTags";
-import { AmcatField, SortSpec } from "../interfaces";
+import { AmcatDocument, AmcatField, SortSpec } from "../interfaces";
 import { fieldOptions } from "../Query/SimpleQueryForm";
 import "./paginationTableStyle.css";
 
@@ -12,13 +13,9 @@ export interface PaginationTableColumn extends AmcatField {
   /** Set to true to hide this column */
   hide?: boolean;
   /** Optional transformation function to run over the *row*  */
-  f?: (row: TableRow) => TableRow;
+  //f?: (row: TableRow) => TableRow;
   /** Optional 'width' to specify width in SemanticUIs 16 parts system. */
   width?: SemanticWIDTHS;
-}
-
-interface TableRow {
-  [key: string]: any;
 }
 
 export interface PaginationFooterProps {
@@ -30,7 +27,7 @@ export interface PaginationFooterProps {
 
 export interface PaginationProps extends PaginationFooterProps {
   /** an Array with data for a single page */
-  data: TableRow[];
+  data: AmcatDocument[];
   /** an Array with objects indicating which columns to show and how. */
   columns: PaginationTableColumn[];
   /** the number of pages */
@@ -126,7 +123,7 @@ export default function PaginationTable({
     });
   };
 
-  const createBodyRows = (data: TableRow[], columns: PaginationTableColumn[]) => {
+  const createBodyRows = (data: AmcatDocument[], columns: PaginationTableColumn[]) => {
     return data.map((rowObj, i) => {
       return (
         <Table.Row key={i} style={{ cursor: "pointer" }} onClick={() => onClick(rowObj)}>
@@ -136,16 +133,12 @@ export default function PaginationTable({
     });
   };
 
-  const createRowCells = (rowObj: TableRow, columns: PaginationTableColumn[]) => {
+  const createRowCells = (rowObj: AmcatDocument, columns: PaginationTableColumn[]) => {
     return columns.map((column, i) => {
       if (column.hide) return null;
-      let content;
-      if (column.f) {
-        content = column.f(rowObj);
-      } else {
-        content = rowObj ? rowObj[column.name] : null;
-      }
-
+      const content = formatCell(rowObj, column);
+      const title = removeElasticTags(content);
+      const label = highlightElasticTags(content);
       return (
         <Table.Cell
           key={i}
@@ -156,7 +149,7 @@ export default function PaginationTable({
             textOverflow: "ellipsis",
           }}
         >
-          <span title={removeElasticTags(content)}>{highlightElasticTags(content)}</span>
+          <span title={title}>{label}</span>
         </Table.Cell>
       );
     });
@@ -182,4 +175,12 @@ export default function PaginationTable({
       </Table>
     </Container>
   );
+}
+
+function formatCell(row: AmcatDocument, column: PaginationTableColumn) {
+  let val = row[column.name];
+  if (val == null) return "";
+  if (column.type == "id") return "🔗";
+  if (column.type == "date") return val.replace("T", " ").substring(0, 19);
+  return val;
 }

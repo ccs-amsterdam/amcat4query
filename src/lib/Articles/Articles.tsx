@@ -7,8 +7,7 @@ import { getField, postQuery, useFields } from "../Amcat";
 
 const COLUMNS: PaginationTableColumn[] = [
   { name: "_id", type: "id", hide: true },
-  { name: "date", type: "date", f: (row) => row.date.replace("T", " ") },
-  { name: "publisher", type: "keyword" }, // optional
+  { name: "date", type: "date" },
   { name: "title", type: "text" },
   { name: "text", type: "text" },
 ];

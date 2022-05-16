@@ -186,17 +186,17 @@ const Meta = ({ article, fields, setArticle }: BodyProps) => {
  * @param {*} field
  * @returns
  */
-const formatMetaValue = (
+export const formatMetaValue = (
   article: AmcatDocument,
   field: AmcatField,
-  setArticle: (id: number) => void
+  setArticle?: (id: number) => void
 ) => {
   const value = article[field.name];
   if (value == null) return null;
   switch (field.type) {
     case "date":
       // Only remove 'T' for now. But not sure why that's a great idea
-      return value.replace("T", " ");
+      return value.replace("T", " ").substring(0, 19);
     case "id":
       return <Icon link name="linkify" onClick={() => setArticle(value)} />;
     case "url":

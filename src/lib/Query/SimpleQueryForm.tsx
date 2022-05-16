@@ -26,7 +26,6 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
   function deleteFilter(name: string) {
     const f = { ...value.filters };
     delete f[name];
-    console.log(f);
     onSubmit({ ...value, filters: f });
   }
   function addFilter(name: string) {
@@ -34,7 +33,6 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
     onSubmit({ ...value, filters: { ...filters, [name]: {} } });
   }
   function handleKeydown(e: any) {
-    console.log(JSON.stringify(q));
     if (e.key === "Enter")
       onSubmit({
         ...value,
