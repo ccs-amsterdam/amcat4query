@@ -158,6 +158,7 @@ function getEndDate(start: Date, interval: AggregationInterval) {
   const result = new Date(start);
   switch (interval) {
     case "day":
+    case "dayofweek":
       result.setDate(result.getDate() + 1);
       break;
     case "week":

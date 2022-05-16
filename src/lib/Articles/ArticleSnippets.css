@@ -1,0 +1,7 @@
+.snippets .content {
+  cursor: pointer;
+}
+
+.snippets .item:hover {
+  background-color: #fafafa;
+}
