@@ -2,7 +2,7 @@ import { List } from "semantic-ui-react";
 import { formatMetaValue } from "../Article/Article";
 import { AmcatDocument } from "../interfaces";
 import { highlightElasticTags, removeElasticTags } from "./highlightElasticTags";
-import { PaginationFooter, PaginationProps, PaginationTableColumn } from "./PaginationTable";
+import { PaginationFooter, PaginationProps } from "./PaginationTable";
 
 function snippetText(row: AmcatDocument) {
   const text = row.text as string;

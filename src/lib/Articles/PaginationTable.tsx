@@ -1,12 +1,8 @@
-import { isElementType } from "@testing-library/user-event/dist/utils";
 import { useCallback } from "react";
-import { Container, Pagination, Table, Icon, Label } from "semantic-ui-react";
+import { Container, Icon, Pagination, Table } from "semantic-ui-react";
 import { SemanticWIDTHS } from "semantic-ui-react/dist/commonjs/generic";
-import { useFields } from "../Amcat";
-import { formatMetaValue } from "../Article/Article";
-import { removeElasticTags, highlightElasticTags } from "../Articles/highlightElasticTags";
+import { highlightElasticTags, removeElasticTags } from "../Articles/highlightElasticTags";
 import { AmcatDocument, AmcatField, SortSpec } from "../interfaces";
-import { fieldOptions } from "../Query/SimpleQueryForm";
 import "./paginationTableStyle.css";
 
 export interface PaginationTableColumn extends AmcatField {
@@ -106,7 +102,7 @@ export default function PaginationTable({
     return columns.map((col, i) => {
       if (col.hide) return null;
       const order = sortdir.get(col.name);
-      const canSort = onSortChange != null && col.type != "text";
+      const canSort = onSortChange != null && col.type !== "text";
       return (
         <Table.HeaderCell
           className={canSort ? "sortableHeader" : "header"}
@@ -180,7 +176,7 @@ export default function PaginationTable({
 function formatCell(row: AmcatDocument, column: PaginationTableColumn) {
   let val = row[column.name];
   if (val == null) return "";
-  if (column.type == "id") return "🔗";
-  if (column.type == "date") return val.replace("T", " ").substring(0, 19);
+  if (column.type === "id") return "🔗";
+  if (column.type === "date") return val.replace("T", " ").substring(0, 19);
   return val;
 }

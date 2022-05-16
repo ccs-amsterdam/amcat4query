@@ -1,10 +1,8 @@
 import { Table } from "semantic-ui-react";
-import { AggregateDataPoint, AggregateVisualizerProps } from "../interfaces";
+import { AggregateVisualizerProps } from "../interfaces";
 import AggregateList from "./AggregateList";
 
 export default function AggregateTable({ data, onClick, limit }: AggregateVisualizerProps) {
-  const handleClick = (row: AggregateDataPoint) => {};
-
   // A table without columns is the same as a list (not trying to get metaphysical here)
   if (data.meta.axes.length === 1) return AggregateList({ data, onClick, limit });
 

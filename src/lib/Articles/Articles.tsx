@@ -5,12 +5,7 @@ import Article from "../Article/Article";
 import { AmcatIndex, AmcatQuery, AmcatQueryResult, SortSpec } from "../interfaces";
 import { getField, postQuery, useFields } from "../Amcat";
 
-const COLUMNS: PaginationTableColumn[] = [
-  { name: "_id", type: "id", hide: true },
-  { name: "date", type: "date" },
-  { name: "title", type: "text" },
-  { name: "text", type: "text" },
-];
+const DEFAULT_COLUMNS = ["date", "title", "text", "url"];
 
 export interface ArticlesProps {
   index: AmcatIndex;
@@ -35,8 +30,8 @@ export interface ArticlesProps {
 export default function Articles({
   index,
   query,
-  columns = COLUMNS,
-  allColumns = true,
+  columns,
+  allColumns = false,
   asSnippets = false,
   perPage = 15,
   sort,
@@ -52,6 +47,20 @@ export default function Articles({
     fetchArticles(index, query, page, highlight, perPage, currentSort, setData);
   }, [index, query, page, setData, asSnippets, perPage, currentSort]);
   const fields = useFields(index);
+
+  if (!columns) {
+    if (fields) {
+      columns = DEFAULT_COLUMNS.map((f) => getField(fields, f)).filter((f) => f != null);
+      const extra_columns = fields
+        .filter((f) => !DEFAULT_COLUMNS.includes(f.name))
+        .filter((f) => f.meta?.amcat4_display_table)
+        .sort(
+          (a, b) => parseInt(a.meta.amcat4_display_table) - parseInt(b.meta.amcat4_display_table)
+        );
+      columns = [...columns, ...extra_columns];
+    }
+  }
+
   const columnList = useMemo(() => {
     if (!data?.results || data.results.length === 0) return [];
 
@@ -69,7 +78,7 @@ export default function Articles({
     return columnList;
   }, [data, allColumns, columns, fields]);
 
-  if (!fields) return null;
+  if (!columns || columns.length === 0) return null;
 
   const onClick = (row: any) => {
     setArticleId([row._id]);

@@ -61,6 +61,7 @@ export interface AmcatField {
     | "url"
     | "geo_point"
     | "id";
+  meta?: { [field: string]: string };
 }
 
 export interface AmcatFilters {

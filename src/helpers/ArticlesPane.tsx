@@ -11,7 +11,7 @@ export default function ArticlesPane({ index, query }: ArticlesProps) {
   const [sortdesc, setSortdesc] = useState(false);
   const fields = useFields(index);
   const sortopt =
-    sort == null || sort == "" ? undefined : [{ [sort]: { order: sortdesc ? "desc" : "asc" } }];
+    sort == null || sort === "" ? undefined : [{ [sort]: { order: sortdesc ? "desc" : "asc" } }];
   if (!index) return null;
   const sortfields = fields
     .filter((f) => ["date", "keyword", "tag", "long"].includes(f.type))
@@ -52,7 +52,6 @@ export default function ArticlesPane({ index, query }: ArticlesProps) {
         index={index}
         query={query}
         asSnippets={useSnippets}
-        allColumns={!useSnippets}
         perPage={perPage}
         sort={sortopt as any}
       />
