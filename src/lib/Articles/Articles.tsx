@@ -5,7 +5,7 @@ import Article from "../Article/Article";
 import { AmcatIndex, AmcatQuery, AmcatQueryResult, SortSpec } from "../interfaces";
 import { getField, postQuery, useFields } from "../Amcat";
 
-const DEFAULT_COLUMNS = ["date", "title", "text", "url"];
+const DEFAULT_COLUMNS = ["date", "title"];
 
 export interface ArticlesProps {
   index: AmcatIndex;
