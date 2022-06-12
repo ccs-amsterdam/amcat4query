@@ -2,7 +2,7 @@ import PaginationTable, { PaginationTableColumn } from "./PaginationTable";
 import ArticleSnippets from "./ArticleSnippets";
 import { useEffect, useMemo, useState } from "react";
 import ArticleModal from "../Article/ArticleModal";
-import { AmcatIndex, AmcatQuery, AmcatQueryResult, SortSpec } from "../interfaces";
+import { AmcatIndex, AmcatQuery, AmcatQueryResult, SortSpec, AmcatDocument } from "../interfaces";
 import { getField, postQuery, useFields } from "../Amcat";
 
 const DEFAULT_COLUMNS = ["date", "title"];
@@ -21,6 +21,8 @@ export interface ArticlesProps {
   perPage?: number;
   /** How to sort results */
   sort?: SortSpec;
+  /** Callback when clicking on an article. Default shows a modal popup with the Article  */
+  onClick?: (doc: AmcatDocument) => void;
   onSortChange?: (sort: SortSpec) => void;
 }
 
@@ -35,6 +37,7 @@ export default function Articles({
   asSnippets = false,
   perPage = 15,
   sort,
+  onClick,
 }: ArticlesProps) {
   //TODO: add columns to meta OR retrieve fields (prefer the former) and pass the field types on to the table
   const [articleId, setArticleId] = useState(null);
@@ -47,13 +50,12 @@ export default function Articles({
     fetchArticles(index, query, page, highlight, perPage, currentSort, setData);
   }, [index, query, page, setData, asSnippets, perPage, currentSort]);
   const fields = useFields(index);
-
   if (!columns) {
     if (fields) {
       columns = DEFAULT_COLUMNS.map((f) => getField(fields, f)).filter((f) => f != null);
       const extra_columns = fields
         .filter((f) => !DEFAULT_COLUMNS.includes(f.name))
-        .filter((f) => f.meta?.amcat4_display_table)
+        .filter((f) => f.meta?.amcat4_display_table === "1")
         .sort(
           (a, b) => parseInt(a.meta.amcat4_display_table) - parseInt(b.meta.amcat4_display_table)
         );
@@ -80,8 +82,9 @@ export default function Articles({
 
   if (!columns || columns.length === 0) return null;
 
-  const onClick = (row: any) => {
-    setArticleId([row._id]);
+  const handleClick = (row: any) => {
+    if (onClick != null) onClick(row);
+    else setArticleId([row._id]);
   };
   return (
     <>
@@ -91,7 +94,7 @@ export default function Articles({
           columns={columnList}
           pages={data?.meta?.page_count || 0}
           pageChange={setPage}
-          onClick={onClick}
+          onClick={handleClick}
         />
       ) : (
         <PaginationTable
@@ -99,7 +102,7 @@ export default function Articles({
           columns={columnList}
           pages={data?.meta?.page_count || 0}
           pageChange={setPage}
-          onClick={onClick}
+          onClick={handleClick}
           sort={currentSort}
           onSortChange={setCurrentSort}
         />

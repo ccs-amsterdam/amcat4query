@@ -116,8 +116,11 @@ export interface AmcatIndex extends AmcatUser {
 export interface AmcatDocument {
   /** We can see if a text has been processed by addAnnotations
       if it's an array. But there should be a more elegant solution (WvA nods) */
-  text: string | any[];
-  _id: number;
+  _id: string;
+  text?: string | any[];
+  date?: Date;
+  url?: string;
+  title?: string;
   _annotations?: any[];
   [key: string]: any;
 }

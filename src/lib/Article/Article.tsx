@@ -8,7 +8,7 @@ import prepareArticle from "./prepareArticle";
 export interface ArticleProps {
   index: AmcatIndex;
   /** An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change */
-  id: number | [number];
+  id: string | [string];
   /** A query, used for highlighting */
   query: AmcatQuery;
   changeArticle?: (id: number) => void;
@@ -40,7 +40,7 @@ export default function Article({ index, id, query, changeArticle, link }: Artic
 
 function fetchArticle(
   index: AmcatIndex,
-  _id: number,
+  _id: string,
   query: AmcatQuery,
   setArticle: (value: AmcatDocument) => void
 ) {
@@ -129,7 +129,12 @@ function TextField({ article, field, layout, label }: TextFieldProps) {
 }
 
 const Meta = ({ article, fields, setArticle, link }: BodyProps) => {
-  const metaFields = fields.filter((f) => f.type !== "text" && !["title", "text"].includes(f.name));
+  const metaFields = fields.filter(
+    (f) =>
+      f.type !== "text" &&
+      !["title", "text"].includes(f.name) &&
+      f.meta?.amcat4_display_meta !== "0"
+  );
   const rows = () => {
     return metaFields.map((field) => {
       const value = formatMetaValue(article, field, setArticle);

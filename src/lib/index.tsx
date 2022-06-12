@@ -2,7 +2,10 @@
 import AggregateResult from "./Aggregate/AggregateResult";
 import AggregateOptionsChooser from "./Aggregate/AggregateOptionsChooser";
 import Articles from "./Articles/Articles";
+import Article from "./Article/Article";
 import Login from "./Login/Login";
+import ArticleModal from "./Article/ArticleModal";
+
 import IndexLogin from "./Login/IndexLogin";
 import IndexPicker from "./Index/IndexPicker";
 import Query from "./Query/Query";
@@ -40,6 +43,8 @@ export {
   AggregatePane,
   AggregateOptionsChooser,
   AggregateResult,
+  Article,
+  ArticleModal,
   Articles,
   Login,
   LoginForm,

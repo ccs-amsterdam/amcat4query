@@ -22,7 +22,7 @@ interface LocationResultsProps {
 /** Heat map of documents displayed on a map */
 export default function LocationHeatmap({ index, query, options }: LocationResultsProps) {
   const [data, setData] = useState<any[]>();
-  const [articleId, setArticleId] = useState<[number]>();
+  const [articleId, setArticleId] = useState<[string]>();
   const [zoom, setZoom] = useState<AmcatQuery>();
   const mapref = useRef();
 

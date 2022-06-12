@@ -118,15 +118,19 @@ export function addFilter(q: AmcatQuery, filters: AmcatFilters): AmcatQuery {
   return { queries: { ...q.queries }, filters: { ...q.filters, ...filters } };
 }
 
-/** Hook to get fields from amcat
+/** Hook to get fields from amcat which allows for refreshing the cache
  * @param index Login information for this index
- * @returns a list of field objects
+ * @returns a tuple [field objects, refresh callback]
  */
-export function useFields(index: AmcatIndex | undefined): AmcatField[] {
-  const [fields, setFields] = useState<AmcatField[]>([]);
-
-  useEffect(() => {
-    if (index) {
+export function useFieldsWithRefresh(
+  index: AmcatIndex | undefined
+): [fields: AmcatField[], refresh: () => void] {
+  function _getSetFields(
+    index: AmcatIndex | undefined,
+    setFields: (fields: AmcatField[]) => void
+  ): void {
+    if (index == null) setFields([]);
+    else
       getFields(index)
         .then((res: any) => {
           setFields(Object.values(res.data));
@@ -134,12 +138,20 @@ export function useFields(index: AmcatIndex | undefined): AmcatField[] {
         .catch((_e: Error) => {
           setFields([]);
         });
-    } else {
-      setFields([]);
-    }
-  }, [index]);
+  }
 
-  return Object.values(fields);
+  const [fields, setFields] = useState<AmcatField[]>([]);
+  useEffect(() => _getSetFields(index, setFields), [index]);
+  const refresh = () => _getSetFields(index, setFields);
+  return [Object.values(fields), refresh];
+}
+
+/** Hook to get fields from amcat
+ * @param index Login information for this index
+ * @returns a list of field objects
+ */
+export function useFields(index: AmcatIndex | undefined): AmcatField[] {
+  return useFieldsWithRefresh(index)[0];
 }
 
 /*** Hook to get field values from AmCAT
@@ -171,6 +183,12 @@ const ICONS: { [field: string]: SemanticICONS } = {
   keyword: "list",
   long: "chart line",
   tag: "tags",
+  text: "file text",
+  url: "linkify",
+  double: "sort numeric up",
+  id: "id badge",
+  object: "braille",
+  geo_point: "location arrow",
 };
 
 export function getFieldTypeIcon(fieldtype: string) {
