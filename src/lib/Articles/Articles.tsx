@@ -83,7 +83,6 @@ export default function Articles({
   const onClick = (row: any) => {
     setArticleId([row._id]);
   };
-  console.log(articleId);
   return (
     <>
       {asSnippets ? (
