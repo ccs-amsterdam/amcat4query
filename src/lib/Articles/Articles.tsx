@@ -1,7 +1,7 @@
 import PaginationTable, { PaginationTableColumn } from "./PaginationTable";
 import ArticleSnippets from "./ArticleSnippets";
 import { useEffect, useMemo, useState } from "react";
-import Article from "../Article/Article";
+import ArticleModal from "../Article/ArticleModal";
 import { AmcatIndex, AmcatQuery, AmcatQueryResult, SortSpec } from "../interfaces";
 import { getField, postQuery, useFields } from "../Amcat";
 
@@ -105,7 +105,7 @@ export default function Articles({
           onSortChange={setCurrentSort}
         />
       )}
-      <Article index={index} id={articleId} query={query} changeArticle={setArticleId} />
+      <ArticleModal index={index} id={articleId} query={query} changeArticle={setArticleId} />
     </>
   );
 }

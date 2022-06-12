@@ -1,58 +1,40 @@
-import { useState, useEffect } from "react";
-import { useFields } from "../Amcat";
-import prepareArticle from "./prepareArticle";
-import { Grid, Icon, Label, Modal, Table } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import { Grid, Icon, Label, Popup, Table } from "semantic-ui-react";
+import { addFilter, postQuery, useFields } from "../Amcat";
+import { AmcatDocument, AmcatField, AmcatIndex, AmcatQuery } from "../interfaces";
 import "./articleStyle.css";
-import { AmcatDocument, AmcatField, AmcatQuery, AmcatIndex } from "../interfaces";
-import { addFilter, postQuery } from "../Amcat";
+import prepareArticle from "./prepareArticle";
 
-interface ArticleProps {
+export interface ArticleProps {
   index: AmcatIndex;
   /** An article id. Can also be an array of length 1 with the article id, which can trigger setOpen if the id didn't change */
   id: number | [number];
   /** A query, used for highlighting */
   query: AmcatQuery;
   changeArticle?: (id: number) => void;
+  link?: string;
 }
 
-/**
- * Show a single article
- */
-export default function Article({ index, id, query, changeArticle }: ArticleProps) {
+export default function Article({ index, id, query, changeArticle, link }: ArticleProps) {
   const fields = useFields(index);
   const [article, setArticle] = useState(null);
-  const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!id) return;
     const _id = Array.isArray(id) ? id[0] : id;
     if (article && _id === article._id) return;
     fetchArticle(index, _id, query, setArticle);
   }, [id, article, index, query]);
-
-  useEffect(() => {
-    setOpen(true);
-  }, [id]);
-
   if (!article || !fields) return null;
 
   return (
-    <Modal open={open} onClose={() => setOpen(false)} style={{ width: "80vw", maxWidth: "1200px" }}>
-      <Modal.Header></Modal.Header>
-      <Modal.Content scrolling>
-        <Modal.Description style={{ height: "100%" }}>
-          <Grid stackable>
-            <Grid.Column width={6}>
-              <Meta article={article} fields={fields} setArticle={changeArticle} />
-            </Grid.Column>
-            <Grid.Column width={10}>
-              <Body article={article} fields={fields} />
-            </Grid.Column>
-          </Grid>
-        </Modal.Description>
-      </Modal.Content>
-
-      <Modal.Actions></Modal.Actions>
-    </Modal>
+    <Grid stackable>
+      <Grid.Column width={6}>
+        <Meta article={article} fields={fields} setArticle={changeArticle} link={link} />
+      </Grid.Column>
+      <Grid.Column width={10}>
+        <Body article={article} fields={fields} />
+      </Grid.Column>
+    </Grid>
   );
 }
 
@@ -78,6 +60,7 @@ interface BodyProps {
   article: AmcatDocument;
   fields: AmcatField[];
   setArticle?: (id: number) => void;
+  link?: string;
 }
 
 const Body = ({ article, fields }: BodyProps) => {
@@ -145,7 +128,7 @@ function TextField({ article, field, layout, label }: TextFieldProps) {
   );
 }
 
-const Meta = ({ article, fields, setArticle }: BodyProps) => {
+const Meta = ({ article, fields, setArticle, link }: BodyProps) => {
   const metaFields = fields.filter((f) => f.type !== "text" && !["title", "text"].includes(f.name));
   const rows = () => {
     return metaFields.map((field) => {
@@ -164,6 +147,12 @@ const Meta = ({ article, fields, setArticle }: BodyProps) => {
 
   if (metaFields.length === 0) return null;
 
+  const abbreviate = function (text: string | number) {
+    const t = text.toString();
+    if (t.length > 10) return `${t.substring(0, 4)}...${t.substring(t.length - 4)}`;
+    return t;
+  };
+
   return (
     <Table
       basic="very"
@@ -175,7 +164,35 @@ const Meta = ({ article, fields, setArticle }: BodyProps) => {
         color: "black",
       }}
     >
-      <Table.Body>{rows()}</Table.Body>
+      <Table.Body>
+        {link == null ? null : (
+          <Table.Row key={-1}>
+            <Table.Cell width={1}>
+              <b>AmCAT ID</b>
+            </Table.Cell>
+            <Table.Cell>
+              <Popup
+                inverted
+                trigger={
+                  <a
+                    href={link}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigator.clipboard.writeText(link);
+                      return false;
+                    }}
+                  >
+                    {abbreviate(article._id)}
+                  </a>
+                }
+                content="Link copied to clipboard!"
+                on="click"
+              />
+            </Table.Cell>
+          </Table.Row>
+        )}
+        {rows()}
+      </Table.Body>
     </Table>
   );
 };

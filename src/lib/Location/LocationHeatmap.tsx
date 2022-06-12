@@ -3,7 +3,7 @@ import Map, { Layer, MapLayerMouseEvent, Source } from "react-map-gl";
 import { Message } from "semantic-ui-react";
 import { AmcatIndex, AmcatQuery } from "..";
 import { addFilter, postQuery } from "../Amcat";
-import Article from "../Article/Article";
+import ArticleModal from "../Article/ArticleModal";
 import maplibregl from "maplibre-gl";
 import { getArticleList } from "../Aggregate/AggregateResult";
 import { LocationOptions } from "../interfaces";
@@ -96,7 +96,7 @@ export default function LocationHeatmap({ index, query, options }: LocationResul
           <Layer {...circleLayer} />
         </Source>
       </Map>
-      <Article id={articleId} index={index} query={query || {}} />
+      <ArticleModal id={articleId} index={index} query={query || {}} />
     </>
   );
 }
