@@ -28,6 +28,8 @@ interface AggregateResultProps {
   width?: string | number;
   /* Height of the component */
   height?: string | number;
+  /* Optional scaling factor */
+  scale?: number;
 }
 
 /**
@@ -39,6 +41,7 @@ export default function AggregateResult({
   options,
   width,
   height,
+  scale,
 }: AggregateResultProps) {
   const [data, setData] = useState<AggregateData>();
   const [error, setError] = useState<string>();
@@ -95,6 +98,8 @@ export default function AggregateResult({
     console.log(JSON.stringify(newQuery));
     setZoom(newQuery);
   };
+  const scaled_data =
+    scale == null ? data : { ...data, data: data.data.map((x) => ({ ...x, n: x.n * scale })) };
 
   // Choose and render result element
   const Element = {
@@ -107,12 +112,11 @@ export default function AggregateResult({
     console.error({ Element, data, options });
     return <Message warning header={`Unknown display option: ${options.display}`} />;
   }
-
   return (
     <div>
       {getArticleList(index, zoom, () => setZoom(undefined))}
       <Element
-        data={data}
+        data={scaled_data}
         onClick={handleClick}
         width={width}
         height={height}

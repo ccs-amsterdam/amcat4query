@@ -42,17 +42,17 @@ export default function AggregateLineChart({
 
   if (height == null) height = 300;
   if (width == null) width = "100%";
+  console.log({ columns, d });
   return (
     <ResponsiveContainer height={height} width={width}>
       <LineChart data={d}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={data.meta.axes[0].field} />
+        <XAxis dataKey={data.meta.axes[0].name} />
         <YAxis />
         <Tooltip />
         {columns.length > 1 ? <Legend /> : null}
         {columns.map((column, i) => (
           <Line
-            key={i}
             type="monotone"
             dataKey={column}
             stroke={colors[i]}

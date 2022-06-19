@@ -8,14 +8,19 @@ export type AggregationInterval =
   | "quarter"
   | "year"
   | "daypart"
-  | "dayofweek";
+  | "dayofweek"
+  | "monthnr"
+  | "yearnr"
+  | "dayofmonth"
+  | "weeknr";
 
 export interface AggregationAxis {
   field: string;
+  name?: string;
   interval?: AggregationInterval;
 }
 
-export type MetricFunction = "avg" | "min" | "max" | "sum";
+export type MetricFunction = "sum" | "avg" | "min" | "max";
 
 export interface AggregationMetric {
   field: string;

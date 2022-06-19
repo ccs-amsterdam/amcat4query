@@ -1,4 +1,10 @@
-import { AggregateData, AggregateDataPoint, AggregationInterval } from "../interfaces";
+import { AnyLayer } from "react-map-gl/dist/esm/types";
+import {
+  AggregateData,
+  AggregateDataPoint,
+  AggregationAxis,
+  AggregationInterval,
+} from "../interfaces";
 
 interface LongData {
   d: AggregateDataPoint[];
@@ -12,13 +18,13 @@ function should_add_zeroes(interval: AggregationInterval) {
 // Convert amcat aggregate results ('long' format data plus axes) into data for recharts ('wide' data and series names)
 // Specifically, from [{ row_id, col_id, value }, ...] to [{ row_id, col1: value1, col2: value2, ...}, ...]
 export function createChartData(data: AggregateData): LongData {
-  const fields = data.meta.axes.map((axis) => axis.field);
+  const fields = data.meta.axes.map((axis) => axis.name);
   const target = data.meta.aggregations.length > 0 ? data.meta.aggregations[0].name : "n";
   const interval = data.meta.axes[0].interval;
   if (fields.length === 1) {
     const d = add_zeroes(data.data, fields[0], interval, target);
     return { d, columns: [target] };
-  } else return longToWide(data.data, fields[0], fields[1], target, interval);
+  } else return longToWide(data.data, data.meta.axes[0], data.meta.axes[1], target);
 }
 
 /*
@@ -26,18 +32,22 @@ export function createChartData(data: AggregateData): LongData {
  */
 function longToWide(
   data: AggregateDataPoint[],
-  primary: string,
-  secondary: string,
+  primary: AggregationAxis,
+  secondary: AggregationAxis,
   target: string,
   interval?: AggregationInterval
 ): LongData {
   // convert results from amcat to wide format
-  const columns = Array.from(new Set(data.map((row) => row[secondary])));
-  const dmap = new Map(data.map((p) => [JSON.stringify([p[primary], p[secondary]]), p[target]]));
-  let rows = Array.from(new Set(data.map((row) => row[primary])));
+  const t_col = (val: any) =>
+    can_transform(secondary.interval) ? transform_datepart_value(val, secondary.interval).nl : val;
+  const columns = Array.from(new Set(data.map((row) => t_col(row[secondary.name]))));
+  const dmap = new Map(
+    data.map((p) => [JSON.stringify([p[primary.name], t_col(p[secondary.name])]), p[target]])
+  );
+  let rows = Array.from(new Set(data.map((row) => row[primary.name])));
   if (interval === "year") rows = daterange(rows, interval);
   const d = rows.map((row) => {
-    const p = { [primary]: row };
+    const p = { [primary.name]: row };
     columns.forEach((col) => {
       const key = JSON.stringify([row, col]);
       p[col] = dmap.has(key) ? dmap.get(key) : 0;
@@ -94,6 +104,10 @@ function incrementDate(date: Date, interval: AggregationInterval) {
 }
 
 function daterange(values: string[], interval: AggregationInterval): string[] {
+  if (interval == "monthnr") {
+    console.log(values);
+    return values;
+  }
   const result: string[] = [];
   const dates = values.map((d) => new Date(d));
   let d = dates.reduce((a, b) => (a < b ? a : b));
@@ -105,7 +119,7 @@ function daterange(values: string[], interval: AggregationInterval): string[] {
   return result;
 }
 
-export const DATEPARTS = new Map([
+export const DATEPARTS_DOW = new Map([
   ["Monday", { nl: "Maandag", _sort: 1 }],
   ["Tuesday", { nl: "Dinsdag", _sort: 2 }],
   ["Wednesday", { nl: "Woensdag", _sort: 3 }],
@@ -113,14 +127,65 @@ export const DATEPARTS = new Map([
   ["Friday", { nl: "Vrijdag", _sort: 5 }],
   ["Saturday", { nl: "Zaterdag", _sort: 6 }],
   ["Sunday", { nl: "Zondag", _sort: 7 }],
+]);
+
+const DATEPARTS_DAYPART = new Map([
   ["Morning", { nl: "Ochtend", _sort: 1 }],
   ["Afternoon", { nl: "Middag", _sort: 2 }],
   ["Evening", { nl: "Avond", _sort: 3 }],
   ["Night", { nl: "Nacht", _sort: 4 }],
 ]);
 
-export function transform_dateparts(x: AggregateDataPoint, field: string) {
-  const dp = DATEPARTS.get(x[field]);
+const MONTHS = [
+  { nl: "Januari", _sort: 1 },
+  { nl: "Februari", _sort: 2 },
+  { nl: "Maart", _sort: 3 },
+  { nl: "April", _sort: 4 },
+  { nl: "Mei", _sort: 5 },
+  { nl: "Juni", _sort: 6 },
+  { nl: "Juli", _sort: 7 },
+  { nl: "Augustus", _sort: 8 },
+  { nl: "September", _sort: 9 },
+  { nl: "Oktober", _sort: 10 },
+  { nl: "November", _sort: 11 },
+  { nl: "December", _sort: 12 },
+];
 
-  return dp ? { ...x, [field]: dp.nl, _sort: dp._sort } : x;
+export function transform_datepart_value(value: any, interval: string) {
+  switch (interval) {
+    case "dayofweek":
+      return DATEPARTS_DOW.get(value);
+    case "daypart":
+      return DATEPARTS_DAYPART.get(value);
+    case "monthnr":
+      return MONTHS[value - 1];
+  }
 }
+
+export function transform_dateparts(x: AggregateDataPoint, axis: AggregationAxis) {
+  const dp = transform_datepart_value(x[axis.name], axis.interval);
+  return dp ? { ...x, [axis.name]: dp.nl, _sort: dp._sort } : x;
+}
+
+export function can_transform(interval: string) {
+  return ["dayofweek", "daypart", "monthnr"].includes(interval);
+}
+
+export function axis_label(axis: AggregationAxis): string {
+  if (axis.interval) return `${axis.field} (${INTERVAL_LABELS.get(axis.interval)})`;
+  return axis.name;
+}
+
+export const INTERVAL_LABELS = new Map([
+  ["day", "Day"],
+  ["week", "Week"],
+  ["month", "Month"],
+  ["quarter", "Quarter"],
+  ["year", "Year"],
+  ["dayofweek", "Day of week"],
+  ["daypart", "Part of day"],
+  ["monthnr", "Month number"],
+  ["yearnr", "Year Number"],
+  ["dayofmonth", "Day of Month"],
+  ["weeknr", "Week Number"],
+]);

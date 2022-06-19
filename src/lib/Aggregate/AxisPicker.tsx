@@ -11,6 +11,10 @@ const date_intervals = [
   { key: "year", text: "Year", value: "year" },
   { key: "dayofweek", text: "Day of week", value: "dayofweek" },
   { key: "daypart", text: "Part of day", value: "daypart" },
+  { key: "monthnr", text: "Month number", value: "monthnr" },
+  { key: "yearnr", text: "Year Number", value: "yearnr" },
+  { key: "dayofmonth", text: "Day of Month", value: "dayofmonth" },
+  { key: "weeknr", text: "Week Number", value: "weeknr" },
 ];
 
 interface AxisPickerProps {

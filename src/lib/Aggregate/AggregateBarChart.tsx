@@ -1,7 +1,7 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AggregateVisualizerProps } from "../interfaces";
 import { qualitativeColors } from "./colors";
-import { createChartData, transform_dateparts } from "./lib";
+import { can_transform, createChartData, transform_dateparts } from "./lib";
 
 export default function AggregateBarChart({
   data,
@@ -12,7 +12,7 @@ export default function AggregateBarChart({
 }: AggregateVisualizerProps) {
   const { d, columns } = createChartData(data);
   const colors = qualitativeColors(columns.length);
-  const primary = data.meta.axes[0].field;
+  const primary = data.meta.axes[0].name;
 
   const handleClick = (column: string, j: number) => {
     if (onClick == null) return;
@@ -26,9 +26,9 @@ export default function AggregateBarChart({
     onClick(values);
   };
   let sorted;
-  if (data.meta.axes[0].interval === "dayofweek" || data.meta.axes[0].interval === "daypart") {
+  if (can_transform(data.meta.axes[0].interval)) {
     sorted = d
-      .map((x) => transform_dateparts(x, data.meta.axes[0].field))
+      .map((x) => transform_dateparts(x, data.meta.axes[0]))
       .sort((e1, e2) => e1._sort - e2._sort);
   } else {
     sorted = d.sort((e1, e2) => e2.n - e1.n);
@@ -36,6 +36,7 @@ export default function AggregateBarChart({
   if (limit && sorted.length > limit) sorted = sorted.slice(0, limit);
   if (height == null) height = Math.max(250, sorted.length * 30);
   if (width == null) width = "100%";
+  console.log({ primary, d });
   return (
     <ResponsiveContainer width={width} height={height}>
       <BarChart data={sorted} layout="vertical">
