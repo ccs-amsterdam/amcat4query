@@ -110,6 +110,7 @@ function daterange(values: string[], interval: AggregationInterval): string[] {
   }
   const result: string[] = [];
   const dates = values.map((d) => new Date(d));
+  if (values.length == 0) return result;
   let d = dates.reduce((a, b) => (a < b ? a : b));
   const enddate = dates.reduce((a, b) => (a > b ? a : b));
   while (d <= enddate) {
