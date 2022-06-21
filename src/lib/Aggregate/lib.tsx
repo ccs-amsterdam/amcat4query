@@ -1,4 +1,3 @@
-import { AnyLayer } from "react-map-gl/dist/esm/types";
 import {
   AggregateData,
   AggregateDataPoint,
@@ -22,6 +21,7 @@ export function createChartData(data: AggregateData): LongData {
   const target = data.meta.aggregations.length > 0 ? data.meta.aggregations[0].name : "n";
   const interval = data.meta.axes[0].interval;
   if (fields.length === 1) {
+    console.log({ fields, data });
     const d = add_zeroes(data.data, fields[0], interval, target);
     return { d, columns: [target] };
   } else return longToWide(data.data, data.meta.axes[0], data.meta.axes[1], target);
@@ -104,13 +104,13 @@ function incrementDate(date: Date, interval: AggregationInterval) {
 }
 
 function daterange(values: string[], interval: AggregationInterval): string[] {
-  if (interval == "monthnr") {
+  if (interval === "monthnr") {
     console.log(values);
     return values;
   }
   const result: string[] = [];
   const dates = values.map((d) => new Date(d));
-  if (values.length == 0) return result;
+  if (values.length === 0) return result;
   let d = dates.reduce((a, b) => (a < b ? a : b));
   const enddate = dates.reduce((a, b) => (a > b ? a : b));
   while (d <= enddate) {
