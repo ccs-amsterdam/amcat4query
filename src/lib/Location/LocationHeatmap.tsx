@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Map, { Layer, MapLayerMouseEvent, Source } from "react-map-gl";
+import Map, { Layer, MapLayerMouseEvent, NavigationControl, Source } from "react-map-gl";
 import { Message } from "semantic-ui-react";
 import { AmcatIndex, AmcatQuery } from "..";
 import { addFilter, postQuery } from "../Amcat";
@@ -95,6 +95,7 @@ export default function LocationHeatmap({ index, query, options }: LocationResul
           <Layer {...heatmapLayer} />
           <Layer {...circleLayer} />
         </Source>
+        <NavigationControl showCompass={false} />
       </Map>
       <ArticleModal id={articleId} index={index} query={query || {}} />
     </>
