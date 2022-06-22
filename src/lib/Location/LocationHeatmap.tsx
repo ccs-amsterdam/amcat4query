@@ -28,6 +28,7 @@ export default function LocationHeatmap({ index, query, options }: LocationResul
 
   useEffect(() => {
     // Obtain articles containing geo_point information
+    setData(undefined);
     if (index == null || options?.field == null) return;
     const q = addFilter(query, { [options.field]: { exists: true } });
     postQuery(index, q, {
@@ -64,7 +65,7 @@ export default function LocationHeatmap({ index, query, options }: LocationResul
         (loc: { lon: number; lat: number }, j: number): GeoJSON.Feature<GeoJSON.Geometry> => ({
           type: "Feature",
           properties: { _id: article._id },
-          geometry: { type: "Point", coordinates: [loc.lon, loc.lat, 0.0] },
+          geometry: { type: "Point", coordinates: [loc?.lon, loc?.lat, 0.0] },
         })
       )
     );
