@@ -89,11 +89,16 @@ export default function AggregateResult({
     const newQuery = query == null ? {} : JSON.parse(JSON.stringify(query));
     if (!newQuery.filters) newQuery.filters = {};
     options.axes.forEach((axis, i) => {
+      if (axis.field == "_query") {
+        newQuery.queries = query.queries[values[i]];
+          
+      } else {
       newQuery.filters[axis.field] = getZoomFilter(
         values[i],
         axis.interval,
         newQuery.filters?.[axis.field]
       );
+      }
     });
     console.log(JSON.stringify(newQuery));
     setZoom(newQuery);

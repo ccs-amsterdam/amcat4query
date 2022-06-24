@@ -12,8 +12,6 @@ export function queryToString(q?: AmcatQueryTerms, joinby = "\n"): string {
 
 const labelRE = /(?<=\w\s*)=/;
 
-const trim = (s: string) => s.trim();
-
 function queryEntryfromString(q: string, default_label: string): [string, string] {
     const m = q.match(labelRE);
     if (!m) return [default_label, q.trim()];
@@ -28,6 +26,6 @@ function queryObjectFromStrings(queries: string[]): {[label: string]: string} {
 export function queryFromString(q: string): AmcatQueryTerms {
     if (!q?.trim()) return undefined;
     const queries = q.split(/[\n;]/);
-    return q.match(labelRE)?queryObjectFromStrings(queries):queries.map(trim);
+    return q.match(labelRE)?queryObjectFromStrings(queries):queries.map((s) => s.trim());
 }
 
