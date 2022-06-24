@@ -31,16 +31,16 @@ export default function MultilineQueryForm({ index, value, onSubmit }: QueryForm
       onSubmit({ ...value, queries: queryFromString(q) });
     }
   }
-
+  const hint = "(use control+Enter to submit; label queries with label=query)";
   return (
     <div className="multilinequery">
       <Form className="querycol">
-        <b>Query:</b> (use control+Enter to submit)
+        <b>Query:</b> {hint}
         <br />
         <Form.TextArea
           rows={8}
           style={{ BorderRadius: "15px" }}
-          placeholder={"Query (use control+Enter to submit)"}
+          placeholder={hint}
           onChange={(_, { value }) => setQ(value as string)}
           onKeyDown={handleKeyDown}
           value={q || ""}

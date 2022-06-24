@@ -26,7 +26,7 @@ export default function AggregatePane({ index, query }: AggregatePaneProps) {
         <Input
           label="Scale"
           value={scale || ""}
-          onChange={(_e, { value }) => (value == "" ? null : setScale(parseFloat(value)))}
+          onChange={(_e, { value }) => (value === "" ? null : setScale(parseFloat(value)))}
         />
       </Form>
       <AggregateResult index={index} query={query} options={options} scale={scale} />

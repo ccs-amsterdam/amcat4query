@@ -1,7 +1,7 @@
 import { AmcatQueryTerms } from "../interfaces";
 
 function format_queries_object(queries: {[label: string]: string}) {
-   return Object.keys(queries).map((l) => `${l}: ${queries[l]}`);
+   return Object.keys(queries).map((l) => `${l}=${queries[l]}`);
 }
 
 export function queryToString(q?: AmcatQueryTerms, joinby = "\n"): string {
@@ -10,20 +10,24 @@ export function queryToString(q?: AmcatQueryTerms, joinby = "\n"): string {
     return queries.join(joinby);
 }
 
+const labelRE = /(?<=\w\s*)=/;
+
 const trim = (s: string) => s.trim();
 
-function queryEntryfromString(q: string): string[] {
-    if (q.match(/[:#]/)) return q.split(/[:#]/).map(trim)
-    else return [q.trim(),q.trim()];
+function queryEntryfromString(q: string, default_label: string): [string, string] {
+    const m = q.match(labelRE);
+    if (!m) return [default_label, q.trim()];
+    return [q.slice(0, m.index).trim(),
+            q.slice(m.index+m.length).trim()];    
 }
 
 function queryObjectFromStrings(queries: string[]): {[label: string]: string} {
-    return Object.fromEntries(queries.map(queryEntryfromString));
+    return Object.fromEntries(queries.map((s, i) => queryEntryfromString(s, `q${i}`)));
 }
 
 export function queryFromString(q: string): AmcatQueryTerms {
     if (!q?.trim()) return undefined;
     const queries = q.split(/[\n;]/);
-    return q.match(/[:#]/)?queryObjectFromStrings(queries):queries.map(trim);
+    return q.match(labelRE)?queryObjectFromStrings(queries):queries.map(trim);
 }
 
