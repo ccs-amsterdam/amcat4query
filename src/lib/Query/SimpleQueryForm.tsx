@@ -4,6 +4,7 @@ import { AmcatField } from "..";
 import { useFields, getField, getFieldTypeIcon } from "../Amcat";
 import { AmcatQuery } from "../interfaces";
 import FilterPicker from "./FilterPicker";
+import { queryFromString, queryToString } from "./libQuery";
 import { QueryFormProps } from "./QueryForm";
 import "./QueryForm.scss";
 
@@ -18,7 +19,7 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
   const [q, setQ] = useState("");
   useEffect(() => {
     if (!value?.queries || value.queries.length === 0) setQ("");
-    else setQ(value.queries.join("; "));
+    else setQ(queryToString(value.queries, "; "));
   }, [value?.queries]);
 
   if (!index || !fields) return null;
@@ -34,16 +35,7 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
   }
   function handleKeydown(e: any) {
     if (e.key === "Enter")
-      onSubmit({
-        ...value,
-        queries:
-          q === ""
-            ? []
-            : q
-                .split(";")
-                .map((x) => x.trim())
-                .filter((e) => e !== ""),
-      });
+      onSubmit({...value, queries: queryFromString(q)});
   }
 
   return (

@@ -3,6 +3,7 @@ import { Grid, Button, Icon } from "semantic-ui-react";
 import QueryString from "./QueryString";
 import Filter from "./Filter";
 import { AmcatFilters, AmcatIndex, AmcatQuery } from "../interfaces";
+import { queryFromString, queryToString } from "./libQuery";
 
 interface QueryProps {
   index: AmcatIndex;
@@ -21,16 +22,14 @@ export default function Query({ index, value, onSubmit }: QueryProps) {
 
   // Is this the correct way to update the state if value changed?
   useEffect(() => {
-    setQueryStrings(value?.queries && value.queries.join("\n"));
+    setQueryStrings(queryToString(value?.queries));
     setFilters(value?.filters || {});
   }, [value]);
 
   const onClick = () => {
     const q: AmcatQuery = {};
     // Split query string and remove empty queries
-    if (queryStrings !== undefined && queryStrings.trim() !== "") {
-      q.queries = queryStrings.split("\n").filter((e) => e.trim() !== "");
-    }
+    q.queries = queryFromString(queryStrings);
     // Copy filters and remove empty filters
     const filtercopy = filters !== undefined ? { ...filters } : {};
     /*Object.keys(filtercopy)

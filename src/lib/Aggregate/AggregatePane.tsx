@@ -19,7 +19,6 @@ export default function AggregatePane({ index, query }: AggregatePaneProps) {
   useEffect(() => {
     setOptions(undefined);
   }, [index]);
-  console.log(scale);
   return (
     <div>
       <AggregateOptionsChooser index={index} value={options} onSubmit={setOptions} />

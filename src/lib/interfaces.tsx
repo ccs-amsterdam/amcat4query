@@ -73,9 +73,11 @@ export interface AmcatFilters {
   [field: string]: AmcatFilter;
 }
 
+export type AmcatQueryTerms = string[] | {[label: string]: string};
+
 export interface AmcatQuery {
   filters?: AmcatFilters;
-  queries?: string[];
+  queries?: AmcatQueryTerms;
 }
 
 export type AggregateDataPoint = { [key: string]: any };

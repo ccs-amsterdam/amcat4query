@@ -5,12 +5,13 @@ import FilterPicker from "./FilterPicker";
 import { QueryFormProps } from "./QueryForm";
 import "./QueryForm.scss";
 import { AddFilterButton, fieldOptions } from "./SimpleQueryForm";
+import {queryFromString, queryToString} from "./libQuery";
 
 export default function MultilineQueryForm({ index, value, onSubmit }: QueryFormProps) {
   const fields = useFields(index);
   const [q, setQ] = useState("");
   useEffect(() => {
-    if (value?.queries) setQ(value.queries.join("\n"));
+    if (value?.queries) setQ(queryToString(value.queries));
     else setQ("");
   }, [value?.queries]);
   if (!index || !fields) return null;
@@ -26,8 +27,8 @@ export default function MultilineQueryForm({ index, value, onSubmit }: QueryForm
   }
   function handleKeyDown(event: any) {
     if (event.key === "Enter" && event.ctrlKey) {
-      const queries = q.split("\n").filter((e) => e.trim() !== "");
-      onSubmit({ ...value, queries: queries });
+      console.log({q, queries: queryFromString(q)})
+      onSubmit({ ...value, queries: queryFromString(q) });
     }
   }
 
