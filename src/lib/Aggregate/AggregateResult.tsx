@@ -90,7 +90,7 @@ export default function AggregateResult({
     if (!newQuery.filters) newQuery.filters = {};
     options.axes.forEach((axis, i) => {
       if (axis.field == "_query") {
-        newQuery.queries = query.queries[values[i]];
+        newQuery.queries = [query.queries[values[i]]];
           
       } else {
       newQuery.filters[axis.field] = getZoomFilter(
