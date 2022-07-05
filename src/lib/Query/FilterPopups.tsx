@@ -61,7 +61,7 @@ function date2str(date: Date, ifNone = ""): string {
   if (!date) return ifNone;
   const month = ("0" + (date.getMonth() + 1)).slice(-2);
   const day = ("0" + date.getDate()).slice(-2);
-  const year = date.getUTCFullYear();
+  const year = date.getFullYear();
   return year + "-" + month + "-" + day;
 }
 
