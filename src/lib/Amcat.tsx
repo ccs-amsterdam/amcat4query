@@ -60,6 +60,12 @@ export function getFields(index: AmcatIndex) {
   return api(index).get("/fields");
 }
 
+/** Add fields to this index */
+export function addFields(index: AmcatIndex, fields: AmcatField[]) {
+  const body = Object.fromEntries(fields.map((f) => [f.name, f.type]));
+  return api(index).post("/fields", body);
+}
+
 /** Get the values for a field
  * @param index Index name
  * @param field Field name

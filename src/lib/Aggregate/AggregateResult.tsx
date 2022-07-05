@@ -89,7 +89,7 @@ export default function AggregateResult({
     const newQuery = query == null ? {} : JSON.parse(JSON.stringify(query));
     if (!newQuery.filters) newQuery.filters = {};
     options.axes.forEach((axis, i) => {
-      if (axis.field == "_query") {
+      if (axis.field === "_query") {
         newQuery.queries = [query.queries[values[i]]];
           
       } else {
