@@ -21,8 +21,7 @@ export function createChartData(data: AggregateData): LongData {
   const target = data.meta.aggregations.length > 0 ? data.meta.aggregations[0].name : "n";
   const interval = data.meta.axes[0].interval;
   if (fields.length === 1) {
-    console.log({ fields, data });
-    const d = add_zeroes(data.data, fields[0], interval, target);
+    const d = add_zeroes(data.data, fields[0], interval, [target]);
     return { d, columns: [target] };
   } else return longToWide(data.data, data.meta.axes[0], data.meta.axes[1], target);
 }
@@ -46,7 +45,7 @@ function longToWide(
   );
   let rows = Array.from(new Set(data.map((row) => row[primary.name])));
   if (interval === "year") rows = daterange(rows, interval);
-  const d = rows.map((row) => {
+  let d = rows.map((row) => {
     const p = { [primary.name]: row };
     columns.forEach((col) => {
       const key = JSON.stringify([row, col]);
@@ -54,11 +53,12 @@ function longToWide(
     });
     return p;
   });
+  d = add_zeroes(d, primary.name, primary.interval, columns);
   return { d, columns };
 }
 
 function ymd(d: Date): string {
-  // We use a custom function becuase toIsoDate (1) includes time, and
+  // We use a custom function because toIsoDate (1) includes time, and
   // (2) changes the date to what it would be in UTC time zone, potentially changing the day
   const pad = (n: number) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -68,7 +68,7 @@ function add_zeroes(
   d: AggregateDataPoint[],
   field: string,
   interval: AggregationInterval,
-  target: string
+  targets: string[]
 ): AggregateDataPoint[] {
   if (!should_add_zeroes(interval)) return d;
   const dmap = new Map(d.map((p) => [ymd(new Date(p[field])), p]));
@@ -76,9 +76,9 @@ function add_zeroes(
     d.map((p) => p[field]),
     interval
   );
-  console.log({ dmap, dates });
+  const zeroes = Object.fromEntries(targets.map((f) => [f,0]));
   const result = dates.map((date) =>
-    dmap.has(date) ? dmap.get(date) : { [field]: date, [target]: 0 }
+    dmap.has(date) ? dmap.get(date) : { [field]: date, ...zeroes }
   );
   return result;
 }
