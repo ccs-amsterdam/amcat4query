@@ -200,3 +200,20 @@ const ICONS: { [field: string]: SemanticICONS } = {
 export function getFieldTypeIcon(fieldtype: string) {
   return ICONS[fieldtype];
 }
+
+/** Update tags by query
+ * @param index Index name
+ * @param action add or remove
+ * @param field Name of the tag field
+ * @param tag Tag to add or remove
+ * @param query A Query to determine which documents will be updated
+ */
+export function updateTags(
+  index: AmcatIndex,
+  action: "add" | "remove",
+  field: string,
+  tag: string,
+  query: AmcatQuery
+) {
+  return api(index).post(`/tags_update`, { action, field, tag, ...query });
+}
