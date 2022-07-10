@@ -11,7 +11,7 @@ import "./QueryForm.scss";
 export function fieldOptions(fields: AmcatField[], query: AmcatQuery) {
   return fields
     .filter((f) => !Object.keys(query?.filters || {}).includes(f.name))
-    .filter((f) => ["date", "keyword"].includes(f.type));
+    .filter((f) => ["date", "keyword", "tag"].includes(f.type));
 }
 
 export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormProps) {
@@ -34,8 +34,7 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
     onSubmit({ ...value, filters: { ...filters, [name]: {} } });
   }
   function handleKeydown(e: any) {
-    if (e.key === "Enter")
-      onSubmit({...value, queries: queryFromString(q)});
+    if (e.key === "Enter") onSubmit({ ...value, queries: queryFromString(q) });
   }
 
   return (
