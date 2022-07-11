@@ -5,9 +5,15 @@ import FilterPicker from "./FilterPicker";
 import { QueryFormProps } from "./QueryForm";
 import "./QueryForm.scss";
 import { AddFilterButton, fieldOptions } from "./SimpleQueryForm";
-import {queryFromString, queryToString} from "./libQuery";
+import { queryFromString, queryToString } from "./libQuery";
 
-export default function MultilineQueryForm({ index, value, onSubmit }: QueryFormProps) {
+export default function MultilineQueryForm({
+  index,
+  value,
+  onSubmit,
+  addFilterLabel,
+  fieldList,
+}: QueryFormProps) {
   const fields = useFields(index);
   const [q, setQ] = useState("");
   useEffect(() => {
@@ -27,7 +33,7 @@ export default function MultilineQueryForm({ index, value, onSubmit }: QueryForm
   }
   function handleKeyDown(event: any) {
     if (event.key === "Enter" && event.ctrlKey) {
-      console.log({q, queries: queryFromString(q)})
+      console.log({ q, queries: queryFromString(q) });
       onSubmit({ ...value, queries: queryFromString(q) });
     }
   }
@@ -76,10 +82,11 @@ export default function MultilineQueryForm({ index, value, onSubmit }: QueryForm
             <div className="filterlabel"></div>
             <div className="filterpicker">
               <AddFilterButton
-                options={fieldOptions(fields, value)}
+                options={fieldOptions(fields, value, fieldList)}
                 onClick={(field) => {
                   addFilter(field);
                 }}
+                addFilterLabel={addFilterLabel}
               />
             </div>
           </div>

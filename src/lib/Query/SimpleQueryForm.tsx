@@ -8,13 +8,20 @@ import { queryFromString, queryToString } from "./libQuery";
 import { QueryFormProps } from "./QueryForm";
 import "./QueryForm.scss";
 
-export function fieldOptions(fields: AmcatField[], query: AmcatQuery) {
+export function fieldOptions(fields: AmcatField[], query: AmcatQuery, fieldList?: string[]) {
   return fields
     .filter((f) => !Object.keys(query?.filters || {}).includes(f.name))
-    .filter((f) => ["date", "keyword", "tag"].includes(f.type));
+    .filter((f) => ["date", "keyword", "tag"].includes(f.type))
+    .filter((f) => fieldList == null || fieldList.includes(f.name));
 }
 
-export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormProps) {
+export default function SimpleQueryForm({
+  index,
+  value,
+  onSubmit,
+  addFilterLabel,
+  fieldList,
+}: QueryFormProps) {
   const fields = useFields(index);
   const [q, setQ] = useState("");
   useEffect(() => {
@@ -61,7 +68,11 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
           onDelete={() => deleteFilter(f)}
         />
       ))}
-      <AddFilterButton options={fieldOptions(fields, value)} onClick={addFilter} />
+      <AddFilterButton
+        options={fieldOptions(fields, value, fieldList)}
+        onClick={addFilter}
+        addFilterLabel={addFilterLabel}
+      />
     </div>
   );
 }
@@ -69,10 +80,10 @@ export default function SimpleQueryForm({ index, value, onSubmit }: QueryFormPro
 interface AddFilterProps {
   options: AmcatField[];
   onClick: (value: string) => void;
+  addFilterLabel?: string;
 }
-export function AddFilterButton({ options, onClick }: AddFilterProps) {
+export function AddFilterButton({ options, onClick, addFilterLabel }: AddFilterProps) {
   const [addOpen, setAddOpen] = useState(false);
-
   return (
     <Popup
       open={addOpen}
@@ -85,11 +96,11 @@ export function AddFilterButton({ options, onClick }: AddFilterProps) {
             <Icon name="filter" />
             <Icon corner name="add" color="blue" />
           </Icon.Group>
-          <span className="addfiltertext">Add Filter</span>
+          <span className="addfiltertext">{addFilterLabel || "Add Filter"}</span>
         </Button>
       }
     >
-      <b>new filter</b>
+      <b>{addFilterLabel || "Add Filter"}</b>
       <br />
       <Button.Group basic vertical>
         {options.map((f) => (

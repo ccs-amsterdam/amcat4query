@@ -8,6 +8,8 @@ export interface QueryFormProps {
   index: AmcatIndex;
   value: AmcatQuery;
   onSubmit: (value: AmcatQuery) => void;
+  addFilterLabel?: string;
+  fieldList?: string[];
 }
 
 export default function QueryForm({ index, value, onSubmit }: QueryFormProps) {
